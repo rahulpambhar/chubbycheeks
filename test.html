@@ -1,0 +1,1684 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8"/>
+
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+
+  <meta
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    name="viewport"/>
+
+  <title>Woodie Blake | Elyssi Template</title>
+
+  <meta property="og:title" content="Woodie Blake | Elyssi Template"/>
+
+  <meta property="og:locale" content="en_US"/>
+
+  <meta name="theme-color" content="#f35627"/>
+
+  <link
+    rel="canonical"
+    href="https://elyssi.redpixelthemes.com/product"/>
+
+  <meta
+    property="og:url"
+    content="https://elyssi.redpixelthemes.com/product"/>
+
+  <meta
+    name="description"
+    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."/>
+
+  <meta property="og:site_name" content="Elyssi Template"/>
+
+  <meta property="og:image" content="https://elyssi.redpixelthemes.com/assets/img/social.jpg"/>
+
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png"/>
+
+  <meta name="twitter:card" content="summary_large_image"/>
+
+  <meta name="twitter:site" content="@tailwindmade"/>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css"
+    integrity="sha256-imWjOiEEAcjWdL1+inhBu1dWYFyXuiO9vpJVEQd3y/c="
+    crossorigin="anonymous"/>
+
+  <link
+    rel="stylesheet"
+    href="/assets/styles/fonts.css"
+    media="screen"
+    crossorigin="anonymous"/>
+
+  <link
+    rel="stylesheet"
+    href="/assets/styles/main.min.css"
+    media="screen"
+    crossorigin="anonymous"/>
+
+  
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.12/dist/css/splide.min.css"/>
+
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+
+
+  <body
+    x-data="{
+        modal: false,
+        mobileMenu: false,
+        mobileSearch: false,
+        mobileCart: false
+    }"
+    :className="{ 'overflow-hidden max-h-screen': modal || mobileMenu }"
+    @keydown.escape="modal = false">
+    
+    <div
+      className="flex items-center justify-center p-2"
+      style="background-color: #24c790">
+      <img
+        src="/assets/img/logo-r.svg"
+        alt="red pixel themes logo"
+        className="mr-4 h-7 w-auto md:h-10"/>
+      <p className="font-body w-auto text-xs font-bold text-white md:text-xl">
+        Like what you see? You can download it
+        <a
+          className="inline-block text-white underline"
+          href="https://redpixelthemes.com/templates/elyssi/"
+          target="_blank">here</a>
+      </p>
+    </div>
+    
+    <div id="main">
+      <div className="container relative">
+  <div className="relative z-50 py-6 shadow-xs lg:py-10">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center">
+        <div className="block lg:hidden">
+          <i
+            className="bx bx-menu text-4xl text-primary"
+            @click="mobileMenu = !mobileMenu"></i>
+        </div>
+
+        <a
+          href="/search"
+          className="group ml-2 hidden cursor-pointer rounded-full border-2 border-transparent p-2 transition-colors hover:border-primary focus:outline-none sm:ml-3 sm:p-4 md:ml-5 lg:mr-8 lg:block">
+          <img
+            src="/assets/img/icons/icon-search.svg"
+            className="block h-5 w-5 group-hover:hidden sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon search"/>
+          <img
+            src="/assets/img/icons/icon-search-hover.svg"
+            className="hidden h-5 w-5 group-hover:block sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon search hover"/>
+        </a>
+
+        <button
+          @click="mobileSearch = !mobileSearch"
+          className="group ml-2 block cursor-pointer rounded-full border-2 border-transparent p-2 transition-colors hover:border-primary focus:outline-none sm:ml-3 sm:p-4 md:ml-5 lg:mr-8 lg:hidden">
+          <img
+            src="/assets/img/icons/icon-search.svg"
+            className="block h-5 w-5 group-hover:hidden sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon search"/>
+          <img
+            src="/assets/img/icons/icon-search-hover.svg"
+            className="hidden h-5 w-5 group-hover:block sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon search hover"/>
+        </button>
+
+        <a
+          href="/account/wishlist"
+          className="group hidden rounded-full border-2 border-transparent p-2 transition-all hover:border-primary sm:p-4 lg:block">
+          <img
+            src="/assets/img/icons/icon-heart.svg"
+            className="block h-5 w-5 group-hover:hidden sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon heart"/>
+          <img
+            src="/assets/img/icons/icon-heart-hover.svg"
+            className="hidden h-5 w-5 group-hover:block sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon heart hover"/>
+        </a>
+      </div>
+      <a href="/">
+        <img
+          src="/assets/img/logo-elyssi.svg"
+          className="h-auto w-28 sm:w-48"
+          alt="logo"/>
+      </a>
+      <div className="flex items-center">
+        <a
+          href="/account/dashboard"
+          className="group rounded-full border-2 border-transparent p-2 transition-all hover:border-primary sm:p-4">
+          <img
+            src="/assets/img/icons/icon-user.svg"
+            className="block h-5 w-5 group-hover:hidden sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon user"/>
+          <img
+            src="/assets/img/icons/icon-user-hover.svg"
+            className="hidden h-5 w-5 group-hover:block sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon user hover"/>
+        </a>
+
+        <a
+          href="/cart/index"
+          className="group ml-2 hidden rounded-full border-2 border-transparent p-2 transition-all hover:border-primary sm:ml-3 sm:p-4 md:ml-5 lg:ml-8 lg:block">
+          <img
+            src="/assets/img/icons/icon-cart.svg"
+            className="block h-5 w-5 group-hover:hidden sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon cart"/>
+          <img
+            src="/assets/img/icons/icon-cart-hover.svg"
+            className="hidden h-5 w-5 group-hover:block sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon cart hover"/>
+        </a>
+
+        <span
+          @click="mobileCart = !mobileCart"
+          className="group ml-2 block rounded-full border-2 border-transparent p-2 transition-all hover:border-primary sm:ml-3 sm:p-4 md:ml-5 lg:ml-8 lg:hidden">
+          <img
+            src="/assets/img/icons/icon-cart.svg"
+            className="block h-5 w-5 group-hover:hidden sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon cart"/>
+          <img
+            src="/assets/img/icons/icon-cart-hover.svg"
+            className="hidden h-5 w-5 group-hover:block sm:h-6 sm:w-6 md:h-8 md:w-8"
+            alt="icon cart hover"/>
+        </span>
+      </div>
+      <div className="hidden">
+        <i
+          className="bx bx-menu text-3xl text-primary"
+          @click="mobileMenu = true"></i>
+      </div>
+    </div>
+    <div className="hidden justify-center lg:flex lg:pt-8">
+      <ul className="list-reset flex items-center">
+         
+        <li className="mr-10">
+          <a
+            href="/"
+            className="block border-b-2 border-white px-2 font-hk text-lg text-secondary transition-all hover:border-primary hover:font-bold hover:text-primary">Home</a>
+        </li>
+          
+        <li className="mr-10">
+          <a
+            href="/about"
+            className="block border-b-2 border-white px-2 font-hk text-lg text-secondary transition-all hover:border-primary hover:font-bold hover:text-primary">About</a>
+        </li>
+          
+        <li className="group mr-10 hidden lg:block">
+          <div
+            className="flex items-center border-b-2 border-white transition-colors group-hover:border-primary">
+            <span
+              className="cursor-pointer px-2 font-hk text-lg text-secondary transition-all group-hover:font-bold group-hover:text-primary">Collections</span>
+            <i
+              className="bx bx-chevron-down px-2 pl-2 text-secondary transition-colors group-hover:text-primary"></i>
+          </div>
+          <div
+            className="pointer-events-none absolute top-0 left-0 right-0 z-50 mx-auto mt-40 w-2/3 pt-10 opacity-0 group-hover:pointer-events-auto group-hover:opacity-100">
+            <div
+              className="relative flex rounded-b bg-white p-8 shadow-lg transition-all">
+              
+              <div className="relative z-20 flex-1">
+                <h4 className="font-hkbold mb-2 text-base text-secondary">
+                  Man
+                </h4>
+                <ul>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Boots</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Blutcher Boot</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Chelsea Boot</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Chukka Boot</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Dress Boot</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Work Boot</a>
+                  </li>
+                  
+                </ul>
+              </div>
+              
+              <div className="relative z-20 flex-1">
+                <h4 className="font-hkbold mb-2 text-base text-secondary">
+                  Woman
+                </h4>
+                <ul>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Accessories</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Belts</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Caps</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Laces</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Socks</a>
+                  </li>
+                  
+                </ul>
+              </div>
+              
+              <div className="relative z-20 flex-1">
+                <h4 className="font-hkbold mb-2 text-base text-secondary">
+                  Kids
+                </h4>
+                <ul>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Shoes</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Derby Shoes</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Belts</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Caps</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Laces</a>
+                  </li>
+                  
+                  <li>
+                    <a
+                      href="/collection-grid"
+                      className="border-b border-transparent font-hk text-sm leading-loose text-secondary-lighter hover:border-secondary-lighter">Socks</a>
+                  </li>
+                  
+                </ul>
+              </div>
+              
+              <div className="flex-1">
+                <div
+                  className="absolute inset-0 z-0 bg-contain bg-right-bottom bg-no-repeat"
+                  style="background-image: url(/assets/img/unlicensed/bg-mega-menu.png)"></div>
+              </div>
+            </div>
+          </div>
+        </li>
+          
+        <li className="mr-10">
+          <a
+            href="/blog"
+            className="block border-b-2 border-white px-2 font-hk text-lg text-secondary transition-all hover:border-primary hover:font-bold hover:text-primary">Blog</a>
+        </li>
+          
+        <li className="mr-10">
+          <a
+            href="/contact#faq"
+            className="block border-b-2 border-white px-2 font-hk text-lg text-secondary transition-all hover:border-primary hover:font-bold hover:text-primary">FAQ</a>
+        </li>
+          
+        <li className="mr-10">
+          <a
+            href="/contact"
+            className="block border-b-2 border-white px-2 font-hk text-lg text-secondary transition-all hover:border-primary hover:font-bold hover:text-primary">Contact</a>
+        </li>
+         
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div
+  className="pointer-events-none fixed inset-x-0 z-50 pt-20 opacity-0 transition-all md:top-28"
+  :className="{ 'opacity-100 pointer-events-auto': mobileMenu }">
+  <div
+    className="absolute left-0 top-0 z-40 w-full bg-white px-6 shadow-sm sm:w-1/2">
+    <a
+      href="/"
+      className="block w-full cursor-pointer border-b border-grey-dark py-3 font-hk font-medium text-secondary">Home
+    </a>
+    <a className='block w-full cursor-pointer border-b border-grey-dark py-3 font-hk font-medium text-secondary' href='/account/wishlist'>Wishlist
+    </a>
+    <div
+      className="block w-full border-b border-grey-dark py-3"
+      x-data="{
+                isParentAccordionOpen: false
+            }">
+      <div
+        className="flex items-center justify-between"
+        @click="isParentAccordionOpen = !isParentAccordionOpen">
+        <span
+          className="block font-hk font-medium transition-colors"
+          :className="isParentAccordionOpen ? 'text-primary' : 'text-secondary'">Collections</span>
+        <i
+          className="bx text-xl text-secondary"
+          :className="isParentAccordionOpen ? 'bx-chevron-down' : 'bx-chevron-left'"></i>
+      </div>
+      <div
+        className="transition-all"
+        :className="isParentAccordionOpen ? 'max-h-infinite' : 'max-h-0 overflow-hidden'">
+        <div
+          x-data="{
+                    isAccordionOpen: false
+                }">
+          <div
+            className="flex items-center pt-3"
+            @click="isAccordionOpen = !isAccordionOpen">
+            <i
+              className="bx pr-3 text-xl transition-colors"
+              :className="isAccordionOpen ? 'bx-chevron-down text-secondary' : 'bx-chevron-right text-grey-darkest'"></i>
+            <a :className='isAccordionOpen ? \'text-primary\' : \'text-grey-darkest\'' className='font-hk font-medium transition-colors' href='/collection-grid'>Men's Fashion</a>
+          </div>
+          <div
+            className="pl-12 transition-all"
+            :className="isAccordionOpen ? 'max-h-infinite' : 'max-h-0 overflow-hidden'">
+            <a className='mt-2 block font-hk font-medium text-secondary' href='/collection-grid'>T-Shirts</a>
+            <a className='mt-2 block font-hk font-medium text-secondary' href='/collection-grid'>Shirts</a>
+            <a className='mt-2 block font-hk font-medium text-secondary' href='/collection-grid'>Men’s Bags</a>
+            <a className='mt-2 block font-hk font-medium text-secondary' href='/collection-grid'>Travel Essentials</a>
+          </div>
+        </div>
+        <div className="flex items-center pt-3">
+          <i className="bx bx-chevron-right pr-3 text-xl text-grey-darkest"></i>
+          <a className='font-hk font-medium text-grey-darkest' href='/collection-grid'>Women's Fashion</a>
+        </div>
+        <div className="flex items-center pt-3">
+          <i className="bx bx-chevron-right pr-3 text-xl text-grey-darkest"></i>
+          <a className='font-hk font-medium text-grey-darkest' href='/collection-grid'>Baggage</a>
+        </div>
+        <div className="flex items-center pt-3">
+          <i className="bx bx-chevron-right pr-3 text-xl text-grey-darkest"></i>
+          <a className='font-hk font-medium text-grey-darkest' href='/collection-grid'>Camp</a>
+        </div>
+        <div className="flex items-center pt-3">
+          <i className="bx bx-chevron-right pr-3 text-xl text-grey-darkest"></i>
+          <a className='font-hk font-medium text-grey-darkest' href='/collection-grid'>Personal Care</a>
+        </div>
+        <div className="flex items-center pt-3">
+          <i className="bx bx-chevron-right pr-3 text-xl text-grey-darkest"></i>
+          <a className='font-hk font-medium text-grey-darkest' href='/collection-grid'>Backpacks</a>
+        </div>
+        <div className="flex items-center pt-3">
+          <i className="bx bx-chevron-right pr-3 text-xl text-grey-darkest"></i>
+          <a className='font-hk font-medium text-grey-darkest' href='/collection-grid'>Pullovers</a>
+        </div>
+      </div>
+    </div>
+    <a className='block w-full cursor-pointer border-b border-grey-dark py-3 font-hk font-medium text-secondary' href='/about'>About
+    </a>
+    <a
+      href="/contact#faq"
+      className="block w-full cursor-pointer border-b border-grey-dark py-3 font-hk font-medium text-secondary">FAQ
+    </a>
+    <a className='block w-full cursor-pointer border-b border-grey-dark py-3 font-hk font-medium text-secondary' href='/blog'>Blog
+    </a>
+    <a className='block w-full cursor-pointer border-b border-grey-dark py-3 font-hk font-medium text-secondary' href='/contact'>Contact
+    </a>
+    <div className="my-8">
+      <a
+        href="/login"
+        className="btn btn-primary mb-4 w-full"
+        aria-label="Login button">Login Account</a>
+
+      <a
+        href="/register"
+        className="block pl-3 text-center font-hk text-secondary underline md:text-lg">Create your account</a>
+    </div>
+  </div>
+</div>
+
+<div
+  className="pointer-events-none absolute inset-x-0 top-20 z-50 opacity-0 lg:top-28"
+  :className="{ 'opacity-100 pointer-events-auto': mobileSearch }">
+  <div className="container">
+    <div className="z-10 w-full rounded bg-white shadow-sm sm:w-1/2 lg:w-1/4">
+      <form
+        action="/search"
+        className="flex items-center rounded-md border border-grey-dark px-4 py-3">
+        <input
+          type="text"
+          name="search"
+          className="w-full border-grey-dark font-hk font-medium text-secondary placeholder-grey-darkest outline-none focus:border-primary focus:outline-none focus:ring focus:ring-primary"
+          placeholder="Search for a product"/>
+        <button
+          className="flex items-center focus:border-transparent focus:outline-none">
+          <i className="bx bx-search ml-4 text-xl text-primary"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div
+  className="pointer-events-none absolute inset-x-0 z-50 opacity-0"
+  :className="{ 'opacity-100 pointer-events-auto': mobileCart }">
+  <div
+    className="absolute right-0 top-0 z-10 w-full rounded bg-white px-6 py-6 shadow-sm sm:w-1/2">
+    <div
+      className="flex items-center justify-between border-b border-grey-dark pb-2">
+      <div className="flex items-center">
+        <i
+          className="bx bx-x mr-2 cursor-pointer text-2xl text-grey-darkest sm:text-3xl"></i>
+        <div className="mx-0 flex h-20 w-20 items-center justify-center rounded">
+          <div
+            className="mx-auto h-16 w-16 bg-cover bg-center bg-no-repeat"
+            style="background-image: url(/assets/img/unlicensed/backpack-1.png)"></div>
+        </div>
+        <div className="pl-2">
+          <span className="block font-hk text-base text-grey-darkest">Winter Bag</span>
+          <span className="mt-2 font-hk text-base text-secondary">$19</span>
+        </div>
+      </div>
+      <div className="flex items-center pl-3">
+        <span
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-primary"><i className="bx bx-minus text-primary"></i></span>
+        <span className="font-hkbold block px-2 text-lg text-primary">1</span>
+        <span
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-primary"><i className="bx bx-plus text-primary"></i></span>
+      </div>
+    </div>
+    <div
+      className="flex items-center justify-between border-b border-grey-dark pb-2">
+      <div className="flex items-center">
+        <i
+          className="bx bx-x mr-2 cursor-pointer text-2xl text-grey-darkest sm:text-3xl"></i>
+        <div className="mx-0 flex h-20 w-20 items-center justify-center rounded">
+          <div
+            className="mx-auto h-16 w-16 bg-cover bg-center bg-no-repeat"
+            style="background-image: url(/assets/img/unlicensed/backpack-1.png)"></div>
+        </div>
+        <div className="pl-2">
+          <span className="block font-hk text-base text-grey-darkest">Winter Bag</span>
+          <span className="mt-2 font-hk text-base text-secondary">$19</span>
+        </div>
+      </div>
+      <div className="flex items-center pl-3">
+        <span
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-primary"><i className="bx bx-minus text-primary"></i></span>
+        <span className="font-hkbold block px-2 text-lg text-primary">1</span>
+        <span
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-primary"><i className="bx bx-plus text-primary"></i></span>
+      </div>
+    </div>
+    <div className="flex justify-between pt-4">
+      <span className="font-hkbold text-lg text-secondary">Total</span>
+      <span className="font-hkbold text-lg text-secondary">$38</span>
+    </div>
+    <button
+      type="submit"
+      className="btn btn-primary mt-5 w-full"
+      aria-label="Login button">
+      Checkout
+    </button>
+    <a
+      href="/cart"
+      className="mt-4 block pl-3 text-center font-hk text-secondary underline md:text-lg">Go to cart page</a>
+  </div>
+</div>
+
+      <div>
+
+<div className="container">
+  <div className="relative flex">
+  <div
+    className="ml-auto h-56 w-3/4 bg-cover bg-center bg-no-repeat lg:h-68"
+    
+    style="background-image:url(/assets/img/unlicensed/hero-image-04.jpg)"></div>
+  <div
+    className="c-hero-gradient-bg absolute top-0 left-0 h-56 w-full bg-cover bg-no-repeat lg:h-68">
+    <div className="py-20 px-6 sm:px-12 lg:px-20">
+      <h1
+        className="font-butler text-2xl text-white sm:text-3xl md:text-4.5xl lg:text-5xl">
+        Woodie Blake
+      </h1>
+      <div className="flex pt-2">
+        <a
+          href="/"
+          className="font-hk text-base text-white transition-colors hover:text-primary">Home</a>
+        <span className="px-2 font-hk text-base text-white">.</span>
+        <span className="font-hk text-base text-white">Woodie Blake</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div className="-mx-5 flex flex-col justify-between pt-16 pb-24 lg:flex-row">
+    <div
+      className="flex flex-col-reverse justify-between px-5 sm:flex-row-reverse lg:w-1/2 lg:flex-row"
+      x-data="{ selectedImage: '/assets/img/unlicensed/backpack-2.png' }">
+      <div
+        className="flex flex-row sm:flex-col sm:pl-5 md:pl-4 lg:pl-0 lg:pr-2 xl:pr-3">
+        
+        <div className="relative mr-3 w-28 pb-5 sm:w-32 sm:pr-0 lg:w-24 xl:w-28">
+          <div
+            className="relative flex w-full items-center justify-center rounded border border-grey bg-v-pink">
+            <img
+              className="cursor-pointer object-cover"
+              @click="selectedImage = $event.target.src"
+              alt="product image"
+              src="/assets/img/unlicensed/backpack-2.png"/>
+          </div>
+        </div>
+        
+        <div className="relative mr-3 w-28 pb-5 sm:w-32 sm:pr-0 lg:w-24 xl:w-28">
+          <div
+            className="relative flex w-full items-center justify-center rounded border border-grey bg-v-pink">
+            <img
+              className="cursor-pointer object-cover"
+              @click="selectedImage = $event.target.src"
+              alt="product image"
+              src="/assets/img/unlicensed/backpack-03-1.png"/>
+          </div>
+        </div>
+        
+        <div className="relative mr-3 w-28 pb-5 sm:w-32 sm:pr-0 lg:w-24 xl:w-28">
+          <div
+            className="relative flex w-full items-center justify-center rounded border border-grey bg-v-pink">
+            <img
+              className="cursor-pointer object-cover"
+              @click="selectedImage = $event.target.src"
+              alt="product image"
+              src="/assets/img/unlicensed/backpack-03-2.png"/>
+          </div>
+        </div>
+        
+      </div>
+      <div className="relative w-full pb-5 sm:pb-0">
+        <div
+          className="aspect-w-1 aspect-h-1 relative flex items-center justify-center rounded border border-grey bg-v-pink">
+          <img className="object-cover" alt="product image" :src="selectedImage"/>
+        </div>
+      </div>
+    </div>
+
+    <div className="px-5 pt-8 lg:w-1/2 lg:pt-0">
+      <div className="mb-8 border-b border-grey-dark">
+        <div className="flex items-center">
+          <h2 className="font-butler text-3xl md:text-4xl lg:text-4.5xl">
+            Woodie Blake
+          </h2>
+          <p
+            className="ml-8 rounded-full bg-primary px-5 py-2 font-hk text-sm font-bold uppercase leading-none text-white">
+            20% off
+          </p>
+        </div>
+        <div className="flex items-center pt-3">
+          <span className="font-hk text-2xl text-secondary">$110.0</span>
+          <span className="pl-5 font-hk text-xl text-grey-darker line-through">$35.0</span>
+        </div>
+        <div className="flex items-center pt-3 pb-8">
+          <div className="flex items-center">
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+          </div>
+          <span className="ml-2 font-hk text-sm text-secondary">(45)</span>
+        </div>
+      </div>
+      <div className="flex pb-5">
+        <p className="font-hk text-secondary">Availability:</p>
+        <p className="font-hkbold pl-3 text-v-green">
+          In Stock
+        </p>
+      </div>
+      <p className="pb-5 font-hk text-secondary">Versatile, comfortable, and chic! Three words that describe Blake by Elyssi.</p>
+      <div className="flex justify-between pb-4">
+        <div className="w-1/3 sm:w-1/5">
+          <p className="font-hk text-secondary">Color</p>
+        </div>
+        <div className="flex w-2/3 items-center sm:w-5/6">
+          <div
+            className="mr-2 cursor-pointer rounded-full border-2 border-transparent bg-primary px-2 py-2 transition-colors hover:border-black"></div>
+          <div
+            className="mr-2 cursor-pointer rounded-full border-2 border-transparent bg-secondary-light px-2 py-2 transition-colors hover:border-black"></div>
+          <div
+            className="mr-2 cursor-pointer rounded-full border-2 border-transparent bg-v-green px-2 py-2 transition-colors hover:border-black"></div>
+          <div
+            className="cursor-pointer rounded-full border-2 border-transparent bg-v-blue px-2 py-2 transition-colors hover:border-black"></div>
+        </div>
+      </div>
+      <div className="flex items-center justify-between pb-4">
+        <div className="w-1/3 sm:w-1/5">
+          <p className="font-hk text-secondary">Size</p>
+        </div>
+        <div className="w-2/3 sm:w-5/6">
+          <select className="form-select w-2/3">
+            <option value="0">Small</option>
+            <option value="1">Medium</option>
+            <option value="2">Large</option>
+          </select>
+        </div>
+      </div>
+      <div className="flex items-center justify-between pb-8">
+        <div className="w-1/3 sm:w-1/5">
+          <p className="font-hk text-secondary">Quantity</p>
+        </div>
+        <div className="flex w-2/3 sm:w-5/6" x-data="{ productQuantity: 1 }">
+          <label
+            for="quantity-form"
+            className="relative block h-0 w-0 overflow-hidden">Quantity form</label>
+          <input
+            type="number"
+            id="quantity-form"
+            className="form-quantity form-input w-16 rounded-r-none py-0 px-2 text-center"
+            x-model="productQuantity"
+            min="1"/>
+          <div className="flex flex-col">
+            <span
+              className="flex-1 cursor-pointer rounded-tr border border-l-0 border-grey-darker bg-white px-1"
+              @click="productQuantity++">
+              <i
+                className="bx bxs-up-arrow pointer-events-none text-xs text-primary"></i>
+            </span>
+            <span
+              className="flex-1 cursor-pointer rounded-br border border-t-0 border-l-0 border-grey-darker bg-white px-1"
+              @click="productQuantity> 1 ? productQuantity-- : productQuantity=1"
+            >
+              <i
+                className="bx bxs-down-arrow pointer-events-none text-xs text-primary"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="group flex pb-8">
+        <a href="/cart" className="btn btn-outline mr-4 md:mr-6">Add to cart</a>
+        <a href="/cart" className="btn btn-primary">BUY NOW</a>
+      </div>
+      <div className="flex pb-2">
+        <p className="font-hk text-secondary">SKU:</p>
+        <p className="font-hkbold pl-3 text-secondary">
+          KH12345
+        </p>
+      </div>
+      <p className="font-hk text-secondary">
+        <span className="pr-2">Categories:</span>Bag, Hand bag, Travel bag, Black
+      </p>
+    </div>
+  </div>
+
+  <div className="pb-16 sm:pb-20 md:pb-24" x-data="{ activeTab: 'description' }">
+    <div className="tabs flex flex-col sm:flex-row" role="tablist">
+      
+      <span
+        @click="activeTab = 'description'"
+        className="tab-item cursor-pointer border-t-2 border-transparent bg-white px-10 py-5 text-center font-hk font-bold text-secondary transition-colors hover:bg-grey-light sm:text-left"
+        :className="{ 'active': activeTab=== 'description' }">
+        Description
+      </span>
+      
+      <span
+        @click="activeTab = 'additional-information'"
+        className="tab-item cursor-pointer border-t-2 border-transparent bg-white px-10 py-5 text-center font-hk font-bold text-secondary transition-colors hover:bg-grey-light sm:text-left"
+        :className="{ 'active': activeTab=== 'additional-information' }">
+        Additional Information
+      </span>
+      
+      <span
+        @click="activeTab = 'reviews'"
+        className="tab-item cursor-pointer border-t-2 border-transparent bg-white px-10 py-5 text-center font-hk font-bold text-secondary transition-colors hover:bg-grey-light sm:text-left"
+        :className="{ 'active': activeTab=== 'reviews' }">
+        Reviews
+      </span>
+      
+    </div>
+    <div className="tab-content relative">
+      <div
+        :className="{ 'active': activeTab=== 'description' }"
+        className="tab-pane bg-grey-light py-10 transition-opacity md:py-16"
+        role="tabpanel">
+        <div className="mx-auto w-5/6 text-center sm:text-left">
+          <div className="font-hk text-base text-secondary">
+            Versatile, comfortable, and chic! Three words that describe Blake by Elyssi. This backpack purse is A durable leather backpack with two large compartments and 2 smaller compartments on the front and back of it so you can carry all your belongings.
+
+          </div>
+        </div>
+      </div>
+      <div
+        :className="{ 'active': activeTab=== 'additional-information' }"
+        className="tab-pane bg-grey-light py-10 transition-opacity md:py-16"
+        role="tabpanel">
+        <div className="mx-auto w-5/6">
+          <div className="font-hk text-base text-secondary">
+            On the main compartment has multiple pockets available for your tools, chargers, make up, keys, etc. <br/><br/>  Size::13.4”Lx 6.5”W x 15.4”H. <br/> Weight: 1.57pounds. <br/> Color: light brown.
+
+          </div>
+        </div>
+      </div>
+      <div
+        :className="{ 'active': activeTab=== 'reviews' }"
+        className="tab-pane bg-grey-light py-10 transition-opacity md:py-16"
+        role="tabpanel">
+        
+        <div
+          className="w-5/6 mx-auto border-b border-grey-darker pb-8 text-center sm:text-left">
+          <div
+            className="flex items-center justify-center pt-3 sm:justify-start xl:pt-5">
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+          </div>
+          <p className="font-hkbold pt-3 text-lg text-secondary">
+            Perfect for everyday use
+          </p>
+          <p className="pt-4 font-hk text-secondary lg:w-5/6 xl:w-2/3">
+            I loooveeeee this product!!! It feels so soft and smells like real leather!!! I ordered this fancy backpack looking for something that can be used at work and, at the same time, after work; and I found it.  Honestly.. Amazing!!
+          </p>
+          <div className="flex items-center justify-center pt-3 sm:justify-start">
+            <p className="font-hk text-sm text-grey-darkest">
+              <span>By</span> Melanie Ashwood
+            </p>
+            <span className="block px-4 font-hk text-sm text-grey-darkest">.</span>
+            <p className="font-hk text-sm text-grey-darkest">6 days ago</p>
+          </div>
+        </div>
+        
+        <div
+          className="w-5/6 mx-auto border-b border-transparent pb-8 text-center sm:text-left">
+          <div
+            className="flex items-center justify-center pt-3 sm:justify-start xl:pt-5">
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+            <i className="bx bxs-star text-primary"></i>
+          </div>
+          <p className="font-hkbold pt-3 text-lg text-secondary">
+            Gift for my girlfriend
+          </p>
+          <p className="pt-4 font-hk text-secondary lg:w-5/6 xl:w-2/3">
+            I paid this thing thinking about my girlfriend’s birthday present, however I had my doubts cuz’ she is kind of picky. But Seriously, from now on, Elyssi is my best friend! She loved it!! She’s crazy about it!  DISCLAIMER: It is smaller than it appears. 
+          </p>
+          <div className="flex items-center justify-center pt-3 sm:justify-start">
+            <p className="font-hk text-sm text-grey-darkest">
+              <span>By</span> Jake Houston
+            </p>
+            <span className="block px-4 font-hk text-sm text-grey-darkest">.</span>
+            <p className="font-hk text-sm text-grey-darkest">4 days ago</p>
+          </div>
+        </div>
+        
+        <form className="mx-auto w-5/6">
+          <div className="grid grid-cols-1 gap-x-10 gap-y-5 pt-10 sm:grid-cols-2">
+            <div className="w-full">
+              <label
+                className="mb-2 block font-hk text-sm text-secondary"
+                for="name">Name</label>
+              <input
+                type="text"
+                placeholder="Enter your Name"
+                className="form-input"
+                id="name"/>
+            </div>
+            <div className="w-full pt-10 sm:pt-0">
+              <label
+                className="mb-2 block font-hk text-sm text-secondary"
+                for="email">Email address</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="form-input"
+                id="email"/>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-x-10 gap-y-5 pt-10 sm:grid-cols-2">
+            <div className="w-full">
+              <label
+                className="mb-2 block font-hk text-sm text-secondary"
+                for="review_title">Review Title</label>
+              <input
+                type="text"
+                placeholder="Enter your review title"
+                className="form-input"
+                id="review_title"/>
+            </div>
+            <div className="w-full pt-10 sm:pt-0">
+              <label className="mb-2 block font-hk text-sm text-secondary">Rating</label>
+              <div className="flex pt-4">
+                <i className="bx bxs-star pr-1 text-xl text-grey-darker"></i>
+                <i className="bx bxs-star pr-1 text-xl text-grey-darker"></i>
+                <i className="bx bxs-star pr-1 text-xl text-grey-darker"></i>
+                <i className="bx bxs-star pr-1 text-xl text-grey-darker"></i>
+                <i className="bx bxs-star text-xl text-grey-darker"></i>
+              </div>
+            </div>
+          </div>
+          <div className="sm:w-12/25 pt-10">
+            <label
+              for="message"
+              className="mb-2 block font-hk text-sm text-secondary">Review Message</label>
+            <textarea
+              placeholder="Write your review here"
+              className="form-textarea h-28"
+              id="message"></textarea>
+          </div>
+        </form>
+        <div className="mx-auto w-5/6 pt-8 pb-4 text-center sm:text-left md:pt-10">
+          <a href="/" className="btn btn-primary">Submit Review</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div className="pb-20 md:pb-32">
+    <div className="mb-12 text-center">
+      <h2 className="font-butler text-3xl text-secondary md:text-4xl lg:text-4.5xl">
+        Related Products
+      </h2>
+      <p
+        className="pt-2 pb-6 font-hk text-lg text-secondary-lighter sm:pb-8 md:text-xl lg:pb-0">
+        Get the latest news & updates from Elyssi
+      </p>
+    </div>
+    <div
+  className="product-slider relative"
+  x-data
+  x-init="
+        new Splide($el, {
+            type: 'loop',
+            start: 1,
+            perPage: 4,
+            gap: 0,
+            perMove: 1,
+            rewind: true,
+            pagination: false,
+            padding: {
+                left: 50,
+                right: 50,
+            },
+            breakpoints: {
+                1024: {
+                    perPage: 3,
+                    padding: {
+                        left: 20,
+                        right: 20,
+                    },
+                },
+                768: {
+                    perPage: 2,
+                    padding: {
+                        left: 10,
+                        right: 10,
+                    },
+                },
+                600: {
+                    perPage: 1,
+                    padding: {
+                        left: 0,
+                        right: 0,
+                    },
+                },
+            },
+        })
+        .mount();
+     ">
+
+   
+  <div className="splide__arrows">
+    <div
+      className="splide__arrow--prev group absolute left-25 top-50 z-30 -translate-y-1/2 transform cursor-pointer rounded-full border border-grey-dark bg-grey shadow-md transition-all hover:bg-primary sm:left-35 md:left-0">
+      <div className="flex h-12 w-12 items-center justify-center">
+        <i
+          className="bx bx-chevron-left text-3xl leading-none text-primary transition-colors group-hover:text-white"></i>
+      </div>
+    </div>
+    <div
+      className="splide__arrow--next group absolute right-25 top-50 z-30 -translate-y-1/2 transform cursor-pointer rounded-full border border-grey-dark bg-grey shadow-md transition-all hover:bg-primary sm:right-35 md:right-0">
+      <div className="flex h-12 w-12 items-center justify-center">
+        <i
+          className="bx bx-chevron-right text-3xl leading-none text-primary transition-colors group-hover:text-white"></i>
+      </div>
+    </div>
+  </div>
+  
+  <div className="splide__track">
+    <div className="splide__list relative pt-12">
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/backpack-2.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-v-green font-hk font-bold text-sm uppercase tracking-wide">
+                New
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Woodie Blake
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$115.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/purse-1.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-v-blue font-hk font-bold text-sm uppercase tracking-wide">
+                trend
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Beautiful Brown
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$55.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/sunglass-3.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-primary-light font-hk font-bold text-sm uppercase tracking-wide">
+                20%
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Coffee Cream
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$65.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/watch-1.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-v-red font-hk font-bold text-sm uppercase tracking-wide">
+                Hot
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Submarine Watch
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$120.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/backpack-2.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-v-green font-hk font-bold text-sm uppercase tracking-wide">
+                New
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Woodie Blake
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$115.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/shoes-1.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-v-blue font-hk font-bold text-sm uppercase tracking-wide">
+                trend
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Cocktail Vans
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$33.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/shoes-4.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-primary-light font-hk font-bold text-sm uppercase tracking-wide">
+                20%
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Siberian Boots
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$67.0</span>
+          </a>
+        </div>
+      </div>
+      
+      <div className="splide__slide group relative pt-16 md:pt-0">
+        <div className="sm:px-5 lg:px-4">
+          <div className="relative flex items-center justify-center rounded">
+            <div className="aspect-w-1 aspect-h-1 w-full">
+              <img
+                src="/assets/img/unlicensed/watch-3.png"
+                alt="product image"
+                className="object-cover"/>
+            </div>
+            <div
+              className="absolute top-0 right-0 m-4 rounded-full bg-white px-5 py-1">
+              <p
+                className="text-v-red font-hk font-bold text-sm uppercase tracking-wide">
+                Hot
+              </p>
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-secondary bg-opacity-85 opacity-0 transition-opacity group-hover:opacity-100">
+              <a
+                href="/cart"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-cart.svg "
+                  className="h-6 w-6"
+                  alt="icon cart"/>
+              </a>
+              <a
+                href="/product"
+                className="mr-3 flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-search.svg"
+                  className="h-6 w-6"
+                  alt="icon search"/>
+              </a>
+              <a
+                href="/account/wishlist/"
+                className="flex items-center rounded-full bg-white p-3 transition-all hover:bg-primary-light">
+                <img
+                  src="/assets/img/icons/icon-heart.svg"
+                  className="h-6 w-6"
+                  alt="icon heart"/>
+              </a>
+            </div>
+          </div>
+          <a href="/product" className="flex items-center justify-between pt-6">
+            <div>
+              <h3 className="font-hk text-base text-secondary">
+                Silver One
+              </h3>
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                  <i className="bx bxs-star text-primary"></i>
+                </div>
+                <span className="ml-2 font-hk text-sm text-secondary">45</span>
+              </div>
+            </div>
+            <span className="font-hkbold text-xl text-primary">$137.0</span>
+          </a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  
+</div>
+
+  </div>
+</div>
+
+<div className="container mb-20">
+  <div
+    className="bg-cover bg-center bg-no-repeat"
+    style="background-image: url(/assets/img/bg-cta.png)">
+    <div className="py-16 text-center md:py-20">
+      <h3 className="font-butler text-3xl tracking-wide text-white sm:text-4xl">
+        Let's keep in touch
+      </h3>
+      <p className="px-6 pt-3 font-hk text-lg text-white sm:text-xl">
+        Join our list and save 15% off your first order.
+      </p>
+      <form className="pt-10 sm:pt-12">
+        <div
+          className="mx-auto flex w-5/6 flex-col items-center justify-center sm:w-3/4 sm:flex-row lg:w-3/5 xl:w-1/2">
+          <label for="cta_email" className="relative block h-0 w-0 overflow-hidden">Email</label>
+          <input
+            type="email"
+            name="cta_email"
+            id="cta_email"
+            placeholder="ENTER YOUR EMAIL"
+            className="form-input border-white bg-transparent text-sm uppercase text-white placeholder-grey-dark"/>
+          <button
+            type="button"
+            className="btn btn-primary mt-4 w-full sm:ml-5 sm:mt-0 sm:w-auto"
+            aria-label="Subscribe button">
+            SUBSCRIBE
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</div>
+      <div
+  className="bg-cover bg-center bg-no-repeat"
+  style="background-image: url(/assets/img/bg-footer.png)">
+  <div className="container py-16 sm:py-20 md:py-24">
+    <div
+      className="mx-auto flex w-5/6 flex-col items-center justify-between lg:flex-row">
+      <div className="text-center lg:text-left">
+        <h4 className="pb-8 font-hk text-xl font-bold text-white">Contact</h4>
+        <ul className="list-reset">
+          
+          <li className="block pb-2">
+            <a
+              href="mailto:test.email0123@elyssi.com"
+              className="font-hk text-base tracking-wide text-white transition-colors hover:text-primary">test.email0123@elyssi.com</a>
+          </li>
+          
+          <li className="block pb-2">
+            <a
+              href="tel:0123234222"
+              className="font-hk text-base tracking-wide text-white transition-colors hover:text-primary">0123 234 222</a>
+          </li>
+          
+          <li className="block pb-2">
+            <a
+              href="https://elyssi.tailwindmade.com"
+              className="font-hk text-base tracking-wide text-white transition-colors hover:text-primary">Elyssi</a>
+          </li>
+          
+        </ul>
+      </div>
+      <div className="py-16 text-center lg:py-0">
+        <a
+          href="/"
+          className="font-butler text-4xl uppercase tracking-wider text-white">Elyssi.</a>
+        <div className="flex items-center justify-center pt-5">
+          
+          <a href="https://www.google.com" className="group">
+            <div
+              className="mr-5 flex items-center rounded-full bg-white px-2 py-2 transition-colors group-hover:bg-primary">
+              <i
+                className="bx bxl-facebook text-secondary transition-colors group-hover:text-white"></i>
+            </div>
+          </a>
+          
+          <a href="https://www.google.com" className="group">
+            <div
+              className="mr-5 flex items-center rounded-full bg-white px-2 py-2 transition-colors group-hover:bg-primary">
+              <i
+                className="bx bxl-twitter text-secondary transition-colors group-hover:text-white"></i>
+            </div>
+          </a>
+          
+          <a href="https://www.google.com" className="group">
+            <div
+              className="mr-5 flex items-center rounded-full bg-white px-2 py-2 transition-colors group-hover:bg-primary">
+              <i
+                className="bx bxl-instagram text-secondary transition-colors group-hover:text-white"></i>
+            </div>
+          </a>
+          
+          <a href="https://www.google.com" className="group">
+            <div
+              className="mr-5 flex items-center rounded-full bg-white px-2 py-2 transition-colors group-hover:bg-primary">
+              <i
+                className="bx bxl-pinterest text-secondary transition-colors group-hover:text-white"></i>
+            </div>
+          </a>
+          
+        </div>
+      </div>
+      <div className="text-center lg:text-left">
+        <h4 className="pb-8 font-hk text-xl font-bold text-white">Link</h4>
+        <ul className="list-reset">
+          
+          <li className="block pb-2">
+            <a
+              href="/collection-list"
+              className="font-hk text-base tracking-wide text-white transition-colors hover:text-primary">Shop</a>
+          </li>
+          
+          <li className="block pb-2">
+            <a
+              href="/contact"
+              className="font-hk text-base tracking-wide text-white transition-colors hover:text-primary">Contact Us</a>
+          </li>
+          
+          <li className="block pb-2">
+            <a
+              href="/single"
+              className="font-hk text-base tracking-wide text-white transition-colors hover:text-primary">Terms & Conditions</a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div className="container py-8">
+  <p className="text-center font-hk text-base text-secondary">
+    All rights reserved © 2022. Made with ❤️ by
+    <a href="https://redpixelthemes.com" target="_blank" className="text-primary">Red Pixel Themes</a>.
+  </p>
+</div>
+
+    </div>
+
+    
+
+    
+    <script
+      src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.12/dist/js/splide.min.js"
+      crossorigin="anonymous"></script>
+
+    
+
+    <script src="/assets/js/main.js"></script>
+
+    
+    <script
+      src="https://guanaco.redpixelthemes.com/script.js"
+      data-site="NUAESTQS"
+      defer></script>
+    
+  </body>
+</html>
