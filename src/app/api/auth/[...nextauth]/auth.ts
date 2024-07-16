@@ -12,16 +12,24 @@ const authOptions: NextAuthOptions = {
         strategy: "jwt",
         maxAge: 86400, // 1 days
     },
-  
+
     providers: [
         CredentialsProvider({
             name: "Sign in",
             credentials: {
-                email: { label: "mobile", type: "text" },
+                mobile: { label: "mobile", type: "text" },
+                email: { label: "email", type: "text" },
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials: any) {
-                const user: any = await prisma.user.findFirst({ where: { mobile: credentials?.mobile } });
+                const user: any = await prisma.user.findFirst({
+                    where: {
+                        OR: [
+                            { mobile: credentials?.mobile },
+                            { email: credentials?.email }
+                        ]
+                    }
+                });
 
                 try {
                     if (!user) {

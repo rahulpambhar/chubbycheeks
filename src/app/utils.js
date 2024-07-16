@@ -53,6 +53,42 @@ export const profileValidate = Yup.object().shape({
 });
 
 
+export const profileUpdateInitials = {
+    name: '',
+    email: '',
+    gender: '',
+
+    country_code: '',
+    mobile: '',
+
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    pincode: '',
+}
+
+export const profileUpdateValidate = Yup.object().shape({
+    name: Yup.string().required('Name is required').max(20, 'Name must be at most 20 characters'),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    gender: Yup.string().required('Gender is required').oneOf(['male', 'female', 'other'], 'Invalid gender'),
+
+    country_code: Yup.string().required('Country code is required'),
+    mobile: Yup.string()
+        .matches(/^[0-9]+$/, 'Mobile number must be numbers only')
+        .min(10, 'Mobile number must be at least 10 digits')
+        .max(15, 'Mobile number must be at most 15 digits')
+        .required('Mobile number is required'),
+
+    address: Yup.string()
+        .min(10, 'Address must be at least 10 character')
+        .max(100, 'Address must be at most 100 characters')
+        .required('Address is required'),
+    city: Yup.string().required('City is required').max(15, 'Address number must be at most 100 characters'),
+    state: Yup.string().required('State is required').max(15, 'Address number must be at most 100 characters'),
+    pincode: Yup.string().required('Zip code is required').max(6, 'Address number must be at most 100 characters'),
+});
+
 export const countryCodes =
 
     [
@@ -421,3 +457,37 @@ export const countryCodes =
             "label": "Zimbabwe"
         }
     ]
+
+export const loginInitials = {
+    isMobile: false,
+    mobile: "",
+    email: "",
+    password: "",
+};
+
+export const loginValidationSchema = Yup.object().shape({
+    isMobile: Yup.boolean(),
+    mobile: Yup
+        .string()
+        .when("isMobile", (isMobile, schema) => {
+            if (isMobile[0] === true)
+                return schema.required("Must enter mobile")
+                    .matches(/^[0-9]+$/, 'Mobile number must be only digits')
+                    .min(10, 'Mobile number must be at least 10 digits')
+                    .max(15, 'Mobile number must be at most 15 digits')
+            return schema
+        }),
+    email: Yup
+        .string()
+        .when("isMobile", (isMobile, schema) => {
+            if (isMobile[0] === false)
+                return schema.required("Must enter email address")
+                    .email('Invalid email format')
+            return schema
+        }),
+    password: Yup.string()
+        .matches(passwordRules, { message: 'Password must be 8-20 characters long and include at least one lowercase letter, one digit, and one special character.' })
+        .required('Password is required'),
+});
+
+

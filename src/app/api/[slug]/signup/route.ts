@@ -73,7 +73,6 @@ export async function POST(request: Request) {
 
         const salt = genSaltSync(10);
         const encryptPassword: any = hashSync(password, salt);
-        console.log('encryptPassword::: ', encryptPassword);
 
         const result = await prisma.user.create({
           data: {
@@ -109,57 +108,65 @@ export async function POST(request: Request) {
           );
         }
       }
+    } else {
+      let data: any = {};
+      let result: any = {};
+      const user = await prisma.user.findFirst({
+        where: { id: userId },
+      });
+
+      if (!user) return NextResponse.json({ st: false, data: {}, msg: "User not found" }, { status: 200 });
+
+      if (profile_pic instanceof File && profile_pic.size > 0 && user && type === "updateProfilePic") {
+        const bytes = await profile_pic.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const imageName = `${Date.now()}_${profile_pic.name}`;
+
+        const path = `${process.cwd()}/public/users/${imageName}`;
+        await writeFile(path, buffer);
+        data.profile_pic = imageName;
+
+        const path2 = `${process.cwd()}/public/users/${user.profile_pic}`;
+        await unlink(path2);
+
+      } else {
+        if (type === "updatePassword") {
+          const salt = genSaltSync(10);
+          data.password = hashSync(password, salt);
+        } else {
+          data.name = name
+          data.email = email
+          data.gender = gender
+
+          data.country_code = country_code
+          data.mobile = mobile
+
+          data.address = address
+          data.city = city
+          data.state = state
+          data.country = country
+          data.pincode = pincode
+
+        }
+      }
+
+      result = await prisma.user.update({
+        where: { id: userId }, data
+      });
+
+      if (result) {
+        return NextResponse.json(
+          { st: true, data: result, msg: "Updated successfully!!" },
+          { status: 200 }
+        );
+      } else {
+        return NextResponse.json(
+          { st: false, data: {}, msg: "Updating failed" },
+          { status: 500 }
+        );
+      }
     }
-    // else if (type === "update") {
-    //   let data = {};
-    //   const user = await prisma.user.findFirst({
-    //     where: { id: userId },
-    //   });
 
-    //   if (profile_pic instanceof File && profile_pic.size > 0) {
-    //     const bytes = await profile_pic.arrayBuffer();
-    //     const buffer = Buffer.from(bytes);
-    //     const imageName = `${Date.now()}_${profile_pic.name}`;
-
-    //     const path = `${process.cwd()}/public/users/${imageName}`;
-    //     await writeFile(path, buffer);
-    //     data.image = imageName;
-
-    //     const path2 = `${process.cwd()}/public/users/${user.profile_pic}`;
-    //     await unlink(path2);
-    //   }
-
-    //   if (user) {
-    //     const result = await prisma.user.update({
-    //       where: { id: userId },
-    //       data: {
-    //         email,
-    //         name,
-    //         mobile,
-    //         country_code,
-    //         gender,
-    //         profile_pic: data?.image,
-    //       },
-    //     });
-
-    //     if (result) {
-    //       return NextResponse.json(
-    //         { st: true, data: result, msg: "User updated successfully!!" },
-    //         { status: 200 }
-    //       );
-    //     } else {
-    //       return NextResponse.json(
-    //         { st: false, data: {}, msg: "User not updated" },
-    //         { status: 500 }
-    //       );
-    //     }
-    //   } else {
-    //     return NextResponse.json(
-    //       { st: false, data: {}, msg: "User not found" },
-    //       { status: 404 }
-    //     );
-    //   }
-    // }
 
   } catch (error) {
     console.log("error::: ", error);
@@ -189,6 +196,10 @@ export async function GET(request: Request) {
 
     const user = await prisma.user.findFirst({
       where: { id, isBlocked: false },
+      select: {
+        name: true, email: true, gender: true, profile_pic: true, country_code: true, mobile: true, address: true, city: true, state: true, country: true, pincode: true,
+      },
+
     });
 
     if (user) {

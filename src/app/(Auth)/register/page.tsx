@@ -87,7 +87,7 @@ const RegisterComponents = () => {
 
                                 formData.append("password", values.password);
                                 formData.append("type", "add");
-                                const res = await axios.post(`http://localhost:3000/api/slug/signup`, formData);
+                                const res = await axios.post(`${apiUrl}/slug/signup`, formData);
                                 if (res?.data?.st) {
 
                                     successToast(res?.data?.msg);
@@ -104,26 +104,26 @@ const RegisterComponents = () => {
                             }
                         }}
                     >
-                        {({ errors, touched, setFieldValue }: any) => (
+                        {({ errors, setFieldValue }: any) => (
                             <Form className="flex flex-col gap-3 bg-gray-250  p-4 rounded-lg hover:shadow-2xl shadow-md">
 
 
                                 <div className="mb-4">
                                     <label htmlFor="name" className="bloc font-semibold">
-                                        User Name
+                                        User Name<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="name" className="w-full px-2 registration border-black py-1 bg-gray-300 border  rounded mt-2" />
                                     <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="email" className="block font-semibold">Email ID</label>
+                                    <label htmlFor="email" className="block font-semibold">Email ID<span className='text-red-600'>*</span></label>
                                     <Field type="text" name="email" className={`w-full px-2 registration py-1 bg-gray-300 border rounded mt-2 ${errors.email && 'border-red-500'}`} id="email" />
                                     <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="gender" className="block font-semibold">Gender</label>
+                                    <label htmlFor="gender" className="block font-semibold">Gender<span className='text-red-600'>*</span></label>
                                     <Field as="select" name="gender" className="w-full registration px-2 border-black py-1 bg-gray-300 border rounded mt-2">
                                         <option value="" disabled hidden>Select Gender</option>
                                         <option value="male">Male</option>
@@ -134,7 +134,7 @@ const RegisterComponents = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="country_code" className="block font-semibold">Country Code</label>
+                                    <label htmlFor="country_code" className="block font-semibold">Country Code<span className='text-red-600'>*</span></label>
                                     <Field as="select" name="country_code" onChange={(e: any) => {
                                         const country = countryCodes.find((country: any) => country.value === e.target.value);
                                         country && setFieldValue("country", country.label);
@@ -150,7 +150,7 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="address" className="bloc font-semibold">
-                                        Mobile
+                                        Mobile<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="mobile" className="w-full registration px-2 border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="mobile" component="div" className="text-red-500 text-sm" />
@@ -158,7 +158,7 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="address" className="bloc font-semibold">
-                                        Address
+                                        Address<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="address" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
@@ -166,14 +166,14 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="city" className="bloc font-semibold">
-                                        City
+                                        City<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="city" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="city" component="div" className="text-red-500 text-sm" />
                                 </div>
                                 <div className="mb-4">
                                     <label htmlFor="state" className="bloc font-semibold">
-                                        State
+                                        State<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="state" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="state" component="div" className="text-red-500 text-sm" />
@@ -181,7 +181,7 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="country" className="bloc font-semibold">
-                                        Country
+                                        Country<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="country" readOnly className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="country" component="div" className="text-red-500 text-sm" />
@@ -189,7 +189,7 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="pincode" className="bloc font-semibold">
-                                        Pincode
+                                        Pincode<span className='text-red-600'>*</span>
                                     </label>
                                     <Field type="text" name="pincode" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="pincode" component="div" className="text-red-500 text-sm" />
@@ -197,7 +197,7 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="profile_pic" className="bloc font-semibold">
-                                        Upoad Profile Picture <span>(Optional)</span>
+                                        Upload Profile Picture <span>(Optional)</span>
                                     </label>
                                     <Field name="profile_pic" type="file" component={FileInput} />
                                     <ErrorMessage name="profile_pic" component="div" className="text-red-500 text-sm" />
@@ -205,7 +205,7 @@ const RegisterComponents = () => {
 
                                 <div className="mb-4">
                                     <label htmlFor="password" className="bloc font-semibold">
-                                        Passwrod
+                                        Passwrod<span className='text-red-600'>*</span>
                                     </label>
                                     <Field name="password" component={PasswordField} className="w-full registration px-2 py-1 border px-2 border-black bg-gray-300 rounded mt-2" />
                                     <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
