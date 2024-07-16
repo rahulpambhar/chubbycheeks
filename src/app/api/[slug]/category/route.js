@@ -17,7 +17,7 @@ export async function POST(request) {
       return NextResponse.json({
         st: false,
         data: {},
-        msg: "You are not logged in",
+        msg: "Login first.",
       });
     }
 
@@ -55,7 +55,7 @@ export async function POST(request) {
           const buffer = Buffer.from(bytes);
           const imageName = `${Date.now()}_${image.name}`;
 
-          const path = `${process.cwd()}/public/catagory/${imageName}`;
+          const path = `${process.cwd()}/public/categories/${imageName}`;
           await writeFile(path, buffer);
           data.image = imageName;
         }
@@ -84,7 +84,7 @@ export async function POST(request) {
           const buffer = Buffer.from(bytes);
           const imageName = `${Date.now()}_${image.name}`;
 
-          const path = `${process.cwd()}/public/catagory/${imageName}`;
+          const path = `${process.cwd()}/public/categories/${imageName}`;
           await writeFile(path, buffer);
           data.image = imageName;
 
@@ -94,7 +94,7 @@ export async function POST(request) {
             },
           });
 
-          const path2 = `${process.cwd()}/public/catagory/${catagory.image}`;
+          const path2 = `${process.cwd()}/public/categories/${catagory.image}`;
           await unlink(path2);
         }
 
@@ -233,7 +233,7 @@ export async function DELETE(request) {
       return NextResponse.json({
         st: false,
         data: {},
-        msg: "You are not logged in",
+        msg: "Login first.",
       });
     }
 

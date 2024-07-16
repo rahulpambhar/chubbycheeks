@@ -5,26 +5,21 @@ import AliceCarousel from "react-alice-carousel";
 const items = [
   <div className="item">
     <video width="100%" controls autoPlay loop muted className="media">
-      <source src="/image/HatchfulExport-All/dimond-vid-1.mp4" />
+      <source src="/image/chubbycheeks/video-3.mp4" />
       Your browser does not support the video tag.
     </video>
+
   </div>,
   <div className="item">
     <video width="100%" controls autoPlay loop muted className="media">
-      <source src="/image/HatchfulExport-All/dimond-vid-2.mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>,
-  <div className="item">
-    <video width="100%" controls autoPlay loop muted className="media">
-      <source src="/image/HatchfulExport-All/dimond-vid-3.mp4" />
+      <source src="/image/chubbycheeks/video-5.mp4" />
       Your browser does not support the video tag.
     </video>
   </div>,
 
-<div className="item">
+  <div className="item">
     <video width="100%" controls autoPlay loop muted className="media">
-      <source src="/image/HatchfulExport-All/dimond-vid-5.mp4" />
+      <source src="/image/chubbycheeks/video-4.mp4" />
       Your browser does not support the video tag.
     </video>
   </div>,
@@ -46,7 +41,7 @@ const ImageSlider = () => {
   };
 
   return (
-    <div className="carousel">
+    <div className="carousel mt-1">
       <AliceCarousel
         activeIndex={mainIndex}
         disableDotsControls

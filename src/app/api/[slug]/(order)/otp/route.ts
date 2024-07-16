@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         const userId = session?.user?.id;
 
         if (!session) {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "You are not logged in" });
+            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Login first." });
         }
 
         const otp = Math.floor(100000 + Math.random() * 900000);
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
         const userId = session?.user?.id;
 
         if (!session) {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "You are not logged in" });
+            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Login first." });
         }
 
         const { query } = parse(request.url, true);
@@ -79,7 +79,7 @@ export async function PUT(request: Request) {
         const userId = session?.user?.id;
 
         if (!session) {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "You are not logged in" });
+            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Login first." });
         }
 
         await prisma.user.update({

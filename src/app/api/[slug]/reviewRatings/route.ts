@@ -40,8 +40,7 @@ async function getProductReviewsWithAvg(id: string) {
         })
     ]);
 
-    const averageRating = avgRating._avg.rating;
-    console.log('averageRating::: ', averageRating);
+    const averageRating = avgRating?._avg.rating;
 
     return { reviews, averageRating };
 }
@@ -55,7 +54,7 @@ export async function POST(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
         const body = await request.json();
@@ -69,7 +68,7 @@ export async function POST(request: Request) {
         })
 
         if (!isReview) {
-            const res = await prisma.review.create({
+            await prisma.review.create({
                 data: {
                     rating: +ratings,
                     review,
@@ -80,7 +79,7 @@ export async function POST(request: Request) {
                 }
             })
         } else {
-            const res = await prisma.review.update({
+            await prisma.review.update({
                 where: {
                     id: isReview.id
                 },
@@ -92,6 +91,12 @@ export async function POST(request: Request) {
             })
         }
         const { reviews, averageRating } = await getProductReviewsWithAvg(id);
+
+        await prisma.products.update({
+            where: { id },
+            data: { avgRating: averageRating, numReviews: reviews.length, updatedAt: new Date() }
+        })
+
         const data = { reviews, averageRating };
 
 
@@ -122,7 +127,7 @@ export async function GET(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
 

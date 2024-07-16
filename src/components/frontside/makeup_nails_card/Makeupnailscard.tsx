@@ -22,12 +22,8 @@ import { addToWishList } from "@/app/redux/slices/wishListSlice";
 
 const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
   const dispatch = useAppDispatch();
-  const params = useParams();
 
   const { data: session, status }: any = useSession();
-  const [openPreview, setOpenPreview] = useState(false);
-  const [priview, sePriview] = useState<Product>({} as Product)
-
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
 
@@ -51,7 +47,7 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
 
   return (
     <>
-      <div className="relative  w-[260px] mx-5 my-3 bg-white pb-5  hover:shadow-2xl">
+      <div className="relative  w-[260px] mx-5 my-3 bg-white pb-5  hover:shadow-2xl shadow">
         <div className="flex justify-end absolute top-2 right-0 pr-5 ">
           <button onClick={handelike}>
 
@@ -62,41 +58,25 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
             )}
           </button>
         </div>
-        <div className=" flex justify-center items-center pt-5">
 
-          <Carousel placeholder={""} className="rounded-xl">
+        <div className=" flex justify-center items-center pt-10 ">
+          <Carousel placeholder={""} className=" px-1 rounded-xl">
 
-            {/* {
+            {
               item?.image?.map((image: any, index: number) => (
-                <img
+                <Image
+                  height={100}
+                  width={100}
                   key={index}
                   src={`/products/${image}`}
                   alt={item?.name}
-                  className="h-full w-full object-cover"
+                  className="h-[300px] w-[300px] object-cover "
                 />
               ))
-            } */}
-
-
-            <img
-              src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80"
-              alt="image 1"
-              className="h-full w-full object-cover"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
-              alt="image 2"
-              className="h-full w-full object-cover"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80"
-              alt="image 3"
-              className="h-full w-full object-cover"
-            />
+            }
           </Carousel>
-
-          {/* <img src={'/products/1704121261122_0_producthandShapring.jpg'} alt={item?.name} /> */}
         </div>
+
         <p className="text-lg poppins font-medium pt-5">
           <label htmlFor="" className=" flex justify-center items-center gap-3 robto" >
             {item?.name}

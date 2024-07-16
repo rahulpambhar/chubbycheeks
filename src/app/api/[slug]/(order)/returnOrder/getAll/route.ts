@@ -16,12 +16,13 @@ export async function GET(request: Request) {
         const userId = session?.user?.id;
 
         if (!session) {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "You are not logged in" });
+            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Login first." });
         }
 
         const returnOrders: any = await prisma.returnOrder.findMany({
-            where: { isBlocked: false },
-            include: { items: true }
+            where: { isBlocked: false, userId },
+            include: { items: true },
+            orderBy: { createdAt: 'desc' }
         })
 
         return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: returnOrders, msg: "Return order found" });

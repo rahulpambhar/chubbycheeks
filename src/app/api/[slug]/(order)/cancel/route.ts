@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
     try {
         let session: any = await getServerSession();
-        if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "You are not logged in..", }); }
+        if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Login first.", }); }
        
         return NextResponse.redirect("/cancel");
 

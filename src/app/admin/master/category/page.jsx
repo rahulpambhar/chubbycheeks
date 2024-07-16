@@ -262,7 +262,7 @@ export default function DashBoardPage() {
 
 
                   <td className="px-6 ">
-                    <Image className="w-10 h-10 border border-black rounded" src={`/catagory/${item?.image}`} alt="Jese image" width={100} height={100} />
+                    <Image className="w-10 h-10 border border-black rounded" src={`/categories/${item?.image}`} alt="Jese image" width={100} height={100} />
 
                   </td>
 

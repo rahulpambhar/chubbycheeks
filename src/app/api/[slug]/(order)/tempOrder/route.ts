@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     try {
 
         let session: any = await getServerSession(authOptions);
-        if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "You are not logged in", }); }
+        if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Login first.", }); }
 
         const body = await request.json();
         const { orderMeta } = body
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 //             return NextResponse.json({
 //                 st: false,
 //                 data: [],
-//                 msg: "You are not logged in",
+//                 msg: "Login first.",
 //             });
 //         }
 

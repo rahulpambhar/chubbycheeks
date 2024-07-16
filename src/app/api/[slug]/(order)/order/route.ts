@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         })
 
         let session: any = await getServerSession(authOptions);
-        if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "You are not logged in", }); }
+        if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Login first.", }); }
 
         const nextInvoice = await getNextInvoice("order")
         const items = temp?.items
@@ -181,7 +181,7 @@ export async function GET(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
 

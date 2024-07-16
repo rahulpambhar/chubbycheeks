@@ -11,6 +11,7 @@ import { actionTocartFunc } from '../app/redux/slices/cartSclice';
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast"
 import { successToast, errorToast } from './toster';
+import Image from 'next/image';
 
 
 export const actionTocartFunction_ = async (item: any, action: any, dispatch: any) => {
@@ -57,7 +58,7 @@ export default function Example() {
                 }
             }, 0)
         );
-     }, [cartItem])
+    }, [cartItem])
 
     return (
         <div>
@@ -112,11 +113,11 @@ export default function Example() {
                                                                 <li key={item.id} className="flex py-6">
                                                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
 
-                                                                        {/* <img
-                                                                            src={product.imageSrc}
-                                                                            alt={product.imageAlt}
+                                                                        <Image
+                                                                            src={`/products/${item?.product?.image}`} width={200} height={200}
+                                                                            alt=""
                                                                             className="h-full w-full object-cover object-center"
-                                                                        /> */}
+                                                                        />
                                                                     </div>
                                                                     <div className="ml-4 flex flex-1 flex-col">
                                                                         <div>

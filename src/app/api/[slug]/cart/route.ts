@@ -17,11 +17,12 @@ export async function POST(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
         const body = await request.json();
         const { productId, action } = body.payload
+        console.log('body.payload::: ', body.payload);
 
         const product = await getProduct(productId)
         let cart = await getCart(session?.user?.id)
@@ -148,7 +149,7 @@ export async function GET(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
 

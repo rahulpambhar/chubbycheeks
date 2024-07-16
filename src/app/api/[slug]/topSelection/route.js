@@ -15,7 +15,7 @@ export async function POST(request) {
     if (!session) {
       return NextResponse.json({
         st: false,
-        msg: "You are not logged in",
+        msg: "Login first.",
       });
     }
 

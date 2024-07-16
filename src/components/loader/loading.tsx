@@ -9,7 +9,7 @@ export default function Loading({ minHeight }: Props) {
         <div className="row">
             <div className='col-lg-12 col-md-12 col-xl-12 col-xxl-12'>
                 {minHeight ?
-                    <div className='loader-spin' style={{ minHeight: minHeight }} >
+                    <div className='loader-spin' style={{ minHeight }} >
                         <span className="loader"></span>
                     </div> :
                     <div className='loader-spin' >

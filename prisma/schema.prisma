@@ -47,25 +47,24 @@ enum Action {
 }
 
 model User {
-    id    String @id @default(auto()) @map("_id") @db.ObjectId
-    email String
-    name  String
+    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    email       String
+    name        String
+    gender      String
+    profile_pic String?
 
     country_code String
     mobile       String
 
-    street  String
+    address  String
     city    String
     state   String
     country String
-    address String
     pincode String
 
-    gender             String
     password           String
     otp                Int?
     passwordResetToken String?
-    profile_pic        String?
     isBlocked          Boolean @default(false)
     isAdmin            Boolean @default(false)
     is_mobile_verified Boolean @default(false)
@@ -175,7 +174,7 @@ model Products {
     subCategoryId String?      @db.ObjectId
 
     topSelected Boolean @default(false)
-    isNew Boolean @default(false)
+    isNew       Boolean @default(false)
 
     Review    Review[]
     whishlist Whishlist[]
@@ -484,8 +483,8 @@ model ReturnOrderItem {
 model Review {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
-    rating      Int?
-    review      String?
+    rating Int?
+    review String?
 
     user   User?   @relation(fields: [userId], references: [id])
     userId String? @db.ObjectId

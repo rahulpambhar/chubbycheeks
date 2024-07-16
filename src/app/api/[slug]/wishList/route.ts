@@ -17,7 +17,7 @@ export async function POST(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
         const body = await request.json();
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
             return NextResponse.json({
                 st: false,
                 data: [],
-                msg: "You are not logged in",
+                msg: "Login first.",
             });
         }
         const wishList = await prisma.user.findMany({

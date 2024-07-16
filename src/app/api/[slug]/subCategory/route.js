@@ -18,7 +18,7 @@ export async function POST(request) {
     if (!session) {
       return NextResponse.json({
         st: false,
-        msg: "You are not logged in",
+        msg: "Login first.",
       });
     }
 
@@ -96,7 +96,7 @@ export async function POST(request) {
           const bytes = await image.arrayBuffer();
           const buffer = Buffer.from(bytes);
           const imageName = `${Date.now()}_${image.name}`;
-
+        
           const path = `${process.cwd()}/public/subCategory/${imageName}`;
 
           await writeFile(path, buffer);
@@ -232,7 +232,7 @@ export async function DELETE(request) {
       return NextResponse.json({
         st: false,
         data: {},
-        msg: "You are not logged in",
+        msg: "Login first.",
       });
     }
 

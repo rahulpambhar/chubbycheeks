@@ -5,7 +5,7 @@ import { apiUrl } from "../../../../env"
 
 const initialState: any = {
     allCategories: [], // all categories
-    categories: [], // catagory whose have more than zero subcategory
+    categories: [], // category whose have more than zero subcategory
     subCategories: [],
     productsList: [],
     products: [],

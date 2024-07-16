@@ -31,7 +31,6 @@ const Unitedfreecard = ({
   const { data: session, status }: any = useSession();
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
-  console.log('openCart::: ', id);
 
   const addToCartFunction = async (id: string) => {
     const payload = { productId: id, action: "add" }

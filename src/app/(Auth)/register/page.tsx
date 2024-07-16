@@ -3,29 +3,38 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from 'react';
 // import LoaderComponents from "@/components/Loader";
 import { useRouter } from "next/navigation";
-import { setOpenCart } from '@/app/redux/slices/utilSlice';
+import { isLoginModel, setOpenCart } from '@/app/redux/slices/utilSlice';
 import { apiUrl } from "../../../../env"
 import * as Yup from 'yup'
 import twilio from 'twilio';
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import axios from "axios";
+import { profileInitials, profileValidate, countryCodes } from "@/app/utils";
+import Loader from "../../../components/loader/loading";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { errorToast, successToast } from '@/components/toster';
 
-const validationSchema = Yup.object({
-    email: Yup.string().email('Invalid email address').required('Required'),
-    userName: Yup.string().required('Required'),
-    country_code: Yup.string().required('Required'),
-    mobile: Yup.string().required('Required'),
-    address: Yup.string().required('Required'),
-    gender: Yup.string().required('Required'),
-    password: Yup.string()
-        .required('Required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-            'Password must contain at least one uppercase letter, one lowercase letter, and one number'
-        )
-});
+
+const PasswordField = ({ field, form, ...props }: any) => {
+    const [showPassword, setShowPassword] = useState(false);
+    return (
+        <div className="relative">
+            <Field
+                {...field}
+                {...props}
+                type={showPassword ? 'text' : 'password'}
+                className="w-full registration px-2 py-1 border border-black bg-gray-300 rounded mt-2"
+            />
+            <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
+            >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+        </div>
+    );
+};
 
 const RegisterComponents = () => {
     const dispatch = useAppDispatch();
@@ -36,67 +45,104 @@ const RegisterComponents = () => {
     const isLoginModelOpen = useAppSelector((state) => state.utilReducer.isLoginModelOpen);
 
 
-    const countryCodes = [
-        { value: '+1', label: '+1 (United States)' },
-        { value: '+44', label: '+44 (United Kingdom)' },
-        { value: '+91', label: '+91 (India)' },
-    ];
+    const FileInput = ({ field, form }: any) => {
+        const handleChange = (event: any) => {
+            const file = event.currentTarget.files[0];
+            form.setFieldValue(field.name, file);
+        };
+
+        return <input type="file" onChange={handleChange} />;
+    };
+
 
     return (
         <>
-            {
-                // loader && <LoaderComponents />
-            }
+            {/* {
+                loader && <LoaderComponents />
+            } */}
             <div className="max-w-screen-xl mx-auto mt-7 border-black rounded-lg border-t-2 border-b-2 hover:shadow-2xl  border-l-2 border-r-2 ">
                 <div className="sm:w-10/12 md:w-8/12 lg:w-6/12  xl:w-5/12 mx-auto shadow-lg p-5 hover:shadow-2xl rounded-lg ">
                     <Formik
-                        initialValues={{
-                            email: '', userName: '', country_code: '', mobile: '', address: '', gender: '', password: ''
-                        }}
-                        // validationSchema={validationSchema}
-                        onSubmit={async (values: any, { setSubmitting }) => {
+                        initialValues={profileInitials}
+                        validationSchema={profileValidate}
+                        onSubmit={async (values: any, { resetForm }) => {
                             try {
                                 setLoader(true);
 
                                 let formData = new FormData();
                                 formData.append("name", values.name);
                                 formData.append("email", values.email);
+                                formData.append("gender", values.gender);
+                                formData.append("profile_pic", values.profile_pic);
+
                                 formData.append("country_code", values.country_code);
                                 formData.append("mobile", values.mobile);
-                                formData.append("gender", values.gender);
+
+                                formData.append("address", values.address);
+                                formData.append("city", values.city);
+                                formData.append("state", values.state);
+                                formData.append("country", values.country);
+                                formData.append("pincode", values.pincode);
+
+
                                 formData.append("password", values.password);
-                                formData.append("profile_pic", values.profile_pic);
                                 formData.append("type", "add");
+                                const res = await axios.post(`http://localhost:3000/api/slug/signup`, formData);
+                                if (res?.data?.st) {
+
+                                    successToast(res?.data?.msg);
+                                    resetForm();
+                                } else {
+
+                                    errorToast(res?.data?.msg);
+                                }
                                 setLoader(false);
-                                const res = await axios.post(`http://localhost:3000/api/slug/signup`);
+
                             } catch (e) {
-                                console.log('e::: ', e);
+                                errorToast("Something went wrong");
                                 setLoader(false);
                             }
                         }}
                     >
-                        {({ errors }: any) => (
+                        {({ errors, touched, setFieldValue }: any) => (
                             <Form className="flex flex-col gap-3 bg-gray-250  p-4 rounded-lg hover:shadow-2xl shadow-md">
+
+
+                                <div className="mb-4">
+                                    <label htmlFor="name" className="bloc font-semibold">
+                                        User Name
+                                    </label>
+                                    <Field type="text" name="name" className="w-full px-2 registration border-black py-1 bg-gray-300 border  rounded mt-2" />
+                                    <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
+                                </div>
 
                                 <div className="mb-4">
                                     <label htmlFor="email" className="block font-semibold">Email ID</label>
                                     <Field type="text" name="email" className={`w-full px-2 registration py-1 bg-gray-300 border rounded mt-2 ${errors.email && 'border-red-500'}`} id="email" />
-                                    <ErrorMessage name="email" component="div" className="bg-red-100 text-red-700 rounded-md p-2 mt-2" />
+                                    <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
                                 </div>
+
                                 <div className="mb-4">
-                                    <label htmlFor="userName" className="bloc font-semibold">
-                                        User Name
-                                    </label>
-                                    <Field type="text" name="userName" className="w-full px-2 registration border-black py-1 bg-gray-300 border  rounded mt-2" />
-                                    <ErrorMessage name="userName" component="div" className="text-red-500 text-sm" />
+                                    <label htmlFor="gender" className="block font-semibold">Gender</label>
+                                    <Field as="select" name="gender" className="w-full registration px-2 border-black py-1 bg-gray-300 border rounded mt-2">
+                                        <option value="" disabled hidden>Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </Field>
+                                    <ErrorMessage name="gender" component="div" className="text-red-500 text-sm" />
                                 </div>
 
                                 <div className="mb-4">
                                     <label htmlFor="country_code" className="block font-semibold">Country Code</label>
-                                    <Field as="select" name="country_code" className="w-full px-2 border-black py-1 bg-gray-300 border rounded mt-2 appearance-none">
+                                    <Field as="select" name="country_code" onChange={(e: any) => {
+                                        const country = countryCodes.find((country: any) => country.value === e.target.value);
+                                        country && setFieldValue("country", country.label);
+                                        setFieldValue("country_code", e.target.value);
+                                    }} className="w-full px-2 border-black py-1 bg-gray-300 border rounded mt-2 appearance-none">
                                         <option value="" disabled hidden>Select Country Code</option>
                                         {countryCodes.map(country => (
-                                            <option key={country.value} value={country.value}>{country.label}</option>
+                                            <option key={country.value} value={country.value}>{country.label} ({country.value})</option>
                                         ))}
                                     </Field>
                                     <ErrorMessage name="country_code" component="div" className="text-red-500 text-sm" />
@@ -111,12 +157,13 @@ const RegisterComponents = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="street" className="bloc font-semibold">
-                                        Street
+                                    <label htmlFor="address" className="bloc font-semibold">
+                                        Address
                                     </label>
-                                    <Field type="text" name="street" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
-                                    <ErrorMessage name="street" component="div" className="text-red-500 text-sm" />
+                                    <Field type="text" name="address" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
+                                    <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
                                 </div>
+
                                 <div className="mb-4">
                                     <label htmlFor="city" className="bloc font-semibold">
                                         City
@@ -128,35 +175,53 @@ const RegisterComponents = () => {
                                     <label htmlFor="state" className="bloc font-semibold">
                                         State
                                     </label>
+                                    <Field type="text" name="state" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
                                     <ErrorMessage name="state" component="div" className="text-red-500 text-sm" />
                                 </div>
+
                                 <div className="mb-4">
-                                    <label htmlFor="address" className="bloc font-semibold">
-                                        Address
+                                    <label htmlFor="country" className="bloc font-semibold">
+                                        Country
                                     </label>
-                                    <Field type="text" name="address" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
-                                    <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
+                                    <Field type="text" name="country" readOnly className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
+                                    <ErrorMessage name="country" component="div" className="text-red-500 text-sm" />
                                 </div>
+
                                 <div className="mb-4">
-                                    <label htmlFor="gender" className="block font-semibold">Gender</label>
-                                    <Field as="select" name="gender" className="w-full registration px-2 border-black py-1 bg-gray-300 border rounded mt-2">
-                                        <option value="" disabled hidden>Select Country Code</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </Field>
-                                    <ErrorMessage name="gender" component="div" className="text-red-500 text-sm" />
+                                    <label htmlFor="pincode" className="bloc font-semibold">
+                                        Pincode
+                                    </label>
+                                    <Field type="text" name="pincode" className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
+                                    <ErrorMessage name="pincode" component="div" className="text-red-500 text-sm" />
                                 </div>
+
+                                <div className="mb-4">
+                                    <label htmlFor="profile_pic" className="bloc font-semibold">
+                                        Upoad Profile Picture <span>(Optional)</span>
+                                    </label>
+                                    <Field name="profile_pic" type="file" component={FileInput} />
+                                    <ErrorMessage name="profile_pic" component="div" className="text-red-500 text-sm" />
+                                </div>
+
                                 <div className="mb-4">
                                     <label htmlFor="password" className="bloc font-semibold">
                                         Passwrod
                                     </label>
-                                    <Field type="password" name="password" className="w-full registration px-2 py-1 border px-2 border-black bg-gray-300 rounded mt-2" />
+                                    <Field name="password" component={PasswordField} className="w-full registration px-2 py-1 border px-2 border-black bg-gray-300 rounded mt-2" />
                                     <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                                 </div>
+
+                                <div className="mb-4">
+                                    <label htmlFor="Confirm_password" className="bloc font-semibold">
+                                        Confirm Passwrod
+                                    </label>
+                                    <Field name="Confirm_password" component={PasswordField} className="w-full registration px-2 py-1 border px-2 border-black bg-gray-300 rounded mt-2" />
+                                    <ErrorMessage name="Confirm_password" component="div" className="text-red-500 text-sm" />
+                                </div>
+
                                 <div className="">
                                     <button className="bg-black text-white font-bold cursor-pointer px-6 py-4 hover:shadow-2xl w-full text-2xl" type="submit">
-                                        {/* {loader ? <Loader type="spinner-default" bgColor="white" color="white" size={50} /> : "Register"} */}
+                                        {loader ? <Loader minHeight={'50px'} /> : "Register"}
                                     </button>
                                 </div>
                             </Form>
@@ -165,9 +230,9 @@ const RegisterComponents = () => {
                     </Formik>
 
                     <div className="text-center mt-3">
-                        {/* <button onClick={() => dispatch(isLoginModel(!isLoginModelOpen))} className="fontFamily">
+                        <button onClick={() => dispatch(isLoginModel(!isLoginModelOpen))} className="fontFamily">
                             Already have an account? <span className="underline">Login</span>
-                        </button> */}
+                        </button>
                     </div>
                 </div>
             </div>

@@ -28,6 +28,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
     const id = params?.estimation;
 
     const [order_, setOrder]: any = useState([])
+    console.log('order_::: ', order_);
 
 
     useEffect(() => {
@@ -106,9 +107,11 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                             </div>
 
                                         </div>
-                                        <div className="flex items-center">
+                                        <div className=" items-center">
                                             <div className="font-medium">${item?.price * item?.qty}</div>
+                                            <h6 className="font-medium">{item?.discountType === "PERCENTAGE" ? `${item?.discount}% Off` : `$${item?.discount} Off`}</h6>
                                         </div>
+
                                     </div>
                                 ))}
 

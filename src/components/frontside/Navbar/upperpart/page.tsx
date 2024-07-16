@@ -7,7 +7,6 @@ import { useAppSelector, useAppDispatch } from '../../../../app/redux/hooks';
 import { fetchCart } from '../../../../app/redux/slices/cartSclice';
 import { baseUrl } from "../../../../../env";
 import Link from "next/link";
-import { toast } from "react-hot-toast"
 import { isLoginModel, setOpenCart } from '../../../../app/redux/slices/utilSlice'
 import { signOut } from "next-auth/react";
 import { fetchWhishList } from "@/app/redux/slices/wishListSlice";
@@ -26,9 +25,9 @@ const Uppernav = () => {
   }, [session, dispatch]);
   return (
     <div className="h-20 bg-black flex items-center justify-between lg:px-10 md:px-5 px-2">
-      <div>
-        <Image src="/image/HatchfulExport-All/pinterest_board_photo.png" alt="Logo" width={150} height={150} />
-      </div>
+      <Link href={"/"}>
+        <Image src="/image/chubbycheeks/logo.png" alt="Logo" width={150} height={150} />
+      </Link>
       <div className="flex items-center md:gap-5 lg:gap-18">
         <div className="lg:w-[650px] md:w-[300px] h-10 bg-white hidden md:flex items-center rounded-md lg:pl-5">
           Everyone loves!
@@ -70,9 +69,7 @@ const Uppernav = () => {
                   </div>
                 ) : (
                   <>
-                    <Link href="/order">
-                      <span className="fontFamily cursor-pointer">Orders</span>
-                    </Link>
+
                     <div className="fontFamily cursor-pointer" onClick={() => signOut({ redirect: false })}>
                       Logout
                     </div>

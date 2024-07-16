@@ -28,7 +28,6 @@ export default function Checkout({ params }: { params: { product: string } }) {
 
     const product = productsList.find((item: any) => item.id === params?.product);
     const filteredProducts = productsList.filter((item: any) => item?.categoryId === product?.categoryId && item?.id !== product?.id);
-    console.log('filteredProducts::: ', filteredProducts);
     const [showModal, setShowModal] = useState(false);
     const [isPurchased, setIsPurchased] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 0, text: '', });
@@ -70,26 +69,6 @@ export default function Checkout({ params }: { params: { product: string } }) {
         );
     }
 
-    const careAboutItems1 = [
-        {
-            id: 1,
-            image: "/image/unitedfree.jpg",
-            label: "Absolut",
-            description: "Face and Body Lotion",
-        },
-        {
-            id: 2,
-            image: "/image/unitedfree.jpg",
-            label: "Absolut",
-            description: "Face and Body Lotion",
-        },
-        {
-            id: 3,
-            image: "/image/unitedfree.jpg",
-            label: "Absolut",
-            description: "Face and Body Lotion",
-        },
-    ];
 
 
     const setSubmit = async (e: any) => {
@@ -125,6 +104,28 @@ export default function Checkout({ params }: { params: { product: string } }) {
             })();
     }, [session, product?.id]);
 
+    useEffect(() => {
+        let getRecentView: any = localStorage?.getItem('recentVw');
+        let getParsed: any = JSON?.parse(getRecentView);
+        if (getParsed?.length > 0) {
+            const isIdAvail = getParsed?.some((item: any) => { return item === params?.product });
+
+            if (!isIdAvail) {
+                if (getParsed?.length > 4) {
+                    getParsed.splice(0, 1)
+                    getParsed?.push(params?.product)
+                    localStorage.setItem('recentVw', JSON.stringify(getParsed));
+                } else {
+                    getParsed?.push(params?.product)
+                    localStorage.setItem('recentVw', JSON.stringify(getParsed));
+                }
+            }
+        } else {
+            const firstProductId = [params?.product]
+            localStorage.setItem('recentVw', JSON.stringify(firstProductId));
+        }
+    }, []);
+
     return (
         <>
             <div className="grid grid-cols-2 w-full h-full mt-5">
@@ -141,13 +142,13 @@ export default function Checkout({ params }: { params: { product: string } }) {
                             <p className="text-4xl font-medium">{product?.name}</p>
                             <div className="text-xl font-light bg-green-900 text-white px-3 py-1 rounded-full">
                                 {product?.discountType === "PERCENTAGE" ? <span className="text-sm">{product?.discount}% OFF</span> :
-                                    <span className="text-sm">{product?.discount} $ OFF</span>
+                                    <span className="text-sm">{product?.discount}$ OFF</span>
                                 }
                             </div>
                         </div>
                         <div className="flex py-2 items-center gap-5">
                             {product?.discountType === "PERCENTAGE" ? <span className="text-2xl">$ {product?.price - product?.price * product?.discount / 100}</span> :
-                                <span className="text-2xl"> $ {product?.discount} </span>
+                                <span className="text-2xl"> $ {product?.price - product?.discount} </span>
                             }
                             <p>$ {product?.price}</p>
                         </div>
@@ -283,7 +284,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
                             key={item.id}
                             id={item.id}
                             image={`/products/${item?.image}`}
-                            price = {item?.price}
+                            price={item?.price}
                             label={item?.label}
                             averageRating={averageRating}
                             discription={item?.description}

@@ -1,60 +1,120 @@
 import Image from "next/image";
 import React from "react";
-import { FaStar } from "react-icons/fa6";
+import { FaStar, FaHeart } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
+import { useAppSelector, useAppDispatch } from '@/app/redux/hooks';
+import { useSession } from "next-auth/react";
+import { errorToast, successToast } from "@/components/toster";
+import { addToWishList } from "@/app/redux/slices/wishListSlice";
+import { isLoginModel } from '@/app/redux/slices/utilSlice';
+import { setOpenCart } from '@/app/redux/slices/utilSlice';
+import { actionTocartFunc } from '@/app/redux/slices/cartSclice';
 
 const Recentviewedcard = ({
-  image,
-  label,
-  discription,
-  newbtn,
+  item,
+  wish
 }: {
-  image: string;
-  label: string;
-  discription: string;
-  newbtn: boolean;
+  item: any;
+  wish: boolean
 }) => {
+  const dispatch = useAppDispatch();
+  const { data: session, status }: any = useSession();
+  const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
+  const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
+
+
+  const handelike = async () => {
+    if (session) {
+      dispatch(addToWishList({ productId: item?.id, }));
+    } else {
+      dispatch(isLoginModel(true));
+    }
+  };
+
+  const addToCartFunction = async (id: string) => {
+    const payload = { productId: id, action: "add" }
+    const data = await dispatch(actionTocartFunc(payload))
+    if (data.payload.st) {
+      successToast(data?.payload.msg)
+    } else {
+      errorToast(data.payload.msg)
+    }
+  }
+
   return (
     <>
-      <div className="border-2 border-[#CFCFCF] shadow-xl mx-5 my-2 bg-white pb-5">
+      <div className="border-2 border-[#CFCFCF] shadow-xl mx-5 my-2 bg-white pb-5 w-72 h-96 flex flex-col justify-between">
         <div>
-          {newbtn ? (
+          {item?.isNew ? (
             <div className="flex justify-between">
               <div className="font-semibold text-base px-7 flex justify-center items-center bg-black text-white">
                 NEW
               </div>
               <div className="pr-5 pt-5">
-                <FaRegHeart className="w-7 h-7" />
+                <button onClick={handelike}>
+                  {wish ? (
+                    <FaHeart className="w-7 h-7 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="w-7 h-7 " />
+                  )}
+                </button>
+
               </div>
             </div>
           ) : (
             <div className="flex justify-end">
               <div className="pr-5 pt-5">
-                <FaRegHeart className="w-7 h-7" />
+                <button onClick={handelike}>
+
+                  {wish ? (
+                    <FaHeart className="w-7 h-7 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="w-7 h-7 " />
+                  )}
+                </button>
               </div>
             </div>
           )}
         </div>
-        <div className="pt-5 flex justify-center items-center">
-          {" "}
-          <img src={image} alt={label} />
+        <div className="pt-5 flex justify-center items-center flex-grow">
+          <Image
+            className="border border-black rounded object-cover"
+            src={`/products/${item?.image}`}
+            alt="NO Image Found!"
+            width={200}
+            height={200}
+          />
         </div>
-        <p className="text-2xl font-normal pt-5">
-          <label
-            htmlFor=""
-            className=" flex justify-center items-center gap-3 robto"
-          >
-            {label}
-          </label>
-        </p>
-        <p className="pt-3 text-base  flex justify-center items-center gap-3 roboto">
-          <FaStar />
-          {discription}
-        </p>
-        <div className="flex justify-center items-center pt-5 px-5">
-          <button className="bg-black text-white py-3 px-12 md:px-20 lg:px-24 roboto">
-            ADD TO CART
+        <div className="px-5">
+          <p className="text-2xl font-normal pt-5 text-center">{item?.label}</p>
+          <p className="pt-3 text-base text-center flex justify-center items-center gap-3">
+            <FaStar />
+            <span className="truncate">{item?.discription}</span>
+          </p>
+        </div>
+        <div className=" justify-center items-center pt-3  relative transition group mx-2">
+          <button className=" py-3  border-black border poppins  text-base font-bold w-full">
+            ₹{item?.price}
           </button>
+          {
+            session && cart?.find((cartItem: any) => cartItem?.productId === item?.id) ?
+              <button
+                className="py-3 absolute left-0 border-black border poppins  text-base font-bold opacity-0 group-hover:opacity-100  w-full bg-black text-white"
+                onClick={() => {
+                  session ? dispatch(setOpenCart(!openCart)) : ""
+                }}
+              >
+                Open cart
+              </button> :
+              <button
+                className="py-3 absolute left-0 border-black border poppins  text-base font-bold opacity-0 group-hover:opacity-100  w-full bg-black text-white"
+                onClick={() => {
+                  session ? addToCartFunction(item?.id) : dispatch(isLoginModel(true));
+                }}
+              >
+                Add to cart
+              </button>
+          }
         </div>
       </div>
     </>

@@ -14,6 +14,7 @@ import { apiUrl } from '../../../../../env';
 import { truncate } from 'fs';
 import { actionTocartFunction_ } from '@/components/Cart';
 import { fetchCategories } from "../../../redux/slices/categorySlice";
+import Image from 'next/image';
 
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
@@ -26,7 +27,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
     const { data: session, status }: any = useSession();
     let [subTotal, setSubTotal] = useState(0)
     const [openPreview, setOpenPreview] = useState(false);
-    const [priview, sePriview] = useState < Product > ({} as Product)
+    const [priview, sePriview] = useState<Product>({} as Product)
     const [repeatOrder, setRepeatOrder] = useState(true);
     const [returnOrder, setReturnOrder] = useState(false);
     const [returnOrderDisabled, setReturnOrderDisabled] = useState(true);
@@ -61,9 +62,14 @@ export default function Checkout({ params }: { params: { estimation: string } })
     useEffect(() => {
         setSubTotal(
             order_?.reduce((acc: any, item: any) => {
-                return item.checked ? acc + (item?.product?.price * item?.qty) : acc + 0
+                if (item?.product?.discountType !== "PERCENTAGE") {
+                    return item.checked ? acc + (item?.product?.price * item?.qty - ((item?.product?.price * item?.qty) * item?.product?.discount / 100)) : acc + 0
+                } else {
+
+                    return item.checked ? acc + ((item?.product?.price - item?.product?.discount) * item?.qty) : acc + 0
+                }
             }, 0)
-        );
+        )
     }, [order_])
 
     useEffect(() => {
@@ -201,7 +207,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                             onChange={() => toggleSelect(item.id, i)} // Assuming item.id exists
                                         />
                                         <div className="w-16 h-16 rounded-md overflow-hidden">
-                                            <img alt="Product image" className="object-cover w-full h-full" src="/placeholder.svg" />
+                                            <Image height={100} width={100} alt="Product image" className="object-cover w-full h-full" src={`/products/${item?.product?.image[0]}`} />
                                         </div>
                                         <div className="text-sm">
                                             <div className="font-medium">{item?.product?.name}</div>

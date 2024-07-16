@@ -12,14 +12,14 @@ export default withAuth(
         if (req.nextUrl.pathname.startsWith("/register") && req.nextauth.token) {
             return NextResponse.redirect(new URL("/", req.url))
         }
-        if (req.nextUrl.pathname.startsWith("/checkout") && !req.nextauth.token) {
+        if ((req.nextUrl.pathname.startsWith("/checkout") || req.nextUrl.pathname.startsWith("/profile") )&& !req.nextauth.token) {
             return NextResponse.redirect(new URL("/", req.url))
         }
     },
     {
         callbacks: {
             authorized: ({ token, req }) => {
-                if (!token && (['/register', '/checkout', '/orders'].some(path => req.nextUrl.pathname.startsWith(path)))) {
+                if (!token && (['/register', '/checkout', '/orders', '/profile'].some(path => req.nextUrl.pathname.startsWith(path)))) {
                     return true;
                 }
                 return token != null
@@ -32,5 +32,5 @@ export default withAuth(
 );
 
 export const config = {
-    matcher: ['/admin/:path*', "/register", "/checkout/:path*", "/orders"]
+    matcher: ['/admin/:path*', "/register", "/checkout/:path*", "/orders", "/profile/:path*"]
 };
