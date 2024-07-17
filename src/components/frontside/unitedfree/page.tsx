@@ -44,7 +44,7 @@ const Unitedfreecard = ({
 
   return (
     <div className="mx-5" key={id}>
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden border border-black">
         {" "}
         <img src={image} alt={label} className="h-[300px] " />
         <div className="absolute h-full w-full bg-black/20 flex justify-center items-center -bottom-10 hover:bottom-0 opacity-0 hover:opacity-100 transition-all duration-300">
