@@ -316,7 +316,7 @@ export default function BuyHistory() {
 
     const handleImageClick = (selectedImage) => {
         setUpdateImageIds((prevImages) => {
-            if (prevImages.includes(selectedImage)) {
+            if (prevImages?.includes(selectedImage)) {
                 return prevImages.filter(image => image !== selectedImage);
             } else {
                 return [...prevImages, selectedImage];
@@ -910,7 +910,7 @@ export default function BuyHistory() {
                                                                     <input
                                                                         type="checkbox"
                                                                         className="absolute top-0 left-0 w-6 h-6"
-                                                                        checked={updateImageIds.includes(x)}
+                                                                        checked={updateImageIds?.includes(x)}
                                                                         onChange={() => handleImageClick(x)}
                                                                     />
                                                                     <img

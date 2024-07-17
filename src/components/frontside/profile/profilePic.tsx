@@ -42,7 +42,7 @@ const ProfilePic = () => {
 
     const validateFile = (file: File) => {
         const validFormats = ['image/jpeg', "image/jpg", 'image/png', 'image/gif'];
-        if (!validFormats.includes(file.type)) {
+        if (!validFormats?.includes(file.type)) {
             return 'Invalid file format. Only JPEG, JPG, PNG, and GIF are allowed.';
         }
         if (file.size > 15 * 1024 * 1024) { // 15 MB

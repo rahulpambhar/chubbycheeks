@@ -5,17 +5,19 @@ import Unitedfreecard from "../unitedfree/page";
 import { useSelector } from 'react-redux';
 
 
-const shuffleArray = (array: any) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
+
 
 
 const Unitedfree = () => {
-  const productsList: any = useSelector((state: any) => state.categories.productsList);
+  const productsList: any = useSelector((state: any) => state.categories?.productsList);
+
+  const shuffleArray = (array: any) => {
+    for (let i = array?.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
   const selectedProducts = shuffleArray([...productsList]).slice(0, 4);
 
   return (
@@ -24,7 +26,7 @@ const Unitedfree = () => {
         shop united & fill free
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 pt-10  lg:mx-44 gap-5  border border-black">
-        {selectedProducts.map((item: any) => (
+        { selectedProducts && selectedProducts.map((item: any) => (
           <Unitedfreecard
             id={item.id}
             image={item.image}

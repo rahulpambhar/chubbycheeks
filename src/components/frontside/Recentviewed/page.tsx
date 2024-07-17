@@ -10,7 +10,7 @@ const Recentviewed = () => {
   const [showAll, setShowAll] = useState(false);
   useEffect(() => {
     const getrecentView: any = localStorage.getItem("recentVw");
-    const filterProducts = productsList?.filter((item: any) => getrecentView.includes(item.id));
+    const filterProducts = productsList?.filter((item: any) => getrecentView?.includes(item.id));
     setTopselectionitem(filterProducts);
   }, [productsList]);
 

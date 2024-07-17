@@ -27,7 +27,7 @@ export const profileValidate = Yup.object().shape({
     email: Yup.string().email('Invalid email address').required('Email is required'),
     gender: Yup.string().required('Gender is required').oneOf(['male', 'female', 'other'], 'Invalid gender'),
 
-    profile_pic: Yup.mixed().required('A file is required').test('fileSize', 'File too large', value => value && value.size <= FILE_SIZE).test('fileFormat', 'Unsupported Format', value => value && SUPPORTED_FORMATS.includes(value.type)),
+    profile_pic: Yup.mixed().required('A file is required').test('fileSize', 'File too large', value => value && value.size <= FILE_SIZE).test('fileFormat', 'Unsupported Format', value => value && SUPPORTED_FORMATS?.includes(value.type)),
 
     country_code: Yup.string().required('Country code is required'),
     mobile: Yup.string()
