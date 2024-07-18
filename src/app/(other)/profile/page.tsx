@@ -26,6 +26,9 @@ import AddressSection from '@/components/frontside/profile/addressSection';
 import ChangePassword from '@/components/frontside/profile/changePassword';
 import axios from 'axios';
 import { apiUrl } from '../../../../env';
+import Pagination from 'react-js-pagination';
+
+
 
 export default function Checkout() {
     const { data: session, status }: any = useSession();
@@ -41,6 +44,8 @@ export default function Checkout() {
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 5
 
+    const totalOrders = orders.length;
+
     const getOrders = async () => await dispatch(getOrdersFunc())
     const getReturnOrders = async () => await dispatch(getReturnOrdersFunc())
     const getProfile = async () => await dispatch(getUser(session?.user?.id))
@@ -52,6 +57,10 @@ export default function Checkout() {
     const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
     const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
     const userProfile = useAppSelector((state: any) => state?.userReducer?.user);
+
+    const handlePageChange = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+    };
 
     const filterWishes = useMemo(() => {
         return productsList?.map((item: any) => {
@@ -123,9 +132,9 @@ export default function Checkout() {
                     </div>
                     {
                         component === "Profile" &&
-                        <div className="mt-12 lg:mt-0 lg:w-3/4">
+                        <div className="mt-12 lg:mt-0 lg:w-3/4 shadow-2xl" >
                             <div className="bg-grey-light py-10 px-6 sm:px-10">
-                                <h1 className="font-hkbold mb-12 text-2xl text-secondary sm:text-left">
+                                <h1 className="font-hkbold mb-12 text-2xl  sm:text-left">
                                     Profile Details
                                 </h1>
 
@@ -172,7 +181,7 @@ export default function Checkout() {
                                         )}
                                     </Formik>
 
-                                    <ChangePassword/>
+                                    <ChangePassword />
                                 </div>
                             </div>
                         </div>
@@ -181,7 +190,7 @@ export default function Checkout() {
                         component === "Wishlist" &&
                         <div className="mt-12 lg:mt-0 lg:w-3/4">
                             <div className="bg-grey-light py-8 px-5 md:px-8">
-                                <h1 className="font-hkbold pb-6 text-center text-2xl text-secondary sm:text-left">
+                                <h1 className="font-hkbold pb-6 text-center text-2xl  sm:text-left">
                                     My Wishes
                                 </h1>
                                 {filterWishes && filterWishes.map((item: any) => (
@@ -189,10 +198,10 @@ export default function Checkout() {
 
                                         <div className="flex flex-col w-full border-b border-grey-dark pb-4  border-black text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
 
-                                            <Image width={100} height={100} src={`/products/${item?.product?.image[0]}`} alt='No image found' className="mt-2 font-hk text-base   text-secondary" />
+                                            <Image width={100} height={100} src={`/products/${item?.product?.image[0]}`} alt='No image found' className="mt-2 font-hk text-base   " />
                                             <div>
-                                                <h6 className="font-hk text-secondary">{item?.product?.name}</h6>
-                                                {/* <h6 className="font-hk text-secondary">{item?.product?.avgRating}</h6>  */}
+                                                <h6 className="font-hk ">{item?.product?.name}</h6>
+                                                {/* <h6 className="font-hk ">{item?.product?.avgRating}</h6>  */}
                                                 <div className="flex items-center mb-1">
                                                     {[...Array(5)].map((star, index) => (
                                                         <FaStar
@@ -201,14 +210,14 @@ export default function Checkout() {
                                                         />
                                                     ))}
                                                 </div>
-                                                <h6 className="font-hk text-secondary">Review : {item?.product?.numReviews ? item?.product?.numReviews : 0}</h6>
+                                                <h6 className="font-hk ">Review : {item?.product?.numReviews ? item?.product?.numReviews : 0}</h6>
                                             </div>
                                         </div>
 
                                         <div className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
-                                            <h6 className="font-hk text-secondary">{item?.product?.price} $</h6>
-                                            <h6 className="font-hk text-secondary">{item?.product?.discountType === "PERCENTAGE" ? `${item?.product?.discount}% Off` : `${item?.product?.discount} $ off`}</h6>
-                                            <h6 className="font-hk text-secondary">  {
+                                            <h6 className="font-hk ">{item?.product?.price} $</h6>
+                                            <h6 className="font-hk ">{item?.product?.discountType === "PERCENTAGE" ? `${item?.product?.discount}% Off` : `${item?.product?.discount} $ off`}</h6>
+                                            <h6 className="font-hk ">  {
                                                 item?.product?.discountType === "PERCENTAGE" ? (item?.product?.price * 1 - ((item?.product?.price * 1) * item?.product?.discount / 100)) : ((item?.product?.price - item?.product?.discount) * 1)
                                             } $</h6>
                                         </div>
@@ -251,11 +260,16 @@ export default function Checkout() {
                                     </div>
                                 ))}
                                 <div className="flex justify-center pt-6 md:justify-end">
-                                    <span className="cursor-pointer pr-5 font-hk font-semibold text-grey-darkest transition-colors hover:text-black" onClick={() => paginate(currentPage - 1)}>Previous</span>
-                                    {Array.from({ length: Math.ceil(pegiLenght / ordersPerPage) }, (_, i) => (
-                                        <span key={i} className="mr-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full font-hk text-sm font-semibold text-black transition-colors hover:bg-primary hover:text-white" onClick={() => paginate(i + 1)}>{i + 1}</span>
-                                    ))}
-                                    <span className="cursor-pointer pl-2 font-hk font-semibold text-grey-darkest transition-colors hover:text-black" onClick={() => paginate(currentPage + 1)}>Next</span>
+                                    <Pagination
+                                        activePage={currentPage}
+                                        itemsCountPerPage={ordersPerPage}
+                                        totalItemsCount={pegiLenght}
+                                        pageRangeDisplayed={5}
+                                        onChange={handlePageChange}
+                                        itemClass="page-item"
+                                        linkClass="page-link"
+                                        activeClass="active"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -265,25 +279,25 @@ export default function Checkout() {
                         <div className="mt-12 lg:mt-0 lg:w-3/4">
                             <div className="bg-grey-light py-8 px-5 md:px-8">
                                 <h1
-                                    className="font-hkbold pb-6 text-center text-2xl text-secondary sm:text-left">
+                                    className="font-hkbold pb-6 text-center text-2xl  sm:text-left text text-black">
                                     My Order's
                                 </h1>
                                 <div className="hidden sm:block">
                                     <div className="flex justify-between pb-3">
                                         <div className="w-1/3 pl-4 md:w-2/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Order Date & Time (In)</span>
+                                            <span className="font-hkbold text-sm uppercase ">Order Date & Time (In)</span>
                                         </div>
                                         <div className="w-1/3 pl-4 md:w-2/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Order Id</span>
+                                            <span className="font-hkbold text-sm uppercase ">Order Id</span>
                                         </div>
                                         <div className="w-1/4 text-center xl:w-1/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Items</span>
+                                            <span className="font-hkbold text-sm uppercase ">Items</span>
                                         </div>
                                         <div className="mr-3 w-1/6 text-center md:w-1/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Order value</span>
+                                            <span className="font-hkbold text-sm uppercase ">Order value</span>
                                         </div>
                                         <div className="w-3/10 text-center md:w-1/5">
-                                            <span className="font-hkbold pr-8 text-sm uppercase text-secondary md:pr-16 xl:pr-8">Status</span>
+                                            <span className="font-hkbold pr-8 text-sm uppercase  md:pr-16 xl:pr-8">Status</span>
                                         </div>
                                     </div>
                                 </div>
@@ -295,21 +309,21 @@ export default function Checkout() {
                                         >
                                             <div
                                                 className="flex w-full flex-col border-b border-grey-dark pb-4 text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
-                                                <span className="mt-2 font-hk text-base text-secondary">{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                                                <span className="mt-2 font-hk text-base ">{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
                                             </div>
                                             <div
                                                 className="flex w-full flex-col border-b border-grey-dark pb-4 text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
-                                                <span className="mt-2 font-hk text-base text-secondary">{item.id}</span>
+                                                <span className="mt-2 font-hk text-base ">{item.id}</span>
                                             </div>
                                             <div
                                                 className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/5 sm:border-b-0 sm:pb-0">
-                                                <span className="font-hkbold block pt-3 pb-2 text-center text-sm uppercase text-secondary sm:hidden">Quantity</span>
-                                                <span className="font-hk text-secondary">{item.itemCount}</span>
+                                                <span className="font-hkbold block pt-3 pb-2 text-center text-sm uppercase  sm:hidden">Quantity</span>
+                                                <span className="font-hk ">{item.itemCount}</span>
                                             </div>
                                             <div
                                                 className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
-                                                <span className="font-hkbold block pt-3 pb-2 text-center text-sm uppercase text-secondary sm:hidden">Price</span>
-                                                <span className="font-hk text-secondary">${item.total}</span>
+                                                <span className="font-hkbold block pt-3 pb-2 text-center text-sm uppercase  sm:hidden">Price</span>
+                                                <span className="font-hk ">${item.total}</span>
                                             </div>
                                             <div
                                                 className="w-full text-center sm:w-3/10 sm:text-right md:w-1/4 xl:w-1/5">
@@ -321,13 +335,17 @@ export default function Checkout() {
                                     </Link>
                                 ))}
 
-
                                 <div className="flex justify-center pt-6 md:justify-end">
-                                    <span className="cursor-pointer pr-5 font-hk font-semibold text-grey-darkest transition-colors hover:text-black" onClick={() => paginate(currentPage - 1)}>Previous</span>
-                                    {Array.from({ length: Math.ceil(orders.length / ordersPerPage) }, (_, i) => (
-                                        <span key={i} className="mr-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full font-hk text-sm font-semibold text-black transition-colors hover:bg-primary hover:text-white" onClick={() => paginate(i + 1)}>{i + 1}</span>
-                                    ))}
-                                    <span className="cursor-pointer pl-2 font-hk font-semibold text-grey-darkest transition-colors hover:text-black" onClick={() => paginate(currentPage + 1)}>Next</span>
+                                    <Pagination
+                                        activePage={currentPage}
+                                        itemsCountPerPage={ordersPerPage}
+                                        totalItemsCount={pegiLenght}
+                                        pageRangeDisplayed={5}
+                                        onChange={handlePageChange}
+                                        itemClass="page-item"
+                                        linkClass="page-link"
+                                        activeClass="active"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -336,25 +354,25 @@ export default function Checkout() {
                         component === "ReturnOrders" &&
                         <div className="mt-12 lg:mt-0 lg:w-3/4">
                             <div className="bg-grey-light py-8 px-5 md:px-8">
-                                <h1 className="font-hkbold pb-6 text-center text-2xl text-secondary sm:text-left">
+                                <h1 className="font-hkbold pb-6 text-center text-2xl  sm:text-left">
                                     Return Orders
                                 </h1>
                                 <div className="hidden sm:block">
                                     <div className="flex justify-between pb-3">
                                         <div className="w-1/3 pl-4 md:w-2/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Order Date & Time (In)</span>
+                                            <span className="font-hkbold text-sm uppercase ">Order Date & Time (In)</span>
                                         </div>
                                         <div className="w-1/3 pl-4 md:w-2/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Invoice No</span>
+                                            <span className="font-hkbold text-sm uppercase ">Invoice No</span>
                                         </div>
                                         <div className="w-1/4 text-center xl:w-1/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Items</span>
+                                            <span className="font-hkbold text-sm uppercase ">Items</span>
                                         </div>
                                         <div className="mr-3 w-1/6 text-center md:w-1/5">
-                                            <span className="font-hkbold text-sm uppercase text-secondary">Return Order value</span>
+                                            <span className="font-hkbold text-sm uppercase ">Return Order value</span>
                                         </div>
                                         <div className="w-3/10 text-center md:w-1/5">
-                                            <span className="font-hkbold pr-8 text-sm uppercase text-secondary md:pr-16 xl:pr-8">Status</span>
+                                            <span className="font-hkbold pr-8 text-sm uppercase  md:pr-16 xl:pr-8">Status</span>
                                         </div>
                                     </div>
                                 </div>
@@ -363,34 +381,39 @@ export default function Checkout() {
                                     className="mb-3 flex flex-col items-center justify-between rounded bg-white px-4 py-5 shadow sm:flex-row sm:py-4">
                                     <div
                                         className="flex w-full flex-col border-b border-grey-dark pb-4 text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
-                                        <span className="mt-2 font-hk text-base text-secondary">{moment(order.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                                        <span className="mt-2 font-hk text-base ">{moment(order.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span>
                                     </div>
                                     <div
                                         className="flex w-full flex-col border-b border-grey-dark pb-4 text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
-                                        <span className="mt-2 font-hk text-base text-secondary">{order?.invoiceNo}</span>
+                                        <span className="mt-2 font-hk text-base ">{order?.invoiceNo}</span>
                                     </div>
                                     <div
                                         className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/5 sm:border-b-0 sm:pb-0">
-                                        <span className="font-hk text-secondary">{order?.itemCount}</span>
+                                        <span className="font-hk ">{order?.itemCount}</span>
                                     </div>
                                     <div
                                         className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
-                                        <span className="font-hk text-secondary">${order?.netAmount}</span>
+                                        <span className="font-hk ">${order?.netAmount}</span>
                                     </div>
                                     <div
                                         className="w-full text-center sm:w-3/10 sm:text-right md:w-1/4 xl:w-1/5">
                                         <div className="pt-3 sm:pt-0">
-                                            <span className="font-hk text-secondary">{order?.orderRerunrnStatus}</span>
+                                            <span className="font-hk ">{order?.orderRerunrnStatus}</span>
                                         </div>
                                     </div>
                                 </div>))
                                 }
                                 <div className="flex justify-center pt-6 md:justify-end">
-                                    <span className="cursor-pointer pr-5 font-hk font-semibold text-grey-darkest transition-colors hover:text-black" onClick={() => paginate(currentPage - 1)}>Previous</span>
-                                    {Array.from({ length: Math.ceil(pegiLenght / ordersPerPage) }, (_, i) => (
-                                        <span key={i} className="mr-3 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full font-hk text-sm font-semibold text-black transition-colors hover:bg-primary hover:text-white" onClick={() => paginate(i + 1)}>{i + 1}</span>
-                                    ))}
-                                    <span className="cursor-pointer pl-2 font-hk font-semibold text-grey-darkest transition-colors hover:text-black" onClick={() => paginate(currentPage + 1)}>Next</span>
+                                    <Pagination
+                                        activePage={currentPage}
+                                        itemsCountPerPage={ordersPerPage}
+                                        totalItemsCount={pegiLenght}
+                                        pageRangeDisplayed={5}
+                                        onChange={handlePageChange}
+                                        itemClass="page-item"
+                                        linkClass="page-link"
+                                        activeClass="active"
+                                    />
                                 </div>
                             </div>
                         </div>

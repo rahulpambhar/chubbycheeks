@@ -19,20 +19,21 @@ const Unitedfree = () => {
     return array;
   };
   const selectedProducts = shuffleArray([...productsList]).slice(0, 4);
+ 
 
   return (
-    <div className="bg-[#e6e1e1] border border-black">
+    <div className="bg-[#e6e1e1]">
       <div className="flex justify-center items-center uppercase  text-5xl pt-10 font-normal text- unica-one">
         shop united & fill free
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 pt-10  lg:mx-44 gap-5  border border-black">
-        { selectedProducts && selectedProducts.map((item: any) => (
+      <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 pt-10  lg:mx-44 gap-5 ">
+        {selectedProducts && selectedProducts.map((item: any) => (
           <Unitedfreecard
             id={item.id}
             image={item.image}
-            label={item.label}
+            label={item.name}
             price={item.price}
-            averageRating={item.averageRating}
+            averageRating={item.avgRating}
             discription={item.description}
           />
         ))}

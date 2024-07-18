@@ -1,9 +1,11 @@
 import React from 'react'
 import { ErrorMessage, Field, useFormikContext } from 'formik'
-import { countryCodes, } from "@/app/utils";
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 const AddressSection = () => {
 
-    const { setFieldValue, errors, isSubmitting }: any = useFormikContext();
+    const { setFieldValue, values, isSubmitting }: any = useFormikContext();
 
     return (
 
@@ -11,15 +13,10 @@ const AddressSection = () => {
             <h4 className="font-semibold mb-4 text-xl text-gray-800">Billing Address</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
                 <div className="mb-4">
-                    <label htmlFor="street" className="block font-medium text-gray-700">
-                        Address<span className='text-red-600'>*</span>
-                    </label>
-                    <Field
-                        type="text"
-                        name="address"
-                        className="form-input mt-1 block w-full"
-                        placeholder="123 Main St"
-                    />
+                    <Label htmlFor="address">Address <span className="text-red-600">*</span></Label>
+                    <Input id="address" value={values.address} placeholder="123 Main St" onChange={(e) => {
+                        setFieldValue('address', e.target.value)
+                    }} />
                     <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
                 </div>
 
@@ -27,60 +24,41 @@ const AddressSection = () => {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div className="mb-4">
-                    <label htmlFor="city" className="block font-medium text-gray-700">
-                        City<span className='text-red-600'>*</span>
-                    </label>
-                    <Field
-                        type="text"
-                        name="city"
-                        className="form-input mt-1 block w-full"
-                        placeholder="New York"
-                    />
+                    <Label htmlFor="city">City <span className="text-red-600">*</span></Label>
+                    <Input id="city" value={values.city} placeholder="Bengaluru" onChange={(e) => {
+                        setFieldValue('city', e.target.value)
+                    }} />
                     <ErrorMessage name="city" component="div" className="text-red-500 text-sm" />
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="state" className="block font-medium text-gray-700">
-                        State<span className='text-red-600'>*</span>
-                    </label>
-                    <Field
-                        type="text"
-                        name="state"
-                        className="form-input mt-1 block w-full"
-                        placeholder="NY"
-                    />
+                    <Label htmlFor="state">State <span className="text-red-600">*</span></Label>
+                    <Input id="state" value={values.state} placeholder="Karnataka" onChange={(e) => {
+                        setFieldValue('state', e.target.value)
+                    }} />
                     <ErrorMessage name="state" component="div" className="text-red-500 text-sm" />
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="zip" className="block font-medium text-gray-700">
-                        Zip Code<span className='text-red-600'>*</span>
-                    </label>
-                    <Field
-                        type="text"
-                        name="pincode"
-                        className="form-input mt-1 block w-full"
-                        placeholder="10001"
-                    />
+                    <Label htmlFor="pincode">Pincode <span className="text-red-600">*</span></Label>
+                    <Input id="pincode" value={values.pincode} placeholder="560001" onChange={(e) => {
+                        setFieldValue('pincode', e.target.value)
+                    }} />
                     <ErrorMessage name="pincode" component="div" className="text-red-500 text-sm" />
                 </div>
             </div>
 
             <div className="mt-4">
-                <label htmlFor="country" className="block font-medium text-gray-700">
-                    Country<span className='text-red-600'>*</span>
-                </label>
-                <Field type="text" name="country" readOnly className="w-full  px-2  registration border-black py-1 bg-gray-300 border rounded mt-2" />
-
+                <Label htmlFor="country">Country <span className="text-red-600">*</span></Label>
+                <Input readOnly id="country" value={values.country} placeholder="India" onChange={(e) => {
+                    setFieldValue('country', e.target.value)
+                }} />
                 <ErrorMessage name="country" component="div" className="text-red-500 text-sm" />
             </div>
             <div className="mt-6">
-                <button
-                    type="submit"
-                    className="btn btn-primary bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-                >
+                <Button>
                     {isSubmitting ? "Submitting..." : "Submit"}
-                </button>
+                </Button>
             </div>
         </div>
 

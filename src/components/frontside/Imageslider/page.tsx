@@ -1,24 +1,31 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import AliceCarousel from "react-alice-carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 const items = [
   <div className="item">
-    <video width="100%" controls autoPlay loop muted className="media">
+    <video height="100%"controls autoPlay loop muted className="w-[1500px] h-[650px]">
       <source src="/image/chubbycheeks/video-3.mp4" />
       Your browser does not support the video tag.
     </video>
 
   </div>,
   <div className="item">
-    <video width="100%" controls autoPlay loop muted className="media">
+    <video  controls autoPlay loop muted className="w-[1500px] h-[650px] ">
       <source src="/image/chubbycheeks/video-5.mp4" />
       Your browser does not support the video tag.
     </video>
   </div>,
 
   <div className="item">
-    <video width="100%" controls autoPlay loop muted className="media">
+    <video controls autoPlay loop muted className="w-[1500px] h-[650px] ">
       <source src="/image/chubbycheeks/video-4.mp4" />
       Your browser does not support the video tag.
     </video>
@@ -41,27 +48,53 @@ const ImageSlider = () => {
   };
 
   return (
-    <div className="carousel mt-1">
-      <AliceCarousel
-        activeIndex={mainIndex}
-        disableDotsControls
-        disableButtonsControls
-        items={items}
-      />
-      <p className="index">{`${mainIndex + 1}/${items.length}`}</p>
-      <div className="caption-container">
-        <p className="caption">
-          Description...
-        </p>
+    <>
+      <div className="flex justify-center w-[1500px] container mt-5 items-center " >
+          <div className="">
+            <Carousel className=" ">
+              <CarouselContent>
+                {
+                  items.map((item, index) => (
+                    <CarouselItem key={index}>
+                      {item}
+                    </CarouselItem>
+                  ))
+                }
+
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+
+          </div>
+     
       </div>
 
-      <div className="btn-prev" onClick={slidePrev}>
-        &lang;
-      </div>
-      <div className="btn-next" onClick={slideNext}>
-        &rang;
-      </div>
-    </div>
+
+    </>
+    // <div className="carousel mt-1 ">
+
+
+    //   {/* <AliceCarousel
+    //     activeIndex={mainIndex}
+    //     disableDotsControls
+    //     disableButtonsControls
+    //     items={items}
+    //   /> */}
+    //   <p className="index">{`${mainIndex + 1}/${items.length}`}</p>
+    //   <div className="caption-container">
+    //     <p className="caption">
+    //       Description...
+    //     </p>
+    //   </div>
+
+    //   <div className="btn-prev" onClick={slidePrev}>
+    //     &lang;
+    //   </div>
+    //   <div className="btn-next" onClick={slideNext}>
+    //     &rang;
+    //   </div>
+    // </div>
   );
 };
 

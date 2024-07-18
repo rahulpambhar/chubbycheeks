@@ -491,3 +491,9 @@ export const loginValidationSchema = Yup.object().shape({
 });
 
 
+export const getInTouchSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required').max(20, 'Name must be at most 20 characters'),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    message: Yup.string().required('Message is required').max(500, 'Message must be at most 500 characters'),
+});
+

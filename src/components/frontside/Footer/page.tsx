@@ -1,6 +1,12 @@
 import React from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import Link from "next/link";
+
+
 
 const Footer = () => {
+  const categories = useSelector((state: any) => state?.categories?.categories);
+
   return (
     <div className="bg-black py-10 px-16">
       <div className="grid grid-cols-7 pb-5">
@@ -9,25 +15,26 @@ const Footer = () => {
           <div className="text-white pt-[82px] ">
             <p className="font-bold text-lg roboto uppercase"> let’s Talk</p>
             <p className="font-normal text-sm roboto pt-2">
-              (+91) 333 2568 4593
+              (+91) 8000 555 268
             </p>
-            <p className="font-normal text-sm roboto">hello@neuronthemes.com</p>
+            <p className="font-normal text-sm roboto">rahulpambhar@yahoo.com</p>
           </div>
         </div>
         <div>
           <p className="text-xl font-bold roboto text-white uppercase">
-            Products
+            Catalogs
           </p>
           <div className="text-sm font-normal roboto grid gap-1 text-white pt-10">
             {" "}
-            <p>Nail Polish</p>
-            <p>Base & Top Coats</p>
-            <p>Nail Care</p>
-            <p>Sweepstakes</p>
-            <p>Virtual Try On</p>
-            <p>Nail Care</p>
-            <p>Sweepstakes</p>
-            <p>Virtual Try On</p>
+
+            {categories?.map((ele: any) => (
+              <p key={ele.id}     >
+                <Link href={`/categories/${ele.name}`} className="">
+                  {ele.name}
+                </Link>
+              </p>
+            ))}
+
           </div>
         </div>
         <div>
@@ -36,22 +43,36 @@ const Footer = () => {
           </p>
           <div className="text-sm font-normal roboto grid gap-1 text-white pt-10">
             {" "}
-            <p>Nail Polish</p>
-            <p>Base & Top Coats</p>
-            <p>Nail Care</p>
-            <p>Sweepstakes</p>
-            <p>Virtual Try On</p>
+            <p>
+              <Link href="/aboutUs" className="">
+                Legacy
+              </Link>
+            </p>
+
           </div>
         </div>
         <div>
-          <p className="text-xl font-bold roboto text-white uppercase">
-            Customer Service
+          <p className="text-xl font-bold roboto text-white uppercase w-[300px]">
+            Other
           </p>
           <div className="text-sm font-normal roboto grid gap-1 text-white pt-10">
             {" "}
-            <p>Nail Polish</p>
-            <p>Base & Top Coats</p>
-            <p>Nail Care</p>
+            <p>
+              <Link href="/contactUs" className="">
+                Contact Us
+              </Link>
+            </p>
+            {/* <p>
+              <Link href="/terms-and-conditions" className="">
+                Terms and Conditions
+              </Link>
+            </p> */}
+            <p>
+              <Link href="/privacyPolicy" className="">
+                Privacy Policy
+              </Link>
+            </p>
+
           </div>
         </div>
         <div className="col-span-2">
@@ -77,7 +98,7 @@ const Footer = () => {
       <hr />
       <div className="flex justify-center items-center  pt-5">
         <p className="font-normal text-lg text-white">
-          Koffeekodes IT Solutions.
+          © 2024 chubbycheeks.com. All rights reserved.
         </p>
       </div>
     </div>

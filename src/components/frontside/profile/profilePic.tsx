@@ -7,6 +7,9 @@ import axios from 'axios';
 import { apiUrl } from "../../../../env"
 import { getUser } from '@/app/redux/slices/userSlice';
 import { useSession } from 'next-auth/react';
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button';
 
 const ProfilePic = () => {
     const dispatch = useAppDispatch();
@@ -52,42 +55,40 @@ const ProfilePic = () => {
     };
 
     return (
-        <div className="flex items-center space-x-4 mb-6">
+        <div className="flex items-center shadow-xl space-x-4 mb-6">
             <Image
                 src={`/users/${userProfile?.profile_pic}`}
                 height={160}
                 width={100}
                 alt="user image"
-                className="h-40 w-40 overflow-hidden rounded-full object-cover"
+                className="h-40 w-40 overflow-hidden rounded-sm  shadow-xl border border-blue-500 object-cover"
             />
             <div className="mb-4">
-                <label htmlFor="profile_pic" className="bloc font-semibold">
-                    Updtate Profile Picture
-                </label>
-                <div>
-                    <input
-                        type="file"
-                        onChange={(e) => {
-                            if (e.target.files && e.target.files[0]) {
-                                const selectedFile = e.target.files[0];
-                                const error = validateFile(selectedFile);
-                                if (error) {
-                                    setFileError(error);
-                                    setFile(null);
-                                } else {
-                                    setFileError(null);
-                                    setFile(selectedFile);
-                                }
+
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <Label htmlFor="picture">Picture</Label>
+                    <Input id="picture" type="file" onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                            const selectedFile = e.target.files[0];
+                            const error = validateFile(selectedFile);
+                            if (error) {
+                                setFileError(error);
+                                setFile(null);
+                            } else {
+                                setFileError(null);
+                                setFile(selectedFile);
                             }
-                        }}
+                        }
+                    }}
                     />
                     {fileError && <div className="text-red-500 text-sm">{fileError}</div>}
                 </div>
             </div>
 
-            <button className="btn btn-primary bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700" onClick={updateProfilePic}>
+            <Button onClick={updateProfilePic}>
                 Save Changes
-            </button>
+            </Button>
+
         </div>
     )
 }

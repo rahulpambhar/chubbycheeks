@@ -41,24 +41,25 @@ const Uppernav = () => {
               <Link href="/profile">
                 <Image src="/image/UserCircle.svg" alt="User Icon" width={28} height={28} />
               </Link>
+              <span className="relative">
+
+                <Image
+                  src="/image/ShoppingCartSimple.svg"
+                  alt="Shopping Cart Icon"
+                  width={28}
+                  height={28}
+                  onClick={() => { dispatch(setOpenCart(!openCart)) }}
+                  className="cursor-pointer"
+                />
+                {cart && cart.CartItem?.length > 0 && (
+                  <div className="absolute -top-2 left-5 bg-white rounded-full px-2 text-xs">
+                    {cart.CartItem.length}
+                  </div>
+                )}
+              </span>
             </>
           )}
-          <span className="relative">
 
-            <Image
-              src="/image/ShoppingCartSimple.svg"
-              alt="Shopping Cart Icon"
-              width={28}
-              height={28}
-              onClick={() => { dispatch(setOpenCart(!openCart)) }}
-              className="cursor-pointer"
-            />
-            {cart && cart.CartItem?.length > 0 && (
-              <div className="absolute -top-2 left-5 bg-white rounded-full px-2 text-xs">
-                {cart.CartItem.length}
-              </div>
-            )}
-          </span>
           <div className="text-white">
             {session ? (
               <>

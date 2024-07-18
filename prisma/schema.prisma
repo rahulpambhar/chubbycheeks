@@ -56,7 +56,7 @@ model User {
     country_code String
     mobile       String
 
-    address  String
+    address String
     city    String
     state   String
     country String
@@ -79,6 +79,7 @@ model User {
     whishlist   Whishlist[]
     Category    Category[]
     SubCategory SubCategory[]
+    GetInTouch  GetInTouch[]
 
     createdAt DateTime @default(now())
     createdBy String?
@@ -546,6 +547,21 @@ model Transport {
 
     createdAt DateTime @default(now())
     createdBy String
+    updatedAt DateTime @updatedAt
+    updatedBy String?
+}
+
+model GetInTouch {
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    name    String
+    email   String 
+    message String
+
+    User      User?   @relation(fields: [userId], references: [id])
+    userId    String? @db.ObjectId
+
+    createdAt DateTime @default(now())
+    createdBy String?
     updatedAt DateTime @updatedAt
     updatedBy String?
 }

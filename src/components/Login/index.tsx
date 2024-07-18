@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { signIn } from "next-auth/react";
 import { useRouter, usePathname, redirect } from "next/navigation";
 import Image from "next/image";
-// import imageLink from '@/public/google-signin-button.png'
 import { useSearchParams } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast"
@@ -67,10 +66,9 @@ const LoginComponents = () => {
                                 });
 
                                 if (res?.error) {
-                                    toast.error("Something Went wrong!!");
-
+                                    errorToast("Something Went wrong try again !! ");
                                 } else {
-                                    toast.success('login successful.');
+                                    successToast("login successful.");
                                     dispatch(isLoginModel(false))
                                     resetForm()
                                     if (pathname === "/register") {
@@ -78,7 +76,7 @@ const LoginComponents = () => {
                                     }
                                 }
                             } catch (error) {
-                                toast.error("Something Went wrong!!");
+                                errorToast("Something Went wrong!!");
                             }
                         }}
                     >
@@ -142,7 +140,7 @@ const LoginComponents = () => {
                                         className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
                                         id="password"
                                         name="password"
-                                        component={PasswordField} 
+                                        component={PasswordField}
                                     />
                                     <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                                 </div>
@@ -175,7 +173,6 @@ const LoginComponents = () => {
                         /> */}
                     </div>
                     <button onClick={() => {
-
                         dispatch(isLoginModel(false))
                     }} className="mt-6 text-sm text-gray-600 underline self-center">Close</button>
                 </div>

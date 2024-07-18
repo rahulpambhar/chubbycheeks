@@ -162,7 +162,7 @@ export default function BuyHistory() {
                 setIsLoading(false);
                 getproductList()
                 if (addProductData.type === "update") {
-                    toast.success(response.data.msg);
+                    successToast(response.data.msg);
                     setModelToggle(false);
                     setAddProductData({
                         name: "",
@@ -190,7 +190,7 @@ export default function BuyHistory() {
                     setProductId("")
                     setUpdateImages({})
                 } else {
-                    toast.success(response.data.msg);
+                    successToast(response.data.msg);
                     setModelToggle(false);
                     setAddProductData({
                         name: "",

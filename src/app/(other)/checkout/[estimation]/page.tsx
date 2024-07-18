@@ -15,7 +15,9 @@ import { truncate } from 'fs';
 import { actionTocartFunction_ } from '@/components/Cart';
 import { fetchCategories } from "../../../redux/slices/categorySlice";
 import Image from 'next/image';
-
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { Button } from '@/components/ui/button';
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
 
@@ -198,62 +200,73 @@ export default function Checkout({ params }: { params: { estimation: string } })
                             <h3 className="text-lg font-semibold">Order Summary</h3>
                         </div>
                         <div className="border-t border-gray-200 dark:border-gray-800">
-                            {session && order_?.map((item: any, i: number) => (
-                                <div key={i} className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-                                    <div className="flex items-center space-x-4">
-                                        <input
-                                            type="checkbox"
-                                            checked={item?.checked}
-                                            onChange={() => toggleSelect(item.id, i)} // Assuming item.id exists
-                                        />
-                                        <div className="w-16 h-16 rounded-md overflow-hidden">
-                                            <Image height={100} width={100} alt="Product image" className="object-cover w-full h-full" src={`/products/${item?.product?.image[0]}`} />
-                                        </div>
-                                        <div className="text-sm">
-                                            <div className="font-medium">{item?.product?.name}</div>
-                                            <div className="text-gray-500 dark:text-gray-400">${orderID ? item?.product?.price : item?.product?.price} x {item?.qty}</div>
-                                        </div>
+                            <ScrollArea className="h-[350px] w-auto rounded-md border">
+                                <div className="p-4">
 
-                                        {item.checked &&
-                                            <div className="flex items-center space-x-2">
-                                                <button disabled={isLoading} onClick={() => {
-                                                    const updatedItems: any = order_.map((o: any) => {
-                                                        if (o.id === item.id && o.qty > 1) {
-                                                            if (!orderID) {
-                                                                actionTocartFunction(order[i], "remove")
-                                                            } else {
-                                                                return { ...o, qty: o.qty - 1 };
-                                                            }
-                                                        }
-                                                        return o;
-                                                    });
-                                                    setOrder(updatedItems);
-                                                }}>-</button>
-                                                <span>{item.qty}</span>
-                                                <button disabled={isLoading} onClick={() => {
-                                                    const updatedItems: any = order_.map((o: any) => {
-                                                        const orderQty = order?.find((val: any) => val.id === item.id)?.qty || 0;
-                                                        if (o.id === item.id) {
-                                                            if (orderID && returnOrder && orderQty > item.qty) {
-                                                                return { ...o, qty: o.qty + 1 };
-                                                            } else if (orderID && repeatOrder) {
-                                                                return { ...o, qty: o.qty + 1 };
-                                                            } else if (!orderID) {
-                                                                actionTocartFunction(item, "add")
-                                                            }
-                                                        }
-                                                        return o;
-                                                    });
-                                                    setOrder(updatedItems);
-                                                }}>+</button>
+                                    {session && order_?.map((item: any, i: number) => (
+                                        <>
+
+                                            <div key={item.id} className="flex items-center justify-between text-sm ">
+                                                <div className="flex items-center space-x-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={item?.checked}
+                                                        onChange={() => toggleSelect(item.id, i)}
+                                                    />
+                                                    <div className="w-16 h-16 rounded-md overflow-hidden">
+                                                        <Image height={100} width={100} alt="Product image" className="object-cover w-full h-full" src={`/products/${item?.product?.image[0]}`} />
+                                                    </div>
+                                                    <div className="text-sm">
+                                                        <div className="font-medium">{item?.product?.name}</div>
+                                                        <div className="text-gray-500 dark:text-gray-400">${orderID ? item?.product?.price : item?.product?.price} x {item?.qty}</div>
+                                                    </div>
+
+                                                    {item.checked &&
+                                                        <div className=" justify-center items-center space-x-2">
+
+                                                            <Button className='bg-green-200  h-[5px] w-[5px] rounded-sm' disabled={isLoading} onClick={() => {
+                                                                const updatedItems: any = order_.map((o: any) => {
+                                                                    const orderQty = order?.find((val: any) => val.id === item.id)?.qty || 0;
+                                                                    if (o.id === item.id) {
+                                                                        if (orderID && returnOrder && orderQty > item.qty) {
+                                                                            return { ...o, qty: o.qty + 1 };
+                                                                        } else if (orderID && repeatOrder) {
+                                                                            return { ...o, qty: o.qty + 1 };
+                                                                        } else if (!orderID) {
+                                                                            actionTocartFunction(item, "add")
+                                                                        }
+                                                                    }
+                                                                    return o;
+                                                                });
+                                                                setOrder(updatedItems);
+                                                            }}>+</Button>
+                                                            <h1>{item.qty}</h1>
+                                                            <Button className=' bg-red-200  h-[5px] w-[5px] rounded-sm' disabled={isLoading} onClick={() => {
+                                                                const updatedItems: any = order_.map((o: any) => {
+                                                                    if (o.id === item.id && o.qty > 1) {
+                                                                        if (!orderID) {
+                                                                            actionTocartFunction(order[i], "remove")
+                                                                        } else {
+                                                                            return { ...o, qty: o.qty - 1 };
+                                                                        }
+                                                                    }
+                                                                    return o;
+                                                                });
+                                                                setOrder(updatedItems);
+                                                            }}>-</Button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <div className="font-medium">${item?.product?.price * item.qty}</div>
+                                                </div>
                                             </div>
-                                        }
-                                    </div>
-                                    <div className="flex items-center">
-                                        <div className="font-medium">${item?.product?.price * item.qty}</div>
-                                    </div>
+
+                                            <Separator className="my-2" />
+                                        </>
+                                    ))}
                                 </div>
-                            ))}
+                            </ScrollArea>
                             {
                                 <div className="flex items-center justify-between p-4">
                                     <div>{orderID ? "Checked Subtotal" : "Subtotal"}</div>
@@ -342,28 +355,45 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                 return
                                             }
 
-                                            if (!returnOrder) {
-                                                const tempData = await dispatch(createTempOrderFunc(orderMeta))
-                                                if (tempData?.payload.st) {
-                                                    successToast("Temp order done!")
-                                                    const data: any = await dispatch(createOrderFunc(tempData?.payload.temOrdrId))
-                                                    data?.payload.st ? successToast(data?.payload.msg) : errorToast(data?.payload.msg)
-                                                } else {
-                                                    errorToast(tempData.payload.msg)
-                                                }
-                                            } else {
-                                                const data = {
-                                                    orderID: orderID,
-                                                    selectedItems: orderMeta?.selectedItems
-                                                }
+                                            const  formField ={
+                                                name:"abc",
+                                                pincode:"123",
+                                                address:"abc",
+                                                city:"abc",
+                                                state:"abc",
+                                                country:"abc",
+                                                mobile:"123",
+                                                email:"abc"
 
-                                                const response = await axios.post(`${apiUrl}/return/returnOrder`, data);
-                                                if (response.data.st) {
-                                                    successToast(response.data.msg)
-                                                } else {
-                                                    errorToast(response.data.msg)
-                                                }
                                             }
+
+                                            const optionn ={
+                                                
+                                            }
+
+
+                                            // if (!returnOrder) {
+                                            //     const tempData = await dispatch(createTempOrderFunc(orderMeta))
+                                            //     if (tempData?.payload.st) {
+                                            //         successToast("Temp order done!")
+                                            //         const data: any = await dispatch(createOrderFunc(tempData?.payload.temOrdrId))
+                                            //         data?.payload.st ? successToast(data?.payload.msg) : errorToast(data?.payload.msg)
+                                            //     } else {
+                                            //         errorToast(tempData.payload.msg)
+                                            //     }
+                                            // } else {
+                                            //     const data = {
+                                            //         orderID: orderID,
+                                            //         selectedItems: orderMeta?.selectedItems
+                                            //     }
+
+                                            //     const response = await axios.post(`${apiUrl}/return/returnOrder`, data);
+                                            //     if (response.data.st) {
+                                            //         successToast(response.data.msg)
+                                            //     } else {
+                                            //         errorToast(response.data.msg)
+                                            //     }
+                                            // }
 
                                         } catch (error) {
                                             console.log('error::: ', error);

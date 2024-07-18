@@ -1,52 +1,66 @@
 import React from 'react'
 import { ErrorMessage, Field, useFormikContext } from 'formik'
 import { countryCodes, } from "@/app/utils";
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+
+
+
 const MobileCode = () => {
 
-    const { setFieldValue, errors }: any = useFormikContext();
+    const { setFieldValue, values }: any = useFormikContext();
 
     return (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="mb-4">
-                <label htmlFor="country_code" className="block font-medium text-gray-700">
-                    Select Country Code<span className='text-red-600'>*</span>
-                </label>
-                <Field as="select" name="country_code" onChange={(e: any) => {
-                    const country = countryCodes.find((country: any) => country.value === e.target.value);
-                    country && setFieldValue("country", country.label);
-                    setFieldValue("country_code", e.target.value);
-                }} className="form-input mt-1 block w-full">
-                    <option value="" disabled hidden>Select Country Code</option>
-                    {countryCodes.map(country => (
-                        <option key={country.value} value={country.value}>{country.label} ({country.value})</option>
-                    ))}
-                </Field>
+                <Label htmlFor="country_code">Select Country Code <span className="text-red-600">*</span></Label>
+                <Select value={values.country_code}
+                    onValueChange={(e: any) => {
+                        const country = countryCodes.find((country: any) => country.value === e);
+                        country && setFieldValue("country", country.label);
+                        setFieldValue("country_code", e);
+                    }} >
+                    <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="India (+91)" />
+                    </SelectTrigger>
+                    <SelectContent  >
+                        <SelectGroup>
+                            {countryCodes.map(country => (
+                                <SelectItem key={country.value} value={country.value}>{country.label} ({country.value})</SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
                 <ErrorMessage name="country_code" component="div" className="text-red-500 text-sm" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="mobile" className="block font-medium text-gray-700">
-                    Mobile<span className='text-red-600'>*</span>
-                </label>
-                <Field
-                    type="number"
-                    name="mobile"
-                    className="form-input mt-1 block w-full"
-                    placeholder="1234567890"
-                />
+                <Label htmlFor="mobile">Mobile <span className="text-red-600">*</span></Label>
+                <Input id="mobile" value={values.mobile} placeholder="8000555268" onChange={(e) => {
+                    setFieldValue('mobile', e.target.value)
+                }} />
                 <ErrorMessage name="gender" component="div" className="text-red-500 text-sm" />
             </div>
 
             <div className="mb-4">
-                <label htmlFor="gender" className="block font-medium text-gray-700">
-                    Gender<span className='text-red-600'>*</span>
-                </label>
-                <Field as="select" name="gender" className="form-input mt-1 block w-full" >
-                    <option value="" disabled hidden>Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                </Field>
-
+                <Label htmlFor="mobile">Gender <span className="text-red-600">*</span></Label>
+                <Select value={values?.gender} onValueChange={(e: any) => {
+                    setFieldValue("gender", e);
+                }} >
+                    <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="India (+91)" />
+                    </SelectTrigger>
+                    <SelectContent  >
+                        <SelectGroup>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
                 <ErrorMessage name="gender" component="div" className="text-red-500 text-sm" />
             </div>
         </div>

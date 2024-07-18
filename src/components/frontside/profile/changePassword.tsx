@@ -1,4 +1,4 @@
-import { ErrorMessage, Field, Form, Formik } from 'formik'
+import { ErrorMessage, Field, Form, Formik, useFormikContext } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import OTPInputGroup from '@/components/frontside/changePasswordOtp/page';
@@ -6,35 +6,22 @@ import axios from 'axios';
 import { apiUrl } from '../../../../env';
 import { errorToast, successToast } from '@/components/toster';
 import * as Yup from 'yup';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 const passwordRules = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
 
-const PasswordField = ({ field, form, ...props }: any) => {
-    const [showPassword, setShowPassword] = useState(false);
-    return (
-        <div className="relative">
-            <Field
-                {...field}
-                {...props}
-                type={showPassword ? 'text' : 'password'}
-                className="w-full registration px-2 py-1 border border-black bg-gray-300 rounded mt-2"
-            />
-            <span
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
-            >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-        </div>
-    );
-};
+
 const ChangePassword = () => {
+    const [showPassword, setShowPassword] = useState(false)
 
     let [OTP, setOTP] = useState(false)
     let [timer, setTimer] = useState(false)
     const [timeInSeconds, setTimeInSeconds] = useState(60);
     const [intervalId, setIntervalId] = useState<number | null>(null);
     const [isVerifyOTP, setVerifyOTP] = useState({ st: false, msg: "" });
+
 
     const [inputValues, setInputValues] = useState({
         input1: '',
@@ -59,7 +46,7 @@ const ChangePassword = () => {
                         }
                         return prevTime - 1
                     });
-                    
+
                 }, 1000);
                 setTimer(true)
                 setIntervalId(Number(id));
@@ -134,12 +121,12 @@ const ChangePassword = () => {
                     {
                         !timer ?
                             <div className="text-center">
-                                <button className='bg-green-500 text-white font-bold py-2 px-4 rounded' onClick={() => {
+                                <Button className='' onClick={() => {
                                     setTimeInSeconds(60);
                                     generateOTP();
                                 }} >
                                     Generate OTP To Change Password
-                                </button>
+                                </Button>
                             </div> :
                             <> <span className='' >OTP Expires In : {timerDisplay}</span></>
                     }
@@ -177,33 +164,70 @@ const ChangePassword = () => {
                         }
                     }}
                 >
-                    {({ errors, setFieldValue, isSubmitting }: any) => (
+                    {({ values, setFieldValue, isSubmitting }: any) => (
                         <>
                             <Form>
-                                <div className="mb-4">
-                                    <label htmlFor="password" className="bloc font-semibold">
-                                        Passwrod<span className='text-red-600'>*</span>
-                                    </label>
-                                    <Field name="password" component={PasswordField} className="w-full registration px-2 py-1 border px-2 border-black bg-gray-300 rounded mt-2" />
-                                    <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
-                                </div>
+                                <div className="mb-4 flex">
+                                    <div className="grid w-full max-w-sm gap-1.5">
+                                        <Label htmlFor="password">Passwrod <span className="text-red-600">*</span></Label>
+                                        <div className="relative">
+                                            <Input
+                                                id="password"
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Enter your password"
+                                                className="pr-10"
+                                                value={values.password}
+                                                onChange={(e) => {
+                                                    setFieldValue('password', e.target.value)
+                                                }}
+                                            />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                type='button'
+                                                className="absolute top-1/2 right-2 -translate-y-1/2"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                <EyeIcon className="h-5 w-5" />
+                                                <span className="sr-only">Toggle password visibility</span>
+                                            </Button>
+                                        </div>
+                                        <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                                    </div>
 
-                                <div className="mb-4">
-                                    <label htmlFor="Confirm_password" className="bloc font-semibold">
-                                        Confirm Passwrod
-                                    </label>
-                                    <Field name="Confirm_password" component={PasswordField} className="w-full registration px-2 py-1 border px-2 border-black bg-gray-300 rounded mt-2" />
-                                    <ErrorMessage name="Confirm_password" component="div" className="text-red-500 text-sm" />
+                                    <div className="grid ml-10 w-full max-w-sm gap-1.5">
+                                        <Label htmlFor="Confirm_password">  Confirm Passwrod <span className="text-red-600">*</span></Label>
+                                        <div className="relative">
+                                            <Input
+                                                id="Confirm_password"
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Enter confirm password"
+                                                className="pr-10"
+                                                value={values.Confirm_password}
+                                                onChange={(e) => {
+                                                    setFieldValue('Confirm_password', e.target.value)
+                                                }}
+                                            />
+                                            <Button
+                                                type='button'
+                                                variant="ghost"
+                                                size="icon"
+                                                className="absolute top-1/2 right-2 -translate-y-1/2"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                <EyeIcon className="h-5 w-5" />
+                                                <span className="sr-only">Toggle password visibility</span>
+                                            </Button>
+                                        </div>
+                                        <ErrorMessage name="Confirm_password" component="div" className="text-red-500 text-sm" />
+                                    </div>
                                 </div>
-
                                 <div className="">
-                                    <button className="bg-black text-white font-bold cursor-pointer px-6 py-4 hover:shadow-2xl w-full text-2xl" type="submit">
+                                    <Button className="" type="submit">
                                         {isSubmitting ? "Loading" : "Update Password"}
-                                    </button>
+                                    </Button>
                                 </div>
-
                             </Form>
-
                         </>
                     )}
 
@@ -213,3 +237,45 @@ const ChangePassword = () => {
 }
 
 export default ChangePassword
+
+
+function EyeIcon(props: any) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+            <circle cx="12" cy="12" r="3" />
+        </svg>
+    )
+}
+
+
+function XIcon(props: any) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+        </svg>
+    )
+}
