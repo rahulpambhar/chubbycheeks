@@ -19,12 +19,12 @@ export default function Home() {
       <Topselectionpart />
       {/* <About /> */}
       <OfferPage />
-      <Singlenailpaint />
-      <Nailslider />
+      {/* <Singlenailpaint /> */}
+      {/* <Nailslider /> */}
       <Unitedfree />
       {/* <Howitwork /> */}
       <Recentviewed />
-      <Submitemail />
+      {/* <Submitemail /> */}
     </main>
   );
 }

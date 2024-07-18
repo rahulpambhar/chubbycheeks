@@ -17,7 +17,7 @@ export default function Component() {
                   Crafting Comfort and Style for Your Little Ones
                 </h1>
                 <p className="text-lg md:text-xl lg:text-2xl">
-                  At Baby Bliss, we pour our hearts into every stitch, creating high-quality baby clothes that are both
+                  At ChubbyCheeks, we pour our hearts into every stitch, creating high-quality baby clothes that are both
                   comfortable and stylish.
                 </p>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -30,7 +30,7 @@ export default function Component() {
               <div className="flex justify-center">
                 <img
                   src="/placeholder.svg"
-                  alt="Baby Bliss"
+                  alt="ChubbyCheeks"
                   width={500}
                   height={500}
                   className="w-full max-w-[400px] rounded-lg shadow-lg"
@@ -106,7 +106,7 @@ export default function Component() {
               <div className="flex flex-col gap-6 md:gap-8 lg:gap-10">
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">A Family-Owned Legacy</h2>
                 <p className="text-lg md:text-xl lg:text-2xl">
-                  Baby Bliss was founded by the Sharma family, who have been crafting high-quality baby clothes for over
+                  Chubby Cheekswas founded by the Sharma family, who have been crafting high-quality baby clothes for over
                   6 years. We're proud to continue this legacy of exceptional craftsmanship.
                 </p>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

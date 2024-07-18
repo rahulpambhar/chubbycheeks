@@ -43,7 +43,7 @@ const Recentviewedcard = ({
 
   return (
     <>
-      <div className="border-2 border-[#CFCFCF] shadow-xl mx-5 my-2 bg-white pb-5 w-72 h-96 flex flex-col justify-between">
+      <div className="border-2 border-[#CFCFCF] shadow-xl mx-5 my-2 bg-white pb-5 w-72 h-100 flex flex-col justify-between">
         <div>
           {item?.isNew ? (
             <div className="flex justify-between">

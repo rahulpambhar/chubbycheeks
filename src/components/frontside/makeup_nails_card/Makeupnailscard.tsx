@@ -70,7 +70,7 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
                   key={index}
                   src={`/products/${image}`}
                   alt={item?.name}
-                  className="h-[300px] w-[300px] object-cover "
+                  className="h-[300px] w-[300px] ml-8 object-cover "
                 />
               ))
             }

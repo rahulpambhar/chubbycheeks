@@ -51,7 +51,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
         product.image.forEach((item: any, index: number) => {
             images_video.push(
                 <div className="item" key={`image-${index}`}>
-                    <img src={`/products/${item}`} alt={`Image ${index}`} className="media" width={"100%"} />
+                    <img src={`/products/${item}`} alt={`Image ${index}`} className="media h-[600px] w-[500px]" />
                 </div>
             );
         });
@@ -130,7 +130,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
         <>
             <div className="grid grid-cols-2 w-full h-full mt-5">
 
-                <div className="carousel-container">
+                <div className="carousel-container ">
                     <Carousel showThumbs={false}>
                         {images_video}
                     </Carousel>
@@ -142,15 +142,15 @@ export default function Checkout({ params }: { params: { product: string } }) {
                             <p className="text-4xl font-medium">{product?.name}</p>
                             <div className="text-xl font-light bg-green-900 text-white px-3 py-1 rounded-full">
                                 {product?.discountType === "PERCENTAGE" ? <span className="text-sm">{product?.discount}% OFF</span> :
-                                    <span className="text-sm">{product?.discount}$ OFF</span>
+                                    <span className="text-sm">{product?.discount} ₹ OFF</span>
                                 }
                             </div>
                         </div>
                         <div className="flex py-2 items-center gap-5">
-                            {product?.discountType === "PERCENTAGE" ? <span className="text-2xl">$ {product?.price - product?.price * product?.discount / 100}</span> :
-                                <span className="text-2xl"> $ {product?.price - product?.discount} </span>
+                            {product?.discountType === "PERCENTAGE" ? <span className="text-2xl">₹ {product?.price - product?.price * product?.discount / 100}</span> :
+                                <span className="text-2xl">₹ {product?.price - product?.discount} </span>
                             }
-                            <p>$ {product?.price}</p>
+                            <p> {product?.price}</p>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="flex gap-1 text-sm text-orange-900">
@@ -283,7 +283,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
                         <Unitedfreecard
                             key={item.id}
                             id={item.id}
-                            image={`/products/${item?.image}`}
+                            image={`${item?.image[0]}`}
                             price={item?.price}
                             label={item?.label}
                             averageRating={averageRating}

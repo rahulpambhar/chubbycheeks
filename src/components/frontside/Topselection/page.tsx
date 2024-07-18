@@ -51,7 +51,7 @@ const Topselection = ({
   }
 
   return (
-    <div className="border-2 border-[#CFCFCF] shadow-xl mx-5 my-2 bg-white pb-5 w-72 h-96 flex flex-col justify-between">
+    <div className="border-2 border-[#CFCFCF] shadow-xl mx-5 my-2 bg-white pb-5 w-72 h-100 flex flex-col justify-between">
       <div>
         {newbtn ? (
           <div className="flex justify-between">
@@ -84,9 +84,9 @@ const Topselection = ({
           </div>
         )}
       </div>
-      <div className="pt-5 flex justify-center items-center flex-grow">
+      <div className="pt-1 flex justify-center items-center flex-grow">
         <Image
-          className="border border-black rounded object-cover"
+          className="border border-black rounded object-cover h-[200px] w-[200px]"
           src={`/products/${image}`}
           alt={label}
           width={200}

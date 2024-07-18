@@ -55,12 +55,12 @@ const Unitedfreecard = ({
                 {[...Array(5)].map((star, index) => (
                   <TbStarFilled
                     key={index}
-                    className={`mr-1 ${index < averageRating ? "text-yellow-500" : "text-gray-300"}`}
+                    className={`mr-1 ₹{index < averageRating ? "text-yellow-500" : "text-gray-300"}`}
                   />
                 ))}
               </div>
               <div className="text-white font-normal text-2xl unica-one flex justify-center items-center">
-                $ {price}
+                ₹ {price}
               </div>
             </div>
             {
