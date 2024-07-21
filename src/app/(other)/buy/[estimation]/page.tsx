@@ -11,36 +11,103 @@ import ProductPreview from "@/components/ProductPreview";
 import { Product } from '../../../../../types/global';
 // import OTPInputGroup from '@/components/frontside/otp/page';
 import { apiUrl } from '../../../../../env';
-import { truncate } from 'fs';
-import { actionTocartFunction_ } from '@/components/Cart';
+import Image from 'next/image';
+import Script from 'next/script';
 
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
 
 
     const { data: session, status }: any = useSession();
     let [subTotal, setSubTotal] = useState(0)
-    const [openPreview, setOpenPreview] = useState(false);
-    const [priview, sePriview] = useState<Product>({} as Product)
+    const [taxableAmtTotal, setTaxableTotal] = useState(0)
+
+    const [totalDiscount, setDiscountTotal] = useState(0)
+    const [gstTotal, setGat] = useState(0)
+    const [totalAmount, setTotalAmount] = useState(0)
+
 
     const dispatch = useAppDispatch();
     const router = useRouter()
     const id = params?.estimation;
 
     const [order_, setOrder]: any = useState([])
-    console.log('order_::: ', order_);
 
 
     useEffect(() => {
         setSubTotal(
             order_?.reduce((acc: any, item: any) => {
-                if (item?.discountType === "PERCENTAGE") {
-                    return acc + (item?.price * item?.qty - ((item?.price * item?.qty) * item.discount / 100))
-                } else {
-                    return acc + ((item?.price - item?.discount) * item?.qty)
-                }
+                let subTotalAmt = item?.price * item?.qty
+                return acc + subTotalAmt
             }, 0)
-        );
+        )
+
+        setTaxableTotal(
+            order_?.reduce((acc: any, item: any) => {
+                let taxableAmount = 0
+
+                if (item?.discountType === "PERCENTAGE") {
+
+                    taxableAmount = item?.price * item?.qty - ((item?.price * item?.qty) * item?.discount / 100)
+                } else {
+
+                    taxableAmount = ((item?.price - item?.discount) * item?.qty)
+                }
+                return acc + taxableAmount
+            }, 0)
+        )
+        setDiscountTotal(
+            order_?.reduce((acc: any, item: any) => {
+                let discount = 0
+
+
+                if (item?.discountType === "PERCENTAGE") {
+
+                    discount = (item?.price * item?.qty) * item?.discount / 100
+                } else {
+                    discount = item?.discount
+                }
+                return acc + discount
+            }, 0)
+        )
+        setGat(
+            order_?.reduce((acc: any, item: any) => {
+                let taxableAmount = 0
+                let gstTotal = 0
+
+                if (item?.discountType === "PERCENTAGE") {
+
+                    taxableAmount = item?.price * item?.qty - ((item?.price * item?.qty) * item?.discount / 100)
+                    gstTotal = taxableAmount * item?.gst / 100
+
+                } else {
+
+                    taxableAmount = ((item?.price - item?.discount) * item?.qty)
+                    gstTotal = taxableAmount * item?.gst / 100
+                }
+                return acc + gstTotal
+            }, 0)
+        )
+
+        setTotalAmount(
+            order_?.reduce((acc: any, item: any) => {
+                let taxableAmount = 0
+                let netAmount = 0
+
+                if (item?.discountType === "PERCENTAGE") {
+
+                    taxableAmount = item?.price * item?.qty - ((item?.price * item?.qty) * item?.discount / 100)
+                    netAmount = taxableAmount * item?.gst / 100 + taxableAmount
+                } else {
+
+                    taxableAmount = ((item?.price - item?.discount) * item?.qty)
+                    netAmount = taxableAmount * item?.gst / 100 + taxableAmount
+                }
+                return acc + netAmount
+            }, 0)
+        )
     }, [order_])
 
 
@@ -74,53 +141,82 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                 <h3 className="text-lg font-semibold">Order Summary</h3>
                             </div>
                             <div className="border-t border-gray-200 dark:border-gray-800">
-                                {session && order_?.map((item: any, i: number) => (
-                                    <div key={i} className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-                                        <div className="flex items-center space-x-4">
+                                <ScrollArea className="h-[350px] w-auto rounded-md border">
 
-                                            <div className="w-16 h-16 rounded-md overflow-hidden">
-                                                <img alt="Product image" className="object-cover w-full h-full" src="/placeholder.svg" />
-                                            </div>
-                                            <div className="text-sm">
-                                                <div className="font-medium">{item?.name}</div>
-                                                <div className="text-gray-500 dark:text-gray-400">${item?.price} x {item?.qty}</div>
-                                            </div>
+                                    {session && order_?.length > 0 ?
+                                        order_?.map((item: any, i: number) => (
+                                            <>
+                                                <div key={i} className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+                                                    <div className="flex items-center space-x-4">
 
-                                            <div className="flex items-center space-x-2">
-                                                <button onClick={() => {
-                                                    const updatedItems: any = order_.map((o: any) => {
+                                                        <div className="w-16 h-16 rounded-md overflow-hidden">
+                                                            <Image height={100} width={100} alt="Product image" className="object-cover w-full h-full" src={`/products/${item?.image[0]}`} />
+                                                        </div>
+                                                        <div className="text-sm">
+                                                            <div className="font-medium">{item?.name}</div>
+                                                            <div className="text-gray-500 dark:text-gray-400">${item?.price} x {item?.qty}</div>
+                                                        </div>
 
-                                                        if (o.qty <= 1) {
-                                                            return { ...o, qty: 1 };
-                                                        }
-                                                        return { ...o, qty: o.qty - 1 };
-                                                    });
-                                                    setOrder(updatedItems);
-                                                }}>-</button>
-                                                <span>{item.qty}</span>
-                                                <button onClick={() => {
-                                                    const updatedItems: any = order_?.map((o: any) => {
-                                                        return { ...o, qty: o?.qty + 1 };
-                                                    });
-                                                    setOrder(updatedItems);
-                                                }}>+</button>
-                                            </div>
+                                                        <div className="flex items-center space-x-2">
+                                                            <button onClick={() => {
+                                                                const updatedItems: any = order_.map((o: any) => {
 
+                                                                    if (o.qty <= 1) {
+                                                                        return { ...o, qty: 1 };
+                                                                    }
+                                                                    return { ...o, qty: o.qty - 1 };
+                                                                });
+                                                                setOrder(updatedItems);
+                                                            }}>-</button>
+                                                            <span>{item.qty}</span>
+                                                            <button onClick={() => {
+                                                                const updatedItems: any = order_?.map((o: any) => {
+                                                                    return { ...o, qty: o?.qty + 1 };
+                                                                });
+                                                                setOrder(updatedItems);
+                                                            }}>+</button>
+                                                        </div>
+
+                                                    </div>
+                                                    <div className=" items-center">
+                                                        <div className="font-medium">${item?.price * item?.qty}</div>
+                                                        <h6 className="font-medium">{item?.discountType === "PERCENTAGE" ? `${item?.discount}% Off` : `$${item?.discount} Off`}</h6>
+                                                    </div>
+
+                                                </div>
+                                                <Separator className="my-2" />
+                                            </>
+                                        )) : "No data found"
+                                    }
+                                </ScrollArea>
+                                {
+                                    <>
+                                        <div className="flex items-center justify-between px-4">
+                                            <div>Sub Total  </div>
+                                            <div> ₹ {subTotal}</div>
                                         </div>
-                                        <div className=" items-center">
-                                            <div className="font-medium">${item?.price * item?.qty}</div>
-                                            <h6 className="font-medium">{item?.discountType === "PERCENTAGE" ? `${item?.discount}% Off` : `$${item?.discount} Off`}</h6>
+
+                                        <div className="flex items-center justify-between px-4">
+                                            <div> Discount </div>
+                                            <div> ₹ {totalDiscount}</div>
+                                        </div>
+                                        <div className="flex items-center justify-between px-4">
+                                            <div>Taxable Amount </div>
+                                            <div> ₹ {taxableAmtTotal}</div>
                                         </div>
 
-                                    </div>
-                                ))}
-
-                                <div className="flex items-center justify-between p-4">
-                                    <div>Subtotal</div>
-                                    <div>${subTotal}</div>
-                                </div>
-
+                                        <div className="flex items-center justify-between px-4">
+                                            <div>Gst</div>
+                                            <div> ₹ {gstTotal}</div>
+                                        </div>
+                                        <div className="flex items-center justify-between px-4">
+                                            <div>Total Amount</div>
+                                            <div> ₹ {totalAmount}</div>
+                                        </div>
+                                    </>
+                                }
                             </div>
+
                         </div>
                         <div className="flex flex-col gap-4">
                             <div className="border border-gray-200 dark:border-gray-800 rounded-lg">
@@ -180,10 +276,47 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                             try {
                                                 const orderMeta = { selectedItems: [{ productId: order_[0]?.id, qty: order_[0]?.qty }] }
                                                 const tempData = await dispatch(createTempOrderFunc(orderMeta))
+
                                                 if (tempData?.payload.st) {
-                                                    successToast("Temp order done!")
-                                                    const data: any = await dispatch(createOrderFunc(tempData?.payload.temOrdrId))
-                                                    data?.payload.st ? successToast(data?.payload.msg) : errorToast(data?.payload.msg)
+                                                    // successToast("Temp order done!")
+
+                                                    const options = {
+                                                        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                                                        key_secret: process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET,
+                                                        amount: tempData?.payload?.data?.amount,
+                                                        currency: tempData?.payload?.data?.currency,
+                                                        order_receipt: tempData?.payload?.data?.id,
+                                                        name: process.env.NEXT_PUBLIC_APP_NAME,
+                                                        description: "test",
+                                                        image: "/image/chubbyCheeks/logo.png",
+                                                        handler: async function (response: any) {
+                                                            const paymentId = response.razorpay_payment_id;
+
+                                                            const orderInfo = {
+                                                                temOrdrId: tempData?.payload?.temOrdrId,
+                                                                paymentId,
+                                                                repeatOrder: true
+                                                            }
+                                                            try {
+                                                                const data = await dispatch(createOrderFunc(orderInfo)).unwrap();
+                                                                data.st ? successToast(data.msg) : errorToast(data.msg);
+                                                            } catch (error: any) {
+                                                                console.log('error::: ', error);
+                                                                errorToast("Something went wrong!!!");
+                                                            }
+                                                        },
+                                                        theme: {
+                                                            color: "#000000"
+                                                        }
+                                                    }
+
+                                                    if (typeof window !== "undefined" && (window as any).Razorpay) {
+                                                        const rzp1 = new (window as any).Razorpay(options);
+                                                        rzp1.open();
+                                                    } else {
+                                                        errorToast("Razorpay SDK not loaded");
+                                                    }
+
                                                 } else {
                                                     errorToast(tempData.payload.msg)
                                                 }
@@ -210,6 +343,8 @@ export default function Checkout({ params }: { params: { estimation: string } })
                     </div>
                 }
             </div>
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+
             {/* <ProductPreview openPreview={openPreview} setOpenPreview={setOpenPreview} product={priview} /> */}
         </div >
     );

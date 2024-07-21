@@ -95,30 +95,4 @@ export async function activityLog(action, table, body, createdBy) {
     }
 }
 
-export async function getOrders(id) {
-
-    const orders = await prisma.order.findMany({
-        where: {
-            userId: id,
-            isBlocked: false,
-        },
-
-        include: {
-            OrderItem: {
-                include: {
-                    product: {
-                        where: {
-                            isBlocked: false
-                        }
-                    },
-                }
-            }
-        },
-        orderBy: {
-            createdAt: 'desc'
-        },
-    });
-
-    return orders;
-}
 

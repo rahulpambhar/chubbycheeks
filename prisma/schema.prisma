@@ -18,7 +18,6 @@ enum Status {
 }
 
 enum OrderStatus {
-    PENDING
     PROCESSING
     ACCEPTED
     DISPATCHED
@@ -150,6 +149,7 @@ model Products {
     name         String?
     qty          Int?
     price        Float?
+    gst          Float?
     hsn          String?
     discount     Int?
     discountType DiscountType
@@ -219,8 +219,10 @@ model Cart {
 }
 
 model CartItem {
-    id        String  @id @default(auto()) @map("_id") @db.ObjectId
-    qty       Int?
+    id  String @id @default(auto()) @map("_id") @db.ObjectId
+    qty Int?
+
+    checked   Boolean @default(true)
     isBlocked Boolean @default(false)
 
     createdAt DateTime @default(now())
@@ -253,85 +255,6 @@ model Whishlist {
     @@index([productId])
 }
 
-model Order {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-
-    invoiceNo   String?
-    invoiceDate DateTime @db.Date()
-
-    itemCount Int?
-
-    discountAmount Float
-    total          Int
-    taxableAmount  Int
-    tax            Int
-    otherCharge    Int
-    charge         Json? // note for charges or extra charges
-    netAmount      Int
-
-    isPaid        Boolean
-    paidAt        DateTime
-    payStatus     Status
-    paymentDetail Json?
-    paymentMethod String?
-
-    orderStatus  OrderStatus
-    pendingAt    DateTime?
-    processingAt DateTime?
-    acceptedAt   DateTime?
-    dispatchedAt DateTime?
-    deliveredAt  DateTime?
-    cancelledAt  DateTime?
-
-    dueDays Int?
-    dueDate DateTime? @db.Date()
-
-    isBlocked  Boolean @default(false)
-    attachment String?
-
-    user   User?   @relation("user", fields: [userId], references: [id])
-    userId String? @db.ObjectId
-
-    cart   Cart?   @relation(fields: [cartId], references: [id])
-    cartId String? @db.ObjectId
-
-    Transport     Transport?     @relation("transportOrder", fields: [transportId], references: [id])
-    transportId   String?        @db.ObjectId
-    transportMode transportMode?
-
-    OrderItem OrderItem[] @relation("OrderItem")
-
-    createdAt   DateTime      @default(now())
-    createdBy   String?
-    updatedAt   DateTime      @updatedAt
-    updatedBy   String?
-    ReturnOrder ReturnOrder[]
-
-    @@index([userId])
-}
-
-model OrderItem {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-
-    qty       Int?
-    price     Float?
-    isBlocked Boolean @default(false)
-
-    order   Order?  @relation("OrderItem", fields: [orderId], references: [id])
-    orderId String? @db.ObjectId
-
-    product   Products? @relation("orderProducts", fields: [productId], references: [id])
-    productId String?   @db.ObjectId
-
-    createdAt DateTime @default(now())
-    createdBy String?
-    updatedAt DateTime @updatedAt
-    updatedBy String?
-
-    @@index([orderId])
-    @@index([productId])
-}
-
 model tempOrder {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -343,16 +266,17 @@ model tempOrder {
     discountAmount Float
     total          Int
     taxableAmount  Int
-    tax            Int
+    gst            Int
     otherCharge    Int
     charge         Json? // note for charges or extra charges
     netAmount      Int
 
-    isPaid        Boolean
-    paidAt        DateTime
-    payStatus     Status
-    paymentDetail Json?
-    paymentMethod String?
+    isPaid            Boolean
+    paidAt            DateTime
+    payStatus         Status
+    paymentDetail     Json?
+    paymentMethod     String?
+    razorpay_order_id String?
 
     dueDays Int?
     dueDate DateTime? @db.Date()
@@ -403,6 +327,87 @@ model tempOrderItem {
     @@index([productId])
 }
 
+model Order {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    invoiceNo   String?
+    invoiceDate DateTime @db.Date()
+
+    itemCount Int?
+
+    discountAmount Float
+    total          Int
+    taxableAmount  Int
+    gst            Int
+    otherCharge    Int
+    charge         Json? // note for charges or extra charges
+    netAmount      Int
+
+    isPaid        Boolean
+    paidAt        DateTime
+    payStatus     Status
+    paymentDetail Json?
+    paymentId     String?
+    paymentMethod String?
+
+    orderStatus  OrderStatus
+    pendingAt    DateTime?
+    processingAt DateTime?
+    acceptedAt   DateTime?
+    dispatchedAt DateTime?
+    deliveredAt  DateTime?
+    cancelledAt  DateTime?
+
+    dueDays Int?
+    dueDate DateTime? @db.Date()
+
+    isBlocked  Boolean @default(false)
+    attachment String?
+
+    user   User?   @relation("user", fields: [userId], references: [id])
+    userId String? @db.ObjectId
+
+    cart   Cart?   @relation(fields: [cartId], references: [id])
+    cartId String? @db.ObjectId
+
+    Transport     Transport?     @relation("transportOrder", fields: [transportId], references: [id])
+    transportId   String?        @db.ObjectId
+    transportMode transportMode?
+
+    OrderItem OrderItem[] @relation("OrderItem")
+
+    createdAt   DateTime      @default(now())
+    createdBy   String?
+    updatedAt   DateTime      @updatedAt
+    updatedBy   String?
+    ReturnOrder ReturnOrder[]
+
+    @@index([userId])
+    @@index([invoiceNo])
+}
+
+model OrderItem {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    qty       Int?
+    price     Float?
+    isBlocked Boolean @default(false)
+
+    order   Order?  @relation("OrderItem", fields: [orderId], references: [id])
+    orderId String? @db.ObjectId
+
+    product   Products? @relation("orderProducts", fields: [productId], references: [id])
+    productId String?   @db.ObjectId
+
+    createdAt DateTime @default(now())
+    createdBy String?
+    updatedAt DateTime @updatedAt
+    updatedBy String?
+
+    @@index([orderId])
+    @@index([productId])
+}
+
 model ReturnOrder {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -414,7 +419,7 @@ model ReturnOrder {
     discountAmount Float
     total          Int
     taxableAmount  Int
-    tax            Int
+    gst            Int
     otherCharge    Int
     charge         Json? // note for charges or extra charges
     netAmount      Int
@@ -554,11 +559,11 @@ model Transport {
 model GetInTouch {
     id      String @id @default(auto()) @map("_id") @db.ObjectId
     name    String
-    email   String 
+    email   String
     message String
 
-    User      User?   @relation(fields: [userId], references: [id])
-    userId    String? @db.ObjectId
+    User   User?   @relation(fields: [userId], references: [id])
+    userId String? @db.ObjectId
 
     createdAt DateTime @default(now())
     createdBy String?

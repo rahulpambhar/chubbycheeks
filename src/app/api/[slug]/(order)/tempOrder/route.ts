@@ -7,6 +7,7 @@ import { getProduct, getCart, getNextInvoice, activityLog } from "../../utils";
 import authOptions from "../../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 import prisma from "../../../../../../prisma/prismaClient";
+import Razorpay from "razorpay";
 
 
 export async function POST(request: Request) {
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
         if (!session) { return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Login first.", }); }
 
         const body = await request.json();
-        const { orderMeta } = body
+        const { orderMeta, } = body
         let nextInvoice: string = ""
         let items: any = []
         let cart: any = {}
@@ -26,10 +27,8 @@ export async function POST(request: Request) {
         let totalAmt: number = 0
         let discountAmount: number = 0;
         let taxableAmount: number = 0
-        let GST = 18 //  default percentage, do it dynamic according to tax
+        let GST = 0
         let netAmount: number = 0
-
-
 
         nextInvoice = await getNextInvoice("tempOrder")
 
@@ -59,22 +58,25 @@ export async function POST(request: Request) {
 
             const qty = item?.orderedQty
             const price = item?.price
+            const gst = item?.gst || 0
 
             const total = qty * price
             const discount = item?.discount
 
             if (item.discountType === "PERCENTAGE") {
                 discountAmount += total * discount / 100
+
+                GST += (total - (total * discount / 100)) * gst / 100
             } else {
                 discountAmount += qty * item?.discount
+                GST += ((total - (qty * item?.discount)) * gst) / 100
             }
+
             totalAmt += total;
             itemCount += qty
         }
 
         taxableAmount = totalAmt - discountAmount
-        GST = (GST * taxableAmount) / 100
-
         netAmount = taxableAmount + GST
 
         let data: any = {
@@ -86,14 +88,14 @@ export async function POST(request: Request) {
             total: totalAmt,
             discountAmount,
             taxableAmount,
-            tax: GST,
+            gst: GST,
             otherCharge: 0,
             netAmount: netAmount,
 
             isPaid: true,
             paidAt: new Date(),
-            payStatus: "SUCCESS",
-            paymentDetail: "paayment done",
+            payStatus: "PENDING",
+            paymentDetail: "Razorpay",
             paymentMethod: "online",
 
             user: { connect: { id: session?.user?.id } },
@@ -111,6 +113,27 @@ export async function POST(request: Request) {
                 createdBy: session?.user?.id
             })
         }
+
+        const razorpay = new Razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID as string,
+            key_secret: process.env.RAZORPAY_KEY_SECRET as string,
+        });
+
+        const options = {
+            amount: netAmount * 100,
+            currency: "INR",
+            receipt: nextInvoice,
+        };
+
+        const razorPayRes = await razorpay.orders.create(options);
+
+        if (razorPayRes?.status !== "created") {
+            return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "order created unsuccess!", });
+        }
+
+
+        data.razorpay_order_id = razorPayRes?.id
+
         const createTemp = await prisma.tempOrder.create({ data })
 
         if (!createTemp) {
@@ -118,15 +141,14 @@ export async function POST(request: Request) {
         }
 
         const createTempItem = await prisma.tempOrderItem.createMany({
-            data: itemData.map((item: any) =>
-            ({
+            data: itemData.map((item: any) => ({
                 ...item,
                 tempOrderId: createTemp.id,
             }))
         })
 
         await activityLog("INSERT", "tempOrder", data, session?.user?.id);
-        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Temp order created successfully!", temOrdrId: createTemp.id });
+        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: razorPayRes, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
 
     } catch (error) {
         console.log('error::: ', error);
@@ -165,3 +187,5 @@ export async function POST(request: Request) {
 //         });
 //     }
 // }
+
+

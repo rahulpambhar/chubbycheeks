@@ -37,7 +37,7 @@ export const actionTocartFunction_ = async (item: any, action: any, dispatch: an
 
 export default function Example() {
     const { data: session, status } = useSession();
-    let [subTotal, setSubTotal] = useState(0)
+    let [taxableAmount, setTaxable] = useState(0)
     const router = useRouter()
 
     const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
@@ -49,7 +49,7 @@ export default function Example() {
     const actionTocartFunction = (item: any, action: any) => actionTocartFunction_(item, action, dispatch)
 
     useEffect(() => {
-        setSubTotal(
+        setTaxable(
             cartItem?.reduce((acc: any, item: any) => {
                 if (item?.product?.discountType === "PERCENTAGE") {
                     return acc + (item?.product?.price * item?.qty - ((item?.product?.price * item?.qty) * item?.product?.discount / 100))
@@ -162,8 +162,8 @@ export default function Example() {
 
                                             <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                                                 <div className="flex justify-between text-base font-medium text-gray-900">
-                                                    <p>Subtotal</p>
-                                                    <p>$ {subTotal}</p>
+                                                    <p>Taxable Amount</p>
+                                                    <p>₹ {taxableAmount}</p>
                                                 </div>
                                                 <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                                                 <div className="mt-6">
@@ -172,6 +172,7 @@ export default function Example() {
                                                         className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                                                         onClick={() => {
                                                             if (session) {
+                                                                dispatch(setOpenCart(!openCart))
                                                                 router.push('/checkout/estimation')
 
                                                             } else {
@@ -184,7 +185,7 @@ export default function Example() {
                                                 </div>
                                                 <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                                                     <p>
-                                                        or
+                                                        or {" "}
                                                         <button
                                                             type="button"
                                                             className="font-medium text-indigo-600 hover:text-indigo-500"

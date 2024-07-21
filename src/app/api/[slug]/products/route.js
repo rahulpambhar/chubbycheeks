@@ -35,6 +35,7 @@ export async function POST(request) {
     const batchNo = formData.get("batchNo");
     const uid = formData.get("uid");
     const price = formData.get("price");
+    const gst = formData.get("gst");
     const discount = formData.get("discount");
     const description = formData.get("description");
     const brand = formData.get("brand");
@@ -97,6 +98,7 @@ export async function POST(request) {
             uid,
             name,
             price: Number(price),
+            gst: Number(gst),
             hsn,
             discount: Number(discount),
             discountType,
@@ -186,6 +188,7 @@ export async function POST(request) {
             uid,
             name,
             price: Number(price),
+            gst: Number(gst),
             discount: Number(discount),
             description,
             brand,
@@ -223,9 +226,7 @@ export async function GET(request) {
   try {
     const { query } = parse(request.url, true);
     const { id, slug, categoryId } = query;
-    let limit = parseInt(query?.limit) || 10
-    let page = parseInt(query?.page) - 1 || 0
-    let offset = page * limit;
+   
 
     let count;
     let list;

@@ -21,7 +21,7 @@ const Lowernav = () => {
         <div className="flex items-center gap-4 ml-10  ">
           <nav className="flex items-center gap-4">
             {categories?.map((ele: any) => (
-              <Button
+              <Button key={categories?.id}
                 variant="outline"
                 className="rounded-full  transition-colors hover:bg-primary hover:text-primary-foreground"
               >

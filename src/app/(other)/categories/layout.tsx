@@ -16,7 +16,7 @@ const layout = ({ children, }: Readonly<{ children: React.ReactNode; }>) => {
         <div> {children}</div>
       </div>
       <div>
-        {/* <Deals /> */}
+        <Deals />
       </div>
     </div>
 

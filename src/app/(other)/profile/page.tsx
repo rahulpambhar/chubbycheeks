@@ -10,7 +10,6 @@ import moment from "moment"
 import { getReturnOrdersFunc } from '@/app/redux/slices/returnOrderSlice';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
-import { FaStar } from 'react-icons/fa6';
 import { actionTocartFunc } from '@/app/redux/slices/cartSclice';
 import { getUser } from '@/app/redux/slices/userSlice';
 import { isLoginModel } from '@/app/redux/slices/utilSlice';
@@ -27,8 +26,9 @@ import ChangePassword from '@/components/frontside/profile/changePassword';
 import axios from 'axios';
 import { apiUrl } from '../../../../env';
 import Pagination from 'react-js-pagination';
-
-
+import { FaStar, FaHeart } from "react-icons/fa6";
+import { FaRegHeart } from "react-icons/fa";
+import { addDays, format } from "date-fns"
 
 export default function Checkout() {
     const { data: session, status }: any = useSession();
@@ -44,19 +44,25 @@ export default function Checkout() {
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 5
 
-    const totalOrders = orders.length;
+    const [date, setDate] = useState({
+        from: new Date(2022, 0, 20),
+        to: addDays(new Date(2022, 0, 20), 20),
+        // from: oneYearAgo,
+        // to: today,
+    })
 
-    const getOrders = async () => await dispatch(getOrdersFunc())
+    const getOrders = async () => await dispatch(getOrdersFunc({ page: currentPage, limit: ordersPerPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getAll" }))
     const getReturnOrders = async () => await dispatch(getReturnOrdersFunc())
     const getProfile = async () => await dispatch(getUser(session?.user?.id))
 
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-    const currentOrders: any[] = component === "Orders" ? orders.slice(indexOfFirstOrder, indexOfLastOrder) : component === "Wishlist" ? wishlist?.slice(indexOfFirstOrder, indexOfLastOrder) : component === "ReturnOrders" ? returnOrder?.slice(indexOfFirstOrder, indexOfLastOrder) : [];
+    const currentOrders: any[] = component === "Orders" ? orders?.slice(indexOfFirstOrder, indexOfLastOrder) : component === "Wishlist" ? wishlist?.slice(indexOfFirstOrder, indexOfLastOrder) : component === "ReturnOrders" ? returnOrder?.slice(indexOfFirstOrder, indexOfLastOrder) : [];
     const productsList: any = useSelector((state: any) => state.categories.productsList);
     const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
     const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
     const userProfile = useAppSelector((state: any) => state?.userReducer?.user);
+    const wishList: any[] = useAppSelector((state) => state?.wishListReducer?.wishList);
 
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -101,7 +107,7 @@ export default function Checkout() {
     }, [session])
 
     useEffect(() => {
-        session && component === "Orders" ? setLength(orders.length) : component === "Wishlist" ? setLength(wishlist.length) : component === "ReturnOrders" ? setLength(returnOrder.length) : setLength(0)
+        session && component === "Orders" ? setLength(orders?.length) : component === "Wishlist" ? setLength(wishlist.length) : component === "ReturnOrders" ? setLength(returnOrder.length) : setLength(0)
     }, [session, orders, wishlist, returnOrder, component])
 
     useEffect(() => {
@@ -193,8 +199,10 @@ export default function Checkout() {
                                 <h1 className="font-hkbold pb-6 text-center text-2xl  sm:text-left">
                                     My Wishes
                                 </h1>
-                                {filterWishes && filterWishes.map((item: any) => (
-                                    <div className="mb-3 flex flex-col items-center justify-between rounded bg-white px-4 py-5 shadow sm:flex-row sm:py-4">
+                                {filterWishes && filterWishes.map((item: any) => {
+                                    const wish: boolean = wishList?.find((wish) => (wish?.productId === item?.productId)) ? true : false
+
+                                    return <div className="mb-3 flex flex-col items-center justify-between rounded bg-white px-4 py-5 shadow sm:flex-row sm:py-4">
 
                                         <div className="flex flex-col w-full border-b border-grey-dark pb-4  border-black text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
 
@@ -215,11 +223,11 @@ export default function Checkout() {
                                         </div>
 
                                         <div className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
-                                            <h6 className="font-hk ">{item?.product?.price} $</h6>
-                                            <h6 className="font-hk ">{item?.product?.discountType === "PERCENTAGE" ? `${item?.product?.discount}% Off` : `${item?.product?.discount} $ off`}</h6>
+                                            <h6 className="font-hk ">{item?.product?.price} ₹</h6>
+                                            <h6 className="font-hk ">{item?.product?.discountType === "PERCENTAGE" ? `${item?.product?.discount}% Off` : `${item?.product?.discount} ₹ off`}</h6>
                                             <h6 className="font-hk ">  {
                                                 item?.product?.discountType === "PERCENTAGE" ? (item?.product?.price * 1 - ((item?.product?.price * 1) * item?.product?.discount / 100)) : ((item?.product?.price - item?.product?.discount) * 1)
-                                            } $</h6>
+                                            } ₹</h6>
                                         </div>
 
 
@@ -256,9 +264,18 @@ export default function Checkout() {
                                         >
                                             Remove from cart
                                         </button>
+                                        <div className="pr-5 pt-5">
+                                            <button onClick={() => handelike(item?.product?.id)}>
+                                                {wish ? (
+                                                    <FaHeart className="w-7 h-7 text-red-500" />
+                                                ) : (
+                                                    <FaRegHeart className="w-7 h-7 " />
+                                                )}
+                                            </button>
 
+                                        </div>
                                     </div>
-                                ))}
+                                })}
                                 <div className="flex justify-center pt-6 md:justify-end">
                                     <Pagination
                                         activePage={currentPage}
@@ -301,7 +318,7 @@ export default function Checkout() {
                                         </div>
                                     </div>
                                 </div>
-                                {currentOrders.map((item: any, index: number) => (
+                                {currentOrders && currentOrders?.map((item: any, index: number) => (
                                     <Link href={`/checkout/estimation/?orderID=${item.id}`}>
                                         <div
                                             key={index}
@@ -323,12 +340,12 @@ export default function Checkout() {
                                             <div
                                                 className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
                                                 <span className="font-hkbold block pt-3 pb-2 text-center text-sm uppercase  sm:hidden">Price</span>
-                                                <span className="font-hk ">${item.total}</span>
+                                                <span className="font-hk ">₹{item.total}</span>
                                             </div>
                                             <div
                                                 className="w-full text-center sm:w-3/10 sm:text-right md:w-1/4 xl:w-1/5">
                                                 <div className="pt-3 sm:pt-0">
-                                                    <span className="bg-primary-lightest border border-primary-light px-4 py-3 inline-block rounded font-hk text-primary">In Progress</span>
+                                                    <span className="bg-primary-lightest border border-primary-light px-4 py-3 inline-block rounded font-hk text-primary">{item?.orderStatus}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -377,7 +394,7 @@ export default function Checkout() {
                                     </div>
                                 </div>
 
-                                {currentOrders && currentOrders.map((order: any) => (<div
+                                {currentOrders && currentOrders?.map((order: any) => (<div
                                     className="mb-3 flex flex-col items-center justify-between rounded bg-white px-4 py-5 shadow sm:flex-row sm:py-4">
                                     <div
                                         className="flex w-full flex-col border-b border-grey-dark pb-4 text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center">
@@ -393,7 +410,7 @@ export default function Checkout() {
                                     </div>
                                     <div
                                         className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
-                                        <span className="font-hk ">${order?.netAmount}</span>
+                                        <span className="font-hk ">₹{order?.netAmount}</span>
                                     </div>
                                     <div
                                         className="w-full text-center sm:w-3/10 sm:text-right md:w-1/4 xl:w-1/5">

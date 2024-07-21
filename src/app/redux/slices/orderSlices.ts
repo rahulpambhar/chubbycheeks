@@ -5,11 +5,13 @@ interface ThunkApiConfig {
     rejectWithValue: any;
 }
 
+
+
 export const createTempOrderFunc = createAsyncThunk('order/creteTempOrder', async (orderMeta: any, thunkApiConfig: ThunkApiConfig) => {
 
     const { rejectWithValue } = thunkApiConfig;
     try {
-        const response = await axios.post(`${apiUrl}/createOrder/tempOrder`, {  orderMeta })
+        const response = await axios.post(`${apiUrl}/createOrder/tempOrder`, { orderMeta })
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -17,10 +19,11 @@ export const createTempOrderFunc = createAsyncThunk('order/creteTempOrder', asyn
     }
 });
 
-export const createOrderFunc = createAsyncThunk('order/creteOrder', async (tempId: any, thunkApiConfig: ThunkApiConfig) => {
+export const createOrderFunc = createAsyncThunk('order/creteOrder', async (orderInfo: any, thunkApiConfig: ThunkApiConfig) => {
     const { rejectWithValue } = thunkApiConfig;
     try {
-        const response = await axios.post(`${apiUrl}/createOrder/order`, { tempId })
+
+        const response = await axios.post(`${apiUrl}/createOrder/order`, { orderInfo })
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -28,10 +31,33 @@ export const createOrderFunc = createAsyncThunk('order/creteOrder', async (tempI
     }
 });
 
-export const getOrdersFunc = createAsyncThunk('order/getOrdersFunc', async (_, thunkApiConfig: ThunkApiConfig) => {
+export const getOrdersFunc = createAsyncThunk('order/getOrdersFunc', async ({ page, limit, search, from, to, slug, }: { page: number; limit: number; search: any; from: any, to: any, slug: string }, thunkApiConfig: ThunkApiConfig) => {
     const { rejectWithValue } = thunkApiConfig;
     try {
-        const response = await axios.get(`${apiUrl}/createOrder/order`,)
+
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+            search: search.toString(),
+            from: from.toString(),
+            to: to.toString(),
+            slug: slug.toString()
+        }).toString();
+
+        const response = await axios.get(`${apiUrl}/createOrder/order?${params}`);
+        return response.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || 'Unknown error occurred';
+        return rejectWithValue(errorMessage);
+    }
+});
+
+export const updateOrdersFunc = createAsyncThunk('order/updateOrdersFunc', async ({ id, orderStatus }: { id: string, orderStatus: string }, thunkApiConfig: ThunkApiConfig) => {
+    const { rejectWithValue } = thunkApiConfig;
+    try {
+        const payload = { id, orderStatus }
+
+        const response = await axios.put(`${apiUrl}/createOrder/order`, payload)
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -40,7 +66,7 @@ export const getOrdersFunc = createAsyncThunk('order/getOrdersFunc', async (_, t
 });
 
 const initialState: any = {
-    orders: [],  
+    orders: [],
     loading: false,
     error: null,
     status: 'idle',

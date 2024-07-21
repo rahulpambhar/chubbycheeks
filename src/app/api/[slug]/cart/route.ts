@@ -22,7 +22,6 @@ export async function POST(request: Request) {
         }
         const body = await request.json();
         const { productId, action } = body.payload
-        console.log('body.payload::: ', body.payload);
 
         const product = await getProduct(productId)
         let cart = await getCart(session?.user?.id)
@@ -69,6 +68,20 @@ export async function POST(request: Request) {
                         },
                         data: {
                             isBlocked: true,
+                            updatedBy: session?.user?.id,
+                            updatedAt: new Date(),
+                        }
+                    })
+                } else if (action === "checked") {
+
+                    const isCartItem = await getCartItem(cart.id, product.id)
+
+                    cartItem = await prisma.cartItem.update({
+                        where: {
+                            id: isItemExist.id,
+                        },
+                        data: {
+                            checked: !isCartItem?.checked,
                             updatedBy: session?.user?.id,
                             updatedAt: new Date(),
                         }
@@ -154,7 +167,7 @@ export async function GET(request: Request) {
         }
 
         const isCart = await getCart(session?.user?.id)
-        
+
         if (!isCart) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: isCart, msg: "Cart fetch unsuccess!", });
         }

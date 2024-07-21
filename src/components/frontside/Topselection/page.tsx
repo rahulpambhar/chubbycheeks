@@ -86,7 +86,7 @@ const Topselection = ({
       </div>
       <div className="pt-1 flex justify-center items-center flex-grow">
         <Image
-          className="border border-black rounded object-cover h-[200px] w-[200px]"
+          className=" rounded object-cover h-[200px] w-[200px]"
           src={`/products/${image}`}
           alt={label}
           width={200}

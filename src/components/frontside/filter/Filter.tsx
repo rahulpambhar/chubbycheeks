@@ -58,7 +58,7 @@ const Filter = React.memo(() => {
                 {/* CLEAR ALL */}
               </div>
             </div>
-            <div className="flex gap-5 pl-5">
+            <div className="flex hidden gap-5 pl-5">
               <div className="bg-[#CFCFCF] py-2 px-6 rounded-full flex gap-3 ">
                 <span>Price</span>
                 <button>X</button>

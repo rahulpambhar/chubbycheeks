@@ -497,3 +497,15 @@ export const getInTouchSchema = Yup.object().shape({
     message: Yup.string().required('Message is required').max(500, 'Message must be at most 500 characters'),
 });
 
+
+export function getCurrentDateFormatted() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = today.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+
+export const orderStatus = ["PROCESSING", "ACCEPTED", "DISPATCHED", "DELIVERED", "CANCELLED", "RETURNED", "REFUNDED"]
+

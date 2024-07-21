@@ -58,7 +58,7 @@ export async function POST(request: Request) {
         let totalAmt: number = 0
         let discountAmount: number = 0;
         let taxableAmount: number = 0
-        let GST = 18 //  default percentage, do it dynamic according to tax
+        let GST = 0
         let otherCharge = 0
         let netAmount: number = 0
 
@@ -89,22 +89,23 @@ export async function POST(request: Request) {
 
             const qty = item?.orderedQty
             const price = item?.price
+            const gst = item?.gst || 0
 
             const total = qty * price
             const discount = item?.discount
 
             if (item.discountType === "PERCENTAGE") {
                 discountAmount += total * discount / 100
+                GST += (total - (total * discount / 100)) * gst / 100
             } else {
                 discountAmount += qty * item?.discount
+                GST += ((total - (qty * item?.discount)) * gst) / 100
             }
             totalAmt += total;
             itemCount += qty
         }
 
         taxableAmount = totalAmt - discountAmount
-        GST = (GST * taxableAmount) / 100
-
         netAmount = taxableAmount + GST
 
         const res: any = await prisma.returnOrder.create({
@@ -114,17 +115,17 @@ export async function POST(request: Request) {
 
                 itemCount: itemCount,
 
-                discountAmount: discountAmount,
                 total: totalAmt,
-                taxableAmount: taxableAmount,
-                tax: GST,
+                discountAmount,
+                taxableAmount,
+                gst: GST,
                 otherCharge: otherCharge,
                 netAmount: netAmount,
 
                 isPaid: false,
                 payStatus: 'PENDING',
 
-                orderRerunrnStatus: "PENDING",
+                orderRerunrnStatus: "PROCESSING",
                 pendingAt: new Date(),
 
                 user: { connect: { id: userId } },

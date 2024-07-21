@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Styles from './output.module.css';
 import { useAppSelector, useAppDispatch } from '../../../app/redux/hooks';
-import { createTempOrderFunc, createOrderFunc, getOrdersFunc } from '../../../app/redux/slices/orderSlices';
 import { errorToast, successToast } from '@/components/toster';
 import axios from "axios";
 import { apiUrl } from "../../../../env";

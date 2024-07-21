@@ -27,6 +27,7 @@ function Submitemail() {
       if (response.data.st) {
         successToast(response.data.msg);
         setEmail('');
+        setErrorMessage('');
       } else {
         errorToast(response.data.msg);
       }
@@ -45,9 +46,7 @@ function Submitemail() {
           Subscribe to the newsletter
         </p>
         <p className="font-normal text-base roboto pt-5">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eu sit
-          mauris, tristique ultrices mauris. Consectetur eget nunc, dui
-          pellentesque ultrices morbi nisl. Iaculis tempor rutrum.
+          Stay updated with the latest trends in adorable baby clothes, special offers, and exclusive deals. Be the first to know about our new arrivals and enjoy parenting tips, care guides, and more, directly to your inbox. Join our community of loving parents today and make the most out of every moment with your little one!
         </p>
       </div>
       <form onSubmit={handleSubmit} className="flex justify-center items-center">

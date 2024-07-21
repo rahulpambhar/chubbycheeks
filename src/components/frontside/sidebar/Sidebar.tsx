@@ -22,13 +22,13 @@ const Sidebar = () => {
           />
         </div>
       </div>
-      <div className=" grid gap-5 py-5">
+      {/* <div className=" grid gap-5 py-5">
         <div className="text-base font-bold poppins uppercase">
           Availability
         </div>
         <div className="grid gap-2">
           <div className="flex justify-between">
-            <div className="flex  items-center gap-2">
+            <div className="flex  items- gap-2">
               <input
                 type="checkbox"
                 className="size-6 appearance-none checked:border-4 checked:border-white border border-[#CFCFCF] outline-2 outline-black bg-white checked:bg-black checked:focus:outline"
@@ -48,7 +48,7 @@ const Sidebar = () => {
             <div className="pr-6">15</div>
           </div>{" "}
         </div>
-      </div>
+      </div> */}
       <div className="grid gap-5 py-5">
         <div className="text-base font-bold poppins uppercase">color</div>
         <div className="grid gap-3">
@@ -91,7 +91,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      <div className="grid gap-5 py-5">
+      {/* <div className="grid gap-5 py-5">
         <div className="text-base font-bold poppins uppercase">
           Availability
         </div>
@@ -133,7 +133,7 @@ const Sidebar = () => {
         <div className="text-base font-bold poppins uppercase">
           Customer Ratings
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

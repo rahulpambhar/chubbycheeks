@@ -48,9 +48,7 @@ const cartReducer = createSlice({
             .addCase(actionTocartFunc.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.cart = action.payload?.data;
-                state.cartItem = action.payload?.data?.CartItem?.map((item: any) => {
-                    return { ...item, checked: true }
-                });
+                state.cartItem = action.payload?.data?.CartItem
                 state.loading = false;
             })
             .addCase(actionTocartFunc.rejected, (state, action) => {
@@ -66,10 +64,9 @@ const cartReducer = createSlice({
             .addCase(fetchCart.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.cart = action.payload?.data;
-                state.cartItem = action.payload?.data?.CartItem?.map((item: any) => {
-                    return { ...item, checked: true }
-                });
+                state.cartItem = action.payload?.data?.CartItem;
                 state.loading = false;
+
             })
             .addCase(fetchCart.rejected, (state, action) => {
                 state.status = 'failed';

@@ -1,23 +1,22 @@
 import { NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import { unlink } from "fs/promises";
-import { parse } from "url";
+
 import { StatusCodes } from 'http-status-codes';
-import { getProduct, getCart, getNextInvoice, activityLog, getOrders } from "../../utils";
+import { getProduct, getCart, getNextInvoice, activityLog, } from "../../utils";
 import authOptions from "../../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 import prisma from "../../../../../../prisma/prismaClient";
-import paypal from 'paypal-rest-sdk';
-// import { paypal_mode, paypal_client_id, paypal_client_secret } from "../../../../../../env";
-import { redirect } from 'next/navigation'
+import { parse } from "url";
+import { getOrdersByPage, getOrders,getOrdersById } from './functions/route.js'
+
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
+        const { temOrdrId, paymentId, repeatOrder } = body?.orderInfo
 
         const temp: any = await prisma.tempOrder.findFirst({
             where: {
-                id: body.tempId,
+                id: temOrdrId,
                 isBlocked: false
             },
             include: {
@@ -47,14 +46,16 @@ export async function POST(request: Request) {
             tax: temp.tax,
             otherCharge: temp.otherCharge,
             netAmount: temp.netAmount,
+            gst: temp.gst,
 
-            isPaid: temp.isPaid,
-            paidAt: temp.paidAt,
-            payStatus: temp.payStatus,
-            paymentDetail: "payment done",
+            isPaid: true,
+            paidAt: new Date(),
+            payStatus: "SUCCESS",
+            paymentDetail: "Razorpay",
+            paymentId: paymentId,
             paymentMethod: temp.paymentMethod,
 
-            orderStatus: "PENDING",
+            orderStatus: "PROCESSING",
             pendingAt: new Date(),
 
             user: { connect: { id: session?.user?.id } },
@@ -75,60 +76,6 @@ export async function POST(request: Request) {
         let createOrder: any = null;
         createOrder = await prisma.order.create({ data })
 
-        // paypal.configure({
-        //     'mode': 'sandbox', //sandbox or live
-        //     'client_id': "paypal_client_id",
-        //     'client_secret': "paypal_client_secret"
-        // });
-
-        // var create_payment_json = {
-        //     "intent": "sale",
-        //     "payer": {
-        //         "payment_method": "paypal"
-        //     },
-        //     "redirect_urls": {
-        //         "return_url": "http://localhost:3000/api/pay_success/success",
-        //         "cancel_url": "http://localhost:3000/api/pay_cancel/cancel"
-        //     },
-        //     "transactions": [{
-        //         "item_list": {
-        //             "items": [{
-        //                 "name": "item",
-        //                 "sku": "item",
-        //                 "price": "1.00",
-        //                 "currency": "USD",
-        //                 "quantity": 1
-        //             }]
-        //         },
-        //         "amount": {
-        //             "currency": "USD",
-        //             "total": "1.00"
-        //         },
-        //         "description": "This is the payment description."
-        //     }]
-        // };
-
-
-        // paypal.payment.create(create_payment_json, function (error, payment: any) {
-        //     if (error) {
-        //         console.log('error::: ', error);
-        //         throw error;
-        //     } else {
-
-
-        //         // for (let i = 0; i < payment?.links.length; i++) {
-
-        //         //     if (payment?.links[i].rel === 'approval_url') {
-        //         //         console.log('payment.links[i].href::: ', payment?.links[i].rel, payment.links[i].href);
-
-        //         //         // NextResponse.redirect(payment.links[i].href)
-        //         // return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: payment, msg: "order created successfully!" });
-        //         //     }
-
-        //         // }
-        //         // console.log(payment);
-        //     }
-        // });
 
 
         if (!createOrder) {
@@ -145,7 +92,7 @@ export async function POST(request: Request) {
 
         const blockTemp: any = await prisma.tempOrder.update({
             where: {
-                id: body.tempId
+                id: temOrdrId
             },
             data: {
                 isBlocked: true,
@@ -153,7 +100,7 @@ export async function POST(request: Request) {
                 items: {
                     updateMany: {
                         where: {
-                            tempOrderId: body.tempId
+                            tempOrderId: temOrdrId
                         },
                         data: {
                             isBlocked: true,
@@ -163,6 +110,30 @@ export async function POST(request: Request) {
                 }
             }
         })
+
+        if (!repeatOrder) {
+
+            const itemsToUpdate = await prisma.cartItem.findMany({
+                where: {
+                    checked: true,
+                    isBlocked: false
+                }
+            });
+
+            const updatePromises = itemsToUpdate.map(item => {
+                return prisma.cartItem.update({
+                    where: {
+                        id: item.id
+                    },
+                    data: {
+                        isBlocked: true
+                    }
+                });
+            });
+
+            await Promise.all(updatePromises);
+        }
+
 
         await activityLog("INSERT", "order", data, session?.user?.id);
         return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order created successfully!", });
@@ -176,6 +147,8 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     try {
         let session: any = await getServerSession(authOptions);
+        const { query }: any = parse(request.url, true);
+        let { slug, }: any = query
 
         if (!session) {
             return NextResponse.json({
@@ -185,7 +158,15 @@ export async function GET(request: Request) {
             });
         }
 
-        const isOrders = await getOrders(session?.user?.id)
+        let isOrders: any = []
+
+        if (slug === "getAll") {
+            isOrders = await getOrders(session?.user?.id)
+        } else if (slug === "getPaginated") {
+            isOrders = await getOrdersByPage(request)
+        } else if (slug === "getById") {
+            isOrders = await getOrdersById(request)
+        }
 
         return NextResponse.json({
             st: true,
@@ -203,4 +184,50 @@ export async function GET(request: Request) {
             msg: "something went wrong!!",
         });
     }
+}
+
+export async function PUT(request: Request) {
+
+    try {
+
+        let session: any = await getServerSession(authOptions);
+        const { isAdmin } = session?.user
+
+        if (!isAdmin) {
+            return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "UnAuthorized", });
+        }
+
+
+        if (!session) {
+            return NextResponse.json({
+                st: false,
+                data: [],
+                msg: "Login first.",
+            });
+        }
+
+        const body = await request.json();
+        const { id, orderStatus } = body
+
+        await prisma.order.update({
+            where: {
+                id
+            },
+            data: {
+                orderStatus: orderStatus,
+                pendingAt: new Date(),
+                updatedBy: session?.user?.id
+            }
+        })
+
+        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
+
+
+    } catch (error) {
+        console.log('error::: ', error);
+
+        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], error, msg: "something went wrong!!" });
+
+    }
+
 }
