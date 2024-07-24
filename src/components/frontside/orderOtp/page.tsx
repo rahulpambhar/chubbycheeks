@@ -4,7 +4,6 @@ import { useAppSelector, useAppDispatch } from '../../../app/redux/hooks';
 import { createTempOrderFunc, createOrderFunc, } from '../../../app/redux/slices/orderSlices';
 import { errorToast, successToast } from '@/components/toster';
 import axios from "axios";
-import { apiUrl } from "../../../../env";
 
 const OTPInputGroup = ({ setInputValues, inputValues, orderID, setOTP, timer, setMsg, Msg }:any) => {
 
@@ -27,7 +26,7 @@ const OTPInputGroup = ({ setInputValues, inputValues, orderID, setOTP, timer, se
                 return
             }
 
-            const res = await axios.get(`${apiUrl}/getOTP/otp?typedOTP=${typedOTP}`)
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/getOTP/otp?typedOTP=${typedOTP}`)
             if (res?.data?.st) {
                 setMsg(res.data.msg)
                 const tempData = await dispatch(createTempOrderFunc(orderID ? orderID : ""))
@@ -148,7 +147,7 @@ const OTPInput = ({ id, previousId, nextId, value, onValueChange, handleSubmit }
             className={Styles.DigitInput}
             value={value}
             maxLength={1}
-            onChange={(e) => onValueChange(id, e.target.value)}
+            onChange={(e:any) => onValueChange(id, e.target.value)}
             onKeyUp={handleKeyUp}
         />
     );

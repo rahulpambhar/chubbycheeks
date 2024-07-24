@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { apiUrl } from "../../../../env.js"
 interface ThunkApiConfig {
     rejectWithValue: any;
 }
@@ -8,7 +7,7 @@ interface ThunkApiConfig {
 export const getReturnOrdersFunc = createAsyncThunk('returnOrder/getReturnOrderFunc', async (_, thunkApiConfig: ThunkApiConfig) => {
     const { rejectWithValue } = thunkApiConfig;
     try {
-        const response = await axios.get(`${apiUrl}/return/returnOrder/getAll`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder/getAll`)
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';

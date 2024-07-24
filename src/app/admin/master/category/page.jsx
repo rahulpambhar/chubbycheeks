@@ -9,7 +9,6 @@ import Loading from "@/components/admin/loading";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import moment from "moment";
-import { apiUrl } from "../../../../../env";
 import { successToast, errorToast } from "../../../../components/toster/index";
 // import { useDispatch, useSelector } from 'react-redux';
 // import { fetchCategories } from '../../app/redux/slices/categorySlice';
@@ -51,7 +50,7 @@ export default function DashBoardPage() {
       formData.append("type", addOrUpdate);
       formData.append("categoryId", categoryId);
 
-      let response = await axios.post(`${apiUrl}/admin/category`, formData);
+      let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin/category`, formData);
 
       if (response.data.st === true) {
         getCategoryList();
@@ -89,7 +88,7 @@ export default function DashBoardPage() {
   const deleteCategory = () => {
     try {
       axios
-        .delete(`${apiUrl}/admin/category`, { data: { categoryIds: deleteId } })
+        .delete(`${process.env.NEXT_PUBLIC_API_URL}/admin/category`, { data: { categoryIds: deleteId } })
         .then((response) => {
           if (response.data.st === true) {
             getCategoryList();
@@ -109,7 +108,7 @@ export default function DashBoardPage() {
     setLoader(true);
     try {
       let response = await axios.get(
-        `${apiUrl}/admin/category?page=${page}&limit=${perPage}`
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/category?page=${page}&limit=${perPage}`
       );
 
       if (response?.data.data) {

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { apiUrl } from "../../../../env"
 
 
 const initialState: any = {
@@ -17,8 +16,8 @@ export const fetchCategories: any = createAsyncThunk('categories/fetchCategories
     try {
         const page = 1
         const limit = 100
-        const response = await axios.get(`${apiUrl}/admin/category?page=${page}&limit=${limit}`)
-        // const response = await axios.get(`${process.env.API_URL}/admin/category?page=${page}&limit=${limit}`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/category?page=${page}&limit=${limit}`)
+        // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/category?page=${page}&limit=${limit}`)
         return response.data;
     } catch (error) {
         throw error;

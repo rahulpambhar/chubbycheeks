@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import OTPInputGroup from '@/components/frontside/changePasswordOtp/page';
 import axios from 'axios';
-import { apiUrl } from '../../../../env';
 import { errorToast, successToast } from '@/components/toster';
 import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
@@ -35,7 +34,7 @@ const ChangePassword = () => {
 
     const generateOTP = async () => {
         try {
-            const response = await axios.post(`${apiUrl}/sendOTP/otp`);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sendOTP/otp`);
             if (response.data.st) {
                 setOTP(true);
                 const id = setInterval(() => {
@@ -65,7 +64,7 @@ const ChangePassword = () => {
     const destroyOtp = async () => {
         try {
 
-            const res = await axios.put(`${apiUrl}/destroyOtp/otp`);
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/destroyOtp/otp`);
 
         } catch (error) {
             console.log('error::: ', error);
@@ -149,7 +148,7 @@ const ChangePassword = () => {
                             let formData = new FormData();
                             formData.append("password", values.password);
                             formData.append("type", "updatePassword");
-                            const res = await axios.post(`${apiUrl}/slug/signup`, formData);
+                            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/slug/signup`, formData);
                             if (res?.data?.st) {
                                 successToast(res?.data?.msg);
                                 resetForm();
@@ -177,7 +176,7 @@ const ChangePassword = () => {
                                                 placeholder="Enter your password"
                                                 className="pr-10"
                                                 value={values.password}
-                                                onChange={(e) => {
+                                                onChange={(e:any) => {
                                                     setFieldValue('password', e.target.value)
                                                 }}
                                             />
@@ -204,7 +203,7 @@ const ChangePassword = () => {
                                                 placeholder="Enter confirm password"
                                                 className="pr-10"
                                                 value={values.Confirm_password}
-                                                onChange={(e) => {
+                                                onChange={(e:any) => {
                                                     setFieldValue('Confirm_password', e.target.value)
                                                 }}
                                             />

@@ -20,9 +20,6 @@ export async function POST(request: Request) {
         const { orderMeta, } = body
         let nextInvoice: string = ""
         let items: any = []
-        let cart: any = {}
-        let order: any = {}
-
         let itemCount: number = 0
         let totalAmt: number = 0
         let discountAmount: number = 0;
@@ -41,6 +38,7 @@ export async function POST(request: Request) {
             }
         })
 
+        console.log('products::: ', orderMeta);
         items = orderMeta?.selectedItems?.map((item: any) => {
             const product = products?.find((product: any) => {
                 return product?.id === item?.productId;
@@ -63,7 +61,7 @@ export async function POST(request: Request) {
             const total = qty * price
             const discount = item?.discount
 
-            if (item.discountType === "PERCENTAGE") {
+            if (item?.discountType === "PERCENTAGE") {
                 discountAmount += total * discount / 100
 
                 GST += (total - (total * discount / 100)) * gst / 100
@@ -75,7 +73,6 @@ export async function POST(request: Request) {
             totalAmt += total;
             itemCount += qty
         }
-
         taxableAmount = totalAmt - discountAmount
         netAmount = taxableAmount + GST
 
@@ -92,11 +89,10 @@ export async function POST(request: Request) {
             otherCharge: 0,
             netAmount: netAmount,
 
-            isPaid: true,
+            isPaid: orderMeta?.paymentMethod === "COD" ? false : true,
             paidAt: new Date(),
-            payStatus: "PENDING",
-            paymentDetail: "Razorpay",
-            paymentMethod: "online",
+            paymentNote: orderMeta?.paymentMethod === "COD" ? "COD" : "Razorpay",
+            paymentMethod: orderMeta?.paymentMethod,
 
             user: { connect: { id: session?.user?.id } },
             Transport: { connect: { id: "65f67705f6a5e7edc22123e4" } },
@@ -114,25 +110,27 @@ export async function POST(request: Request) {
             })
         }
 
-        const razorpay = new Razorpay({
-            key_id: process.env.RAZORPAY_KEY_ID as string,
-            key_secret: process.env.RAZORPAY_KEY_SECRET as string,
-        });
+        let razorPayRes: any = {}
 
-        const options = {
-            amount: netAmount * 100,
-            currency: "INR",
-            receipt: nextInvoice,
-        };
+        if (orderMeta?.paymentMethod == "ONLINE_PAY") {
 
-        const razorPayRes = await razorpay.orders.create(options);
+            const razorpay = new Razorpay({
+                key_id: process.env.RAZORPAY_KEY_ID as string,
+                key_secret: process.env.RAZORPAY_KEY_SECRET as string,
+            });
 
-        if (razorPayRes?.status !== "created") {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "order created unsuccess!", });
+            const options = {
+                amount: netAmount * 100,
+                currency: "INR",
+                receipt: nextInvoice,
+            };
+
+            razorPayRes = await razorpay.orders.create(options);
+            if (razorPayRes?.status !== "created") {
+                return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "order created unsuccess!", });
+            }
+            data.paymentId = razorPayRes?.id
         }
-
-
-        data.razorpay_order_id = razorPayRes?.id
 
         const createTemp = await prisma.tempOrder.create({ data })
 
@@ -148,7 +146,7 @@ export async function POST(request: Request) {
         })
 
         await activityLog("INSERT", "tempOrder", data, session?.user?.id);
-        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: razorPayRes, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
+        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: orderMeta?.paymentMethod === "ONLINE_PAY" ? razorPayRes : {}, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
 
     } catch (error) {
         console.log('error::: ', error);

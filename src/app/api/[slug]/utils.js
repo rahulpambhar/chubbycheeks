@@ -1,5 +1,4 @@
 import prisma from "../../../../prisma/prismaClient";
-import { orderPrifix, tempOrderPrifix } from "../../../../env"
 
 
 export const getProduct = async (productId) => {
@@ -69,20 +68,20 @@ export const getNextInvoice = async (typeOrder) => {
 
     if (!lastInvoice) {
         if (typeOrder === "order") {
-            return `${orderPrifix}-1`;
+            return `${process.env.ORDER_PRFIX}-1`;
         } else {
-            return `${tempOrderPrifix}-1`;
+            return `${process.env.TEMP_ORDER_PRFIX}-1`;
         }
     }
 
     if (typeOrder === "order") {
-        let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${orderPrifix}-`, ""));
+        let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${process.env.ORDER_PRFIX}-`, ""));
         numericalPart++;
-        inv = `${orderPrifix}-` + numericalPart.toString().padStart(0, '0');
+        inv = `${process.env.ORDER_PRFIX}-` + numericalPart.toString().padStart(0, '0');
     } else {
-        let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${tempOrderPrifix}-`, ""));
+        let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${process.env.TEMP_ORDER_PRFIX}-`, ""));
         numericalPart++;
-        inv = `${tempOrderPrifix}-` + numericalPart.toString().padStart(0, '0');
+        inv = `${process.env.TEMP_ORDER_PRFIX}-` + numericalPart.toString().padStart(0, '0');
     }
     return inv;
 }
@@ -96,3 +95,9 @@ export async function activityLog(action, table, body, createdBy) {
 }
 
 
+export const calculateExpectedDeliveryDate = (daysFromNow) => {
+    const now = new Date();
+    const expectedDeliveryDate = new Date();
+    expectedDeliveryDate.setDate(now.getDate() + daysFromNow);
+    return expectedDeliveryDate;
+};

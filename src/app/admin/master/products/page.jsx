@@ -10,7 +10,6 @@ import { dataNotFound, } from "../../../../../public/assets";
 import Loading from "@/components/admin/loading";
 import axios from "axios";
 import moment from "moment";
-import { apiUrl } from "../../../../../env";
 import { successToast, errorToast } from "../../../../components/toster/index";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '../../../redux/slices/categorySlice';
@@ -47,7 +46,7 @@ export default function BuyHistory() {
     const [addProductData, setAddProductData] = useState({
         name: "",
         batchNo: "",
-        uid: "",
+        sku: "",
         price: 0,
         gst: 0,
         han: 0,
@@ -74,7 +73,7 @@ export default function BuyHistory() {
     const addOrUpdateProduct = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        const { categoryId, subCategoryId, name, batchNo, uid, price,gst, description, discount, image, video, discountedPrice, brand, qty, type, hsn, discountType } = addProductData
+        const { categoryId, subCategoryId, name, batchNo, sku, price,gst, description, discount, image, video, discountedPrice, brand, qty, type, hsn, discountType } = addProductData
         if (categoryId === "" && type === "add") {
             errorToast("Please select category");
             setIsLoading(false);
@@ -91,8 +90,8 @@ export default function BuyHistory() {
             errorToast("Please enter batch no");
             setIsLoading(false);
             return;
-        } else if (uid === "") {
-            errorToast("Please enter uid");
+        } else if (sku === "") {
+            errorToast("Please enter sku");
             setIsLoading(false);
             return;
         } else if (price === 0) {
@@ -133,7 +132,7 @@ export default function BuyHistory() {
             formData.append("subCategoryId", subCategoryId);
             formData.append("name", name);
             formData.append("batchNo", batchNo);
-            formData.append("uid", uid);
+            formData.append("sku", sku);
             formData.append("price", price);
             formData.append("gst", gst);
             formData.append("discountedPrice", discountedPrice);
@@ -159,7 +158,7 @@ export default function BuyHistory() {
             formData.append("video", video);
             formData.append("type", type);
 
-            let response = await axios.post(`${apiUrl}/admin/products`, formData);
+            let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin/products`, formData);
 
             if (response.data.st === true) {
                 setIsLoading(false);
@@ -170,7 +169,7 @@ export default function BuyHistory() {
                     setAddProductData({
                         name: "",
                         batchNo: "",
-                        uid: "",
+                        sku: "",
                         price: 0,
                         han: 0,
                         discountedPrice: 0,
@@ -198,7 +197,7 @@ export default function BuyHistory() {
                     setAddProductData({
                         name: "",
                         batchNo: "",
-                        uid: "",
+                        sku: "",
                         price: 0,
                         discountedPrice: 0,
                         discount: 0,
@@ -245,7 +244,7 @@ export default function BuyHistory() {
         setIsLoading(true);
 
         try {
-            axios.delete(`${apiUrl}/admin/products`, { data: { productIds: deleteId } }).then((response) => {
+            axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/admin/products`, { data: { productIds: deleteId } }).then((response) => {
                 if (response.data.st === true) {
                     getproductList()
                     successToast(response.data.msg);
@@ -268,7 +267,7 @@ export default function BuyHistory() {
     const getproductList = useCallback(async () => {
         setLoader(true);
         try {
-            let response = await axios.get(`${apiUrl}/admin/products?page=${page}&limit=${perPage}&slug=getproductList`);
+            let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/products?page=${page}&limit=${perPage}&slug=getproductList`);
 
             if (response?.data.data) {
                 setData(response?.data?.data);
@@ -287,7 +286,7 @@ export default function BuyHistory() {
 
     const getfilterCategory = async () => {
         try {
-            let response = await axios.get(`${apiUrl}/admin/products?page=${page}&limit=${perPage}&categoryId=${selectFilter}&slug=getCategoryProducts`);
+            let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/products?page=${page}&limit=${perPage}&categoryId=${selectFilter}&slug=getCategoryProducts`);
 
             if (response?.data.data) {
                 setData(response?.data?.data);
@@ -510,12 +509,12 @@ export default function BuyHistory() {
                                             className="edit-btn"
                                             aria-label="i"
                                             onClick={(e) => {
-                                                const { name, batchNo, uid, price,gst, discountedPrice, discount, brand, qty, description, image, video, categoryId, subCategoryId, hsn, discountType } = item
+                                                const { name, batchNo, sku, price,gst, discountedPrice, discount, brand, qty, description, image, video, categoryId, subCategoryId, hsn, discountType } = item
                                                 setAddProductData({
                                                     // ...ProductsData,
                                                     name,
                                                     batchNo,
-                                                    uid,
+                                                    sku,
                                                     price,
                                                     gst,
                                                     discountedPrice: (discount * price) / 100,
@@ -687,18 +686,18 @@ export default function BuyHistory() {
                                                     />
                                                 </div>
                                                 <div className="form-group mb-2">
-                                                    <label htmlFor="inputUid" className="block text-left text-sm font-medium text-gray-700 mb-1">
-                                                        Uid
+                                                    <label htmlFor="inputSKU" className="block text-left text-sm font-medium text-gray-700 mb-1">
+                                                    Sku
                                                     </label>
                                                     <input
-                                                        value={addProductData?.uid}
+                                                        value={addProductData?.sku}
                                                         type="text"
                                                         className="form-control w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                        id="inputUid"
+                                                        id="inputSKU"
                                                         onChange={(e) => {
                                                             setAddProductData({
                                                                 ...addProductData,
-                                                                uid: e.target.value,
+                                                                sku: e.target.value,
                                                             });
                                                         }}
                                                     />
@@ -1012,7 +1011,7 @@ export default function BuyHistory() {
                                                         setAddProductData({
                                                             name: "",
                                                             batchNo: "",
-                                                            uid: "",
+                                                            sku: "",
                                                             price: 0,
                                                             discountedPrice: 0,
                                                             discount: 0,

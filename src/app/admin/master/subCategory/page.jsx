@@ -9,7 +9,6 @@ import { dataNotFound } from "../../../../../public/assets";
 import Loading from "@/components/admin/loading";
 import axios from "axios";
 import moment from "moment";
-import { apiUrl } from "../../../../../env";
 import { successToast, errorToast } from "../../../../components/toster/index";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../../redux/slices/categorySlice";
@@ -66,7 +65,7 @@ export default function BuyHistory() {
       formData.append("subCategoryId", subcategoryId);
       formData.append("categoryId", categoryId);
 
-      let response = await axios.post(`${apiUrl}/admin/subCategory`, formData);
+      let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin/subCategory`, formData);
 
       if (response.data.st === true) {
         getSubCategoryList();
@@ -107,7 +106,7 @@ export default function BuyHistory() {
 
     try {
       axios
-        .delete(`${apiUrl}/admin/subCategory`, {
+        .delete(`${process.env.NEXT_PUBLIC_API_URL}/admin/subCategory`, {
           data: { subCategoryIds: deleteId },
         })
         .then((response) => {
@@ -132,7 +131,7 @@ export default function BuyHistory() {
     setLoader(true);
     try {
       let response = await axios.get(
-        `${apiUrl}/admin/subCategory?page=${page}&limit=${perPage}`
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/subCategory?page=${page}&limit=${perPage}`
       );
 
       if (response?.data.data) {
@@ -153,7 +152,7 @@ export default function BuyHistory() {
   const getfilterCategory = async () => {
     try {
       let response = await axios.get(
-        `${apiUrl}/admin/subCategory?page=${page}&limit=${perPage}&id=${selectFilter}`
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/subCategory?page=${page}&limit=${perPage}&id=${selectFilter}`
       );
 
       if (response?.data.data) {

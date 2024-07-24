@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { z } from "zod";
 
 export const profileInitials = {
     name: '',
@@ -507,5 +508,33 @@ export function getCurrentDateFormatted() {
     return `${day}/${month}/${year}`;
 }
 
-export const orderStatus = ["PROCESSING", "ACCEPTED", "DISPATCHED", "DELIVERED", "CANCELLED", "RETURNED", "REFUNDED"]
 
+export const orderStatus = ["ALL", "PROCESSING", "ACCEPTED", "SHIPPED", "CANCELLED", "COMPLETE",]
+
+
+export const shipped = z.object({
+    length: z
+    .string()
+    .min(1, "Length is required")
+    .refine(value => !isNaN(Number(value)), "Length must be a number")
+    .transform(Number)
+    .refine(value => value > 0, "Length must be a positive number"),
+  breadth: z
+    .string()
+    .min(1, "Breadth is required")
+    .refine(value => !isNaN(Number(value)), "Breadth must be a number")
+    .transform(Number)
+    .refine(value => value > 0, "Breadth must be a positive number"),
+  height: z
+    .string()
+    .min(1, "Height is required")
+    .refine(value => !isNaN(Number(value)), "Height must be a number")
+    .transform(Number)
+    .refine(value => value > 0, "Height must be a positive number"),
+  weight: z
+    .string()
+    .min(1, "Weight is required")
+    .refine(value => !isNaN(Number(value)), "Weight must be a number")
+    .transform(Number)
+    .refine(value => value > 0, "Weight must be a positive number"),
+})

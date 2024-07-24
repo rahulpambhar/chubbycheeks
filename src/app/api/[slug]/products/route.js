@@ -33,7 +33,7 @@ export async function POST(request) {
     const subCategoryId = formData.get("subCategoryId");
     const name = formData.get("name");
     const batchNo = formData.get("batchNo");
-    const uid = formData.get("uid");
+    const sku = formData.get("sku");
     const price = formData.get("price");
     const gst = formData.get("gst");
     const discount = formData.get("discount");
@@ -95,7 +95,7 @@ export async function POST(request) {
         const products = await prisma.products.create({
           data: {
             batchNo,
-            uid,
+            sku,
             name,
             price: Number(price),
             gst: Number(gst),
@@ -185,7 +185,7 @@ export async function POST(request) {
           },
           data: {
             batchNo,
-            uid,
+            sku,
             name,
             price: Number(price),
             gst: Number(gst),

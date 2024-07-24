@@ -10,21 +10,12 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum Status {
-    PENDING
-    SUCCESS
-    CANCEL
-    FAIL
-}
-
 enum OrderStatus {
     PROCESSING
     ACCEPTED
-    DISPATCHED
-    DELIVERED
+    SHIPPED
     CANCELLED
-    RETURNED
-    REFUNDED
+    COMPLETE
 }
 
 enum transportMode {
@@ -42,7 +33,13 @@ enum DiscountType {
 enum Action {
     INSERT
     UPDATE
+    CANCEL
     DELETE
+}
+
+enum PaymentMethod {
+    COD
+    ONLINE_PAY
 }
 
 model User {
@@ -145,7 +142,7 @@ model Products {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
     batchNo      String?
-    uid          String?
+    sku          String?
     name         String?
     qty          Int?
     price        Float?
@@ -195,7 +192,7 @@ model Products {
     @@index([subCategoryId])
     @@index([brand])
     @@index([batchNo])
-    @@index([uid])
+    @@index([sku])
     @@index([userId])
 }
 
@@ -271,12 +268,11 @@ model tempOrder {
     charge         Json? // note for charges or extra charges
     netAmount      Int
 
-    isPaid            Boolean
-    paidAt            DateTime
-    payStatus         Status
-    paymentDetail     Json?
-    paymentMethod     String?
-    razorpay_order_id String?
+    isPaid        Boolean
+    paidAt        DateTime
+    paymentId     String?
+    paymentMethod PaymentMethod
+    paymentNote   Json?
 
     dueDays Int?
     dueDate DateTime? @db.Date()
@@ -345,24 +341,20 @@ model Order {
 
     isPaid        Boolean
     paidAt        DateTime
-    payStatus     Status
-    paymentDetail Json?
     paymentId     String?
-    paymentMethod String?
+    paymentMethod PaymentMethod
+    paymentNote   Json?
 
     orderStatus  OrderStatus
-    pendingAt    DateTime?
     processingAt DateTime?
     acceptedAt   DateTime?
-    dispatchedAt DateTime?
-    deliveredAt  DateTime?
+    shippedAt    DateTime?
     cancelledAt  DateTime?
+    completedAt  DateTime?
 
-    dueDays Int?
-    dueDate DateTime? @db.Date()
+    expectedDate DateTime? @db.Date()
 
     isBlocked  Boolean @default(false)
-    attachment String?
 
     user   User?   @relation("user", fields: [userId], references: [id])
     userId String? @db.ObjectId
@@ -374,7 +366,8 @@ model Order {
     transportId   String?        @db.ObjectId
     transportMode transportMode?
 
-    OrderItem OrderItem[] @relation("OrderItem")
+    OrderItem       OrderItem[]       @relation("OrderItem")
+    ShiprockeOrders ShiprockeOrders[] @relation("ShiprockeOrders")
 
     createdAt   DateTime      @default(now())
     createdBy   String?
@@ -426,12 +419,10 @@ model ReturnOrder {
 
     isPaid        Boolean
     paidAt        DateTime?
-    payStatus     Status
-    paymentDetail Json?
+    paymentNote   Json?
     paymentMethod String?
 
     orderRerunrnStatus OrderStatus
-    pendingAt          DateTime?
     processingAt       DateTime?
     acceptedAt         DateTime?
     dispatchedAt       DateTime?
@@ -569,4 +560,33 @@ model GetInTouch {
     createdBy String?
     updatedAt DateTime @updatedAt
     updatedBy String?
+}
+
+model Shiprocket_Auth {
+    id    String @id @default(auto()) @map("_id") @db.ObjectId
+    token String
+
+    updatedAt DateTime @updatedAt
+    updatedBy String?
+}
+
+model ShiprockeOrders {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    order            Order?  @relation("ShiprockeOrders", fields: [channel_order_id], references: [id])
+    channel_order_id String? @db.ObjectId
+
+    order_id    Int
+    shipment_id Int
+
+    isBlocked Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    createdBy String?
+    updatedAt DateTime @updatedAt
+    updatedBy String?
+
+    @@index([channel_order_id])
+    @@index([order_id])
+    @@index([shipment_id])
 }

@@ -10,7 +10,6 @@ import { dataNotFound, } from "../../../../../public/assets";
 import Loading from "@/components/admin/loading";
 import axios from "axios";
 import moment from "moment";
-import { apiUrl } from "../../../../../env";
 import { successToast, errorToast } from "../../../../components/toster/index";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '../../../redux/slices/categorySlice';
@@ -45,7 +44,7 @@ export default function TopSelection() {
         setIsLoading(true);
 
         try {
-            axios.post(`${apiUrl}/admin/topSelection`, { id ,action}).then((response) => {
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/admin/topSelection`, { id ,action}).then((response) => {
                 if (response.data.st === true) {
                     successToast(response.data.msg);
                     setIsLoading(false);
@@ -66,7 +65,7 @@ export default function TopSelection() {
     const getproductList = useCallback(async () => {
         setLoader(true);
         try {
-            let response = await axios.get(`${apiUrl}/admin/products?page=${page}&limit=${perPage}&slug=getproductList`);
+            let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/products?page=${page}&limit=${perPage}&slug=getproductList`);
 
             if (response?.data.data) {
                 setData(response?.data?.data);
@@ -85,7 +84,7 @@ export default function TopSelection() {
 
     const getfilterCategory = async () => {
         try {
-            let response = await axios.get(`${apiUrl}/admin/products?page=${page}&limit=${perPage}&categoryId=${selectFilter}&slug=getCategoryProducts`);
+            let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/products?page=${page}&limit=${perPage}&categoryId=${selectFilter}&slug=getCategoryProducts`);
 
             if (response?.data.data) {
                 setData(response?.data?.data);

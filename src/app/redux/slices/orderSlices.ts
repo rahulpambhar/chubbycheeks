@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { apiUrl } from "../../../../env.js"
 interface ThunkApiConfig {
     rejectWithValue: any;
 }
@@ -11,7 +10,7 @@ export const createTempOrderFunc = createAsyncThunk('order/creteTempOrder', asyn
 
     const { rejectWithValue } = thunkApiConfig;
     try {
-        const response = await axios.post(`${apiUrl}/createOrder/tempOrder`, { orderMeta })
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/createOrder/tempOrder`, { orderMeta })
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -23,7 +22,7 @@ export const createOrderFunc = createAsyncThunk('order/creteOrder', async (order
     const { rejectWithValue } = thunkApiConfig;
     try {
 
-        const response = await axios.post(`${apiUrl}/createOrder/order`, { orderInfo })
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/createOrder/order`, { orderInfo })
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -44,7 +43,7 @@ export const getOrdersFunc = createAsyncThunk('order/getOrdersFunc', async ({ pa
             slug: slug.toString()
         }).toString();
 
-        const response = await axios.get(`${apiUrl}/createOrder/order?${params}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/createOrder/order?${params}`);
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -52,12 +51,12 @@ export const getOrdersFunc = createAsyncThunk('order/getOrdersFunc', async ({ pa
     }
 });
 
-export const updateOrdersFunc = createAsyncThunk('order/updateOrdersFunc', async ({ id, orderStatus }: { id: string, orderStatus: string }, thunkApiConfig: ThunkApiConfig) => {
+export const updateOrdersFunc = createAsyncThunk('order/updateOrdersFunc', async ({ id, data, orderStatus }: { id: any, data: any, orderStatus: string }, thunkApiConfig: ThunkApiConfig) => {
     const { rejectWithValue } = thunkApiConfig;
     try {
-        const payload = { id, orderStatus }
+        const payload = { id, data, orderStatus }
 
-        const response = await axios.put(`${apiUrl}/createOrder/order`, payload)
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/createOrder/order`, payload)
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';

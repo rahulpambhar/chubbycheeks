@@ -39,7 +39,6 @@ const LoginComponents = () => {
     const pathname = usePathname();
 
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get("callbackUrl") || "/";
 
     const handleClick = () => {
         dispatch(isLoginModel(false))

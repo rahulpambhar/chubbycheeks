@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 // import LoaderComponents from "@/components/Loader";
 import { useRouter } from "next/navigation";
 import { isLoginModel, setOpenCart } from '@/app/redux/slices/utilSlice';
-import { apiUrl } from "../../../../env"
 import * as Yup from 'yup'
 import twilio from 'twilio';
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
@@ -87,7 +86,7 @@ const RegisterComponents = () => {
 
                                 formData.append("password", values.password);
                                 formData.append("type", "add");
-                                const res = await axios.post(`${apiUrl}/slug/signup`, formData);
+                                const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/slug/signup`, formData);
                                 if (res?.data?.st) {
 
                                     successToast(res?.data?.msg);

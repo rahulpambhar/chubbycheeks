@@ -3,7 +3,6 @@ import Styles from './output.module.css';
 import { useAppSelector, useAppDispatch } from '../../../app/redux/hooks';
 import { errorToast, successToast } from '@/components/toster';
 import axios from "axios";
-import { apiUrl } from "../../../../env";
 
 const OTPInputGroup = ({ setInputValues, inputValues, setOTP, timer, setVerifyOTP, setTimer, isVerifyOTP, intervalId, setTimeInSeconds }: any) => {
 
@@ -24,7 +23,7 @@ const OTPInputGroup = ({ setInputValues, inputValues, setOTP, timer, setVerifyOT
                 return
             }
 
-            const res = await axios.get(`${apiUrl}/getOTP/otp?typedOTP=${typedOTP}`)
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/getOTP/otp?typedOTP=${typedOTP}`)
             if (res?.data?.st === true) {
                 setTimeInSeconds(0)
                 setVerifyOTP({ st: true, msg: res.data.msg, })
@@ -141,7 +140,7 @@ const OTPInput = ({ id, previousId, nextId, value, onValueChange, handleSubmit }
             className={Styles.DigitInput}
             value={value}
             maxLength={1}
-            onChange={(e) => onValueChange(id, e.target.value)}
+            onChange={(e:any) => onValueChange(id, e.target.value)}
             onKeyUp={handleKeyUp}
         />
     );

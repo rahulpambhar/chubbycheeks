@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { apiUrl } from "../../../../env"
 import { successToast, errorToast } from "../../../components/toster/index"
 import { payload } from "../../../../types/global";
 
 export const getUser= createAsyncThunk('/fetchUser/user', async (id_: string, { rejectWithValue }) => {
     const id: string = id_
     try {
-        const response = await axios.get(`${apiUrl}/getUser/signup?id=${id}`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/getUser/signup?id=${id}`)
         return response?.data?.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';

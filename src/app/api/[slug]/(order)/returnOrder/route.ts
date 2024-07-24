@@ -123,10 +123,8 @@ export async function POST(request: Request) {
                 netAmount: netAmount,
 
                 isPaid: false,
-                payStatus: 'PENDING',
-
                 orderRerunrnStatus: "PROCESSING",
-                pendingAt: new Date(),
+                processingAt: new Date(),
 
                 user: { connect: { id: userId } },
                 order: { connect: { id: orderID } },

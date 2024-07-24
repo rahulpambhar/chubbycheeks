@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { apiUrl } from "../../../../env"
 import { successToast, errorToast } from "../../../components/toster/index"
 
 export const fetchWhishList = createAsyncThunk('fetchwishList/wishList', async (id: string | undefined, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${apiUrl}/fetchwishList/wishList`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/fetchwishList/wishList`)
         return response?.data?.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -15,7 +14,7 @@ export const fetchWhishList = createAsyncThunk('fetchwishList/wishList', async (
 
 export const addToWishList = createAsyncThunk('wishList/add', async (payload: { productId: string; }, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${apiUrl}/addToWishList/wishList`, { payload })
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/addToWishList/wishList`, { payload })
         if (response.data?.st) {
             return response.data?.data?.whishlist;
         } else {

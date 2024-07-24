@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { apiUrl } from "../../../../env"
 
 const fetchCart = createAsyncThunk('cart/fetchCart', async (id: string | undefined, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${apiUrl}/getCart/cart`)
+
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/getCart/cart`)
         return response.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';
@@ -14,7 +14,7 @@ const fetchCart = createAsyncThunk('cart/fetchCart', async (id: string | undefin
 
 const actionTocartFunc = createAsyncThunk('cart/createCart', async (payload: { productId: string; action: string }, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${apiUrl}/addCart/cart`, { payload })
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/addCart/cart`, { payload })
         return response?.data;
     } catch (error) {
         const errorMessage = (error as Error).message || 'Unknown error occurred';

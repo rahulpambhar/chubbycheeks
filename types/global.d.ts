@@ -24,7 +24,7 @@ interface Product {
     numReviews: number | null;
     price: number;
     subCategoryId: string;
-    uid: string;
+    sku: string;
     updatedAt: string; // ISO 8601 date string
     userId: string;
     video: string;

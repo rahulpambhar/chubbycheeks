@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { profileInitials, profileValidate, countryCodes } from "@/app/utils";
 import { errorToast, successToast } from '@/components/toster';
 import axios from 'axios';
-import { apiUrl } from "../../../../env"
 import { getUser } from '@/app/redux/slices/userSlice';
 import { useSession } from 'next-auth/react';
 import { Input } from "@/components/ui/input"
@@ -29,7 +28,7 @@ const ProfilePic = () => {
             formData.append("profile_pic", file);
             formData.append("type", "updateProfilePic");
 
-            const res = await axios.post(`${apiUrl}/slug/signup`, formData);
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/slug/signup`, formData);
 
             if (res?.data?.st) {
                 successToast(res?.data?.msg)
@@ -67,7 +66,7 @@ const ProfilePic = () => {
 
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label htmlFor="picture">Picture</Label>
-                    <Input id="picture" type="file" onChange={(e) => {
+                    <Input id="picture" type="file" onChange={(e:any) => {
                         if (e.target.files && e.target.files[0]) {
                             const selectedFile = e.target.files[0];
                             const error = validateFile(selectedFile);
