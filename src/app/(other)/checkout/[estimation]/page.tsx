@@ -163,7 +163,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
         setRepeatOrder(false);
         setReturnOrder(true);
         setOrder(order?.map((item: any) => {
-            return { ...item, checked: false }
+            return { ...item, checked: true }
         }))
     };
 
@@ -173,7 +173,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
         if (orderID) {
             const isReturnOrderFunc = async () => {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder?orderID=${orderID}`);
-                console.log('response::: ', response);
                 if (!response.data.st) {
                     setReturnOrderDisabled(false);
                 }
@@ -205,7 +204,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
 
                                                     <div key={item.id} className="flex items-center justify-between text-sm ">
                                                         <div className="flex items-center space-x-4">
-                                                            <input
+                                                           { !returnOrder && <input
                                                                 type="checkbox"
                                                                 checked={item?.checked}
                                                                 onChange={() => {
@@ -215,7 +214,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                                         actionTocartFunction(item, "checked")
                                                                     }
                                                                 }}
-                                                            />
+                                                            />}
                                                             <div className="w-16 h-16 rounded-md overflow-hidden">
                                                                 <Image height={100} width={100} alt="Product image" className="object-cover w-full h-full" src={`/products/${item?.product?.image[0]}`} />
                                                             </div>

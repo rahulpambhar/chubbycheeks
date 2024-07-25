@@ -20,9 +20,6 @@ export async function POST(request: Request) {
   let session: any = await getServerSession(authOptions);
   const userId = session?.user?.id;
   const isAdmin = session?.user?.isAdmin;
-
-
-
   const { query } = parse(request.url, true);
 
   const formData = await request.formData();
@@ -109,11 +106,23 @@ export async function POST(request: Request) {
         }
       }
     } else {
+      const email_: any = formData.get("email");
+      console.log('email_::: ', email_);
       let data: any = {};
       let result: any = {};
-      const user = await prisma.user.findFirst({
-        where: { id: userId },
-      });
+      let user: any = {}
+
+      if (email_) {
+        user = await prisma.user.findFirst({
+          where: { email: email_?.email },
+        });
+      } else {
+        user = await prisma.user.findFirst({
+          where: { id: userId },
+        });
+
+      }
+
 
       if (!user) return NextResponse.json({ st: false, data: {}, msg: "User not found" }, { status: 200 });
 
@@ -133,6 +142,7 @@ export async function POST(request: Request) {
         if (type === "updatePassword") {
           const salt = genSaltSync(10);
           data.password = hashSync(password, salt);
+          data.otp = null;
         } else {
           data.name = name
           data.email = email
