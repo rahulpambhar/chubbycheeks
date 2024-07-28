@@ -17,7 +17,6 @@ export const fetchCategories: any = createAsyncThunk('categories/fetchCategories
         const page = 1
         const limit = 100
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/category?page=${page}&limit=${limit}`)
-        // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/admin/category?page=${page}&limit=${limit}`)
         return response.data;
     } catch (error) {
         throw error;

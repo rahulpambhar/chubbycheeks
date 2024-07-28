@@ -1,4 +1,5 @@
 // import Image from "next/image";
+import Image from "next/image";
 import React from "react";
 
 const Careabout = ({
@@ -12,7 +13,7 @@ const Careabout = ({
 }) => {
   return (
     <div className=" mx-5 my-2 bg-white py-5 px-10">
-      <img src={image} alt={label} className="pt-5" />
+      <Image src={image} alt={label} className="pt-5" width={400} height={300} />
       <p className="text-2xl font-normal pt-10 roboto">
         <label htmlFor="">{label}</label>
       </p>

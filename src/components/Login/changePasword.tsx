@@ -34,7 +34,21 @@ const ChangePassword = () => {
         input5: '',
         input6: '',
     });
+    const conevrtInputvalues = parseInt(Object.values(inputValues).filter(val => val !== '').join(''))
 
+
+    const destroyOtp = async () => {
+        try {
+            const email = localStorage.getItem('email');
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/otp/forgotPassOtp`, { email });
+            if (res?.data?.st) {
+                localStorage.removeItem('email');
+            }
+
+        } catch (error) {
+            console.log('error::: ', error);
+        }
+    }
 
     const generateOTP = async () => {
         try {
@@ -55,6 +69,7 @@ const ChangePassword = () => {
                     setTimeInSeconds(prevTime => {
                         if (prevTime - 1 <= 0) {
                             setVerifyOTP({ st: false, msg: "", })
+                            destroyOtp()
                         }
                         return prevTime - 1
                     });
@@ -75,25 +90,14 @@ const ChangePassword = () => {
         }
     }
 
-    const destroyOtp = async () => {
-        try {
-            const email = localStorage.getItem('email');
-            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/otp/forgotPassOtp`, { email });
-            if (res?.data?.st) {
-                localStorage.removeItem('email');
-            }
 
-        } catch (error) {
-            console.log('error::: ', error);
-        }
-    }
 
     useEffect(() => {
         if (timeInSeconds <= 0) {
             clearInterval(intervalId as number);
             setTimeInSeconds(60)
             setTimer(false)
-            destroyOtp()
+            // destroyOtp()
             setOTP(false)
 
         } else if (!OTP) {
@@ -104,33 +108,45 @@ const ChangePassword = () => {
         }
     }, [timeInSeconds]);
 
-    useEffect(() => {
-        if (!timer) {
-            setInputValues({
-                input1: '',
-                input2: '',
-                input3: '',
-                input4: '',
-                input5: '',
-                input6: '',
-            });
-        }
-    }, [timer])
+    // useEffect(() => {
+    //     if (!timer) {
+    //         setInputValues({
+    //             input1: '',
+    //             input2: '',
+    //             input3: '',
+    //             input4: '',
+    //             input5: '',
+    //             input6: '',
+    //         });
+    //     }
+    // }, [timer])
+
+    // useEffect(() => {
+    //     window.addEventListener('beforeunload', destroyOtp);
+    //     return () => {
+    //         window.removeEventListener('beforeunload', destroyOtp);
+    //     };
+    // }, []);
 
     useEffect(() => {
         window.addEventListener('beforeunload', destroyOtp);
+        window.addEventListener('unload', destroyOtp);
+
         return () => {
             window.removeEventListener('beforeunload', destroyOtp);
+            window.removeEventListener('unload', destroyOtp);
         };
     }, []);
-
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     const timerDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
     return (
         <>
-            <XIcon onClick={() => { dispatch(isLoginModel(false)); destroyOtp() }} className="cursor-pointer absolute top-2 right-2 text-red-800 w-6 h-6" />
+            <XIcon onClick={() => {
+                dispatch(isLoginModel(false)); destroyOtp()
+                setInputValues({ input1: '', input2: '', input3: '', input4: '', input5: '', input6: '', });
+            }} className="cursor-pointer absolute top-2 right-2 text-red-800 w-6 h-6" />
 
             {isVerifyOTP.st === false ?
                 <>
@@ -180,10 +196,12 @@ const ChangePassword = () => {
                             formData.append("password", values.password);
                             formData.append("type", "updatePassword");
                             formData.append("email", email)
+                            formData.append("otp", conevrtInputvalues.toString())
                             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/slug/signup`, formData);
                             if (res?.data?.st) {
                                 successToast(res?.data?.msg);
                                 resetForm();
+                                setTimer(false)
                                 setVerifyOTP({ st: false, msg: "" })
                             } else {
                                 errorToast(res?.data?.msg);

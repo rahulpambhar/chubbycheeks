@@ -38,7 +38,6 @@ export async function POST(request: Request) {
             }
         })
 
-        console.log('products::: ', orderMeta);
         items = orderMeta?.selectedItems?.map((item: any) => {
             const product = products?.find((product: any) => {
                 return product?.id === item?.productId;
@@ -112,7 +111,7 @@ export async function POST(request: Request) {
 
         let razorPayRes: any = {}
 
-        if (orderMeta?.paymentMethod == "ONLINE_PAY") {
+        if (orderMeta?.paymentMethod == "Prepaid") {
 
             const razorpay = new Razorpay({
                 key_id: process.env.RAZORPAY_KEY_ID as string,
@@ -146,7 +145,7 @@ export async function POST(request: Request) {
         })
 
         await activityLog("INSERT", "tempOrder", data, session?.user?.id);
-        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: orderMeta?.paymentMethod === "ONLINE_PAY" ? razorPayRes : {}, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
+        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: orderMeta?.paymentMethod === "Prepaid" ? razorPayRes : {}, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
 
     } catch (error) {
         console.log('error::: ', error);

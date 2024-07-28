@@ -19,6 +19,8 @@ import { fetchCart } from '@/app/redux/slices/cartSclice';
 import Cart from '@/components/Cart';
 import { DateRange } from "react-day-picker"
 import ThankingMsg from "@/components/frontside/ThankingMsg/page"
+import { Textarea } from "@/components/ui/textarea"
+import { Input } from '@/components/ui/input';
 
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
@@ -33,7 +35,40 @@ export default function Checkout({ params }: { params: { estimation: string } })
     const [returnOrder, setReturnOrder] = useState(false);
     const [returnOrderDisabled, setReturnOrderDisabled] = useState(false);
     const [thankingMsg, setThankingMsg] = useState(false)
+    const [returnNote, setReturnNote] = useState("")
     const [loader, setLoader] = useState(false)
+    const [file, setFile] = useState<File | null>(null);
+    const [error, setError] = useState('');
+
+
+    const maxChars = 500;
+
+    const handleChange = (e: any) => {
+        const { value } = e.target;
+        if (value.length <= maxChars) {
+            setReturnNote(value);
+        }
+    };
+
+
+    const handleFileChange = (e: any) => {
+        const selectedFile = e.target.files ? e.target.files[0] : null;
+        const fileTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/avi', 'video/mov', 'video/mpeg'];
+        const maxSize = 25 * 1024 * 1024; // 25 MB
+
+        if (selectedFile) {
+            if (!fileTypes.includes(selectedFile.type)) {
+                setError('File type must be an image or video.');
+                setFile(null);
+            } else if (selectedFile.size > maxSize) {
+                setError('File size must be less than 25 MB.');
+                setFile(null);
+            } else {
+                setError('');
+                setFile(selectedFile);
+            }
+        }
+    };
 
     const today = new Date();
     const oneMonthAgo = new Date(today);
@@ -163,7 +198,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
         setRepeatOrder(false);
         setReturnOrder(true);
         setOrder(order?.map((item: any) => {
-            return { ...item, checked: true }
+            return { ...item, checked: false }
         }))
     };
 
@@ -204,7 +239,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
 
                                                     <div key={item.id} className="flex items-center justify-between text-sm ">
                                                         <div className="flex items-center space-x-4">
-                                                           { !returnOrder && <input
+                                                            {<input
                                                                 type="checkbox"
                                                                 checked={item?.checked}
                                                                 onChange={() => {
@@ -310,7 +345,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                         </div>
                                     </div>
                                 </div>
-                                <div className="border hi border-gray-200 dark:border-gray-800 rounded-lg">
+                                {returnOrder === false ? <div className="border hi border-gray-200 dark:border-gray-800 rounded-lg">
                                     <div className="p-4">
                                         <h3 className="text-lg font-semibold">Payment information</h3>
                                     </div>
@@ -345,7 +380,24 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> :
+                                    <>
+
+                                        <h6 className='text uppercase font-bold'>Return Note</h6>
+                                        <textarea
+                                            className="w-full border border-blue-700"
+                                            placeholder="Type your message here."
+                                            value={returnNote}
+                                            onChange={handleChange}
+                                        />
+                                        <div>{maxChars - returnNote.length} characters remaining</div>
+                                        <h6 className=' uppercase font-bold'>Attachment</h6>
+
+
+                                        <Input type="file" onChange={handleFileChange} />
+                                        {error && <div style={{ color: 'red' }}>{error}</div>}
+                                    </>
+                                }
                                 {
                                     session &&
                                     <div>
@@ -375,7 +427,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                             return null;
                                                         }).filter(Boolean)
                                                     }
-                                                    orderMeta.paymentMethod = "ONLINE_PAY"
+                                                    orderMeta.paymentMethod = "Prepaid"
 
                                                     if (orderMeta.selectedItems.length === 0) {
                                                         errorToast("Please select atleast one item to proceed")
@@ -430,14 +482,24 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                             errorToast(tempData.payload.msg)
                                                         }
                                                     } else {
+
                                                         const data = {
                                                             orderID: orderID,
+                                                            returnNote: returnNote,
                                                             selectedItems: orderMeta?.selectedItems
                                                         }
 
-                                                        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder`, data);
+                                                        const formData = new FormData();
+
+                                                        orderID && formData.append('orderID', orderID)
+                                                        formData.append('returnNote', returnNote)
+                                                        formData.append('selectedItems', JSON.stringify(orderMeta?.selectedItems))
+                                                        file && formData.append("attachment", file);
+
+                                                        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder`, formData);
                                                         if (response.data.st) {
                                                             successToast(response.data.msg)
+                                                            setReturnNote("")
                                                         } else {
                                                             errorToast(response.data.msg)
                                                         }

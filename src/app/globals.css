@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -10,6 +13,8 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
@@ -63,8 +68,10 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
   }
 }
 
@@ -100,7 +107,7 @@
 .page-item.active .page-link {
   background-color: #090909;
   color: #fff;
-  border-color: #6a6c6f;
+  border-color: hsl(308.43deg 46.08% 82.13%);
 }
 
 .form-checkbox {
@@ -120,4 +127,16 @@
 .form-checkbox:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+.capitalize-first {
+  text-transform: capitalize;
 }

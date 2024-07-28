@@ -37,6 +37,7 @@ export default function Checkout() {
     const dispatch = useAppDispatch();
     const searchParams = useSearchParams()
     const search = searchParams.get('wish')
+    const searchOrders = searchParams.get('orders')
     const orders: any[] = useAppSelector((state) => state?.orderReducer?.orders);
     const wishlist: any[] = useAppSelector((state) => state?.wishListReducer?.wishList);
     const returnOrder: any[] = useAppSelector((state) => state?.returnOrderReducer.returnOrders);
@@ -112,6 +113,7 @@ export default function Checkout() {
 
     useEffect(() => {
         session && search === "1" ? setComponent("Wishlist") : ""
+        session && searchOrders === "1" ? setComponent("Orders") : ""
     }, [session, search])
 
     const handleCopy = (text: string) => {

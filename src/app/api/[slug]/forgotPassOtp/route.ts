@@ -99,10 +99,10 @@ export async function GET(request: Request) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Wrong otp!" });
         }
 
-        await prisma.user.update({
-            where: { id: isUser?.id },
-            data: { otp: null }
-        });
+        // await prisma.user.update({
+        //     where: { id: isUser?.id },
+        //     data: { otp: null }
+        // });
         return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "OTP verified" });
 
     } catch (error) {

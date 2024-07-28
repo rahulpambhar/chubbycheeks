@@ -17,12 +17,12 @@ export default function Home() {
     <main>
       <ImageSlider />
       <Topselectionpart />
-      <About />
       <OfferPage />
+      <About />
       {/* <Singlenailpaint /> */}
       {/* <Nailslider /> */}
       <Unitedfree />
-      <Howitwork />
+      {/* <Howitwork /> */}
       <Recentviewed />
       <Submitemail />
     </main>

@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from '../../../app/redux/hooks';
 import { errorToast, successToast } from '@/components/toster';
 import axios from "axios";
 
-const OTPInputGroup = ({ setInputValues, inputValues, setOTP, timer, setVerifyOTP, setTimer, isVerifyOTP, intervalId, setTimeInSeconds ,email}: any) => {
+const OTPInputGroup = ({ setInputValues, inputValues, setOTP, timer, setVerifyOTP, setTimer, isVerifyOTP, intervalId, setTimeInSeconds, email }: any) => {
 
     const handleInputChange = (inputId: any, value: any) => {
         timer && setInputValues((prevInputValues: any) => ({
@@ -28,7 +28,7 @@ const OTPInputGroup = ({ setInputValues, inputValues, setOTP, timer, setVerifyOT
                 setTimeInSeconds(0)
                 setVerifyOTP({ st: true, msg: res.data.msg, })
                 clearInterval(Number(intervalId));
-                setTimer(false)
+                // setTimer(false)
                 setOTP(false)
                 successToast(res.data.msg)
             } else {

@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { RedirectType, useRouter, useSearchParams, } from 'next/navigation'
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
-import { createTempOrderFunc, createOrderFunc, getOrdersFunc } from '../../../redux/slices/orderSlices';
+import { createTempOrderFunc, createOrderFunc, } from '../../../redux/slices/orderSlices';
 import { useSession } from "next-auth/react";
 import { errorToast, successToast } from '@/components/toster';
 import axios from 'axios';
@@ -282,7 +282,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
 
                                                         setLoader(true)
 
-                                                        const orderMeta = { selectedItems: [{ productId: order_[0]?.id, qty: order_[0]?.qty }], paymentMethod: "ONLINE_PAY" }
+                                                        const orderMeta = { selectedItems: [{ productId: order_[0]?.id, qty: order_[0]?.qty }], paymentMethod: "Prepaid" }
                                                         const tempData = await dispatch(createTempOrderFunc(orderMeta))
 
                                                         if (tempData?.payload.st) {

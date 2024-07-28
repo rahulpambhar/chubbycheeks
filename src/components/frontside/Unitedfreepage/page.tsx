@@ -1,12 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { motion, scroll, useScroll } from "framer-motion";
-import Unitedfreecard from "../unitedfree/page";
+import React from "react";
 import { useSelector } from 'react-redux';
-
-
-
-
+import Unitedfreecard from "../unitedfree/page";
 
 const Unitedfree = () => {
   const productsList: any = useSelector((state: any) => state.categories?.productsList);
@@ -19,16 +14,16 @@ const Unitedfree = () => {
     return array;
   };
   const selectedProducts = shuffleArray([...productsList]).slice(0, 4);
- 
 
   return (
-    <div className="bg-[#e6e1e1]">
-      <div className="flex justify-center items-center uppercase  text-5xl pt-10 font-normal text- unica-one">
+    <div className="bg-[#e6e1e1] py-10">
+      <div className="flex justify-center items-center uppercase text-5xl font-normal unica-one">
         shop united & fill free
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 pt-10  lg:mx-44 gap-5 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pt-10 lg:mx-44">
         {selectedProducts && selectedProducts.map((item: any) => (
           <Unitedfreecard
+            key={item.id}
             id={item.id}
             image={item.image}
             label={item.name}

@@ -218,7 +218,6 @@ export const shiproketOrder = async (body) => {
         "tax": item?.OrderItem?.gst || 0,
         "hsn": item?.product?.hsn || ''
     }));
-console.log('formatDateString::: ',formatDateString(order?.invoiceDate) ,order);
 
     const data = {
         "order_id": order?.id,
@@ -256,10 +255,10 @@ console.log('formatDateString::: ',formatDateString(order?.invoiceDate) ,order);
         "shipping_phone": order?.user?.mobile,
 
         "order_items": order_items,
-        "payment_method": "COD",
-        "shipping_charges": 0, 
-        "giftwrap_charges": 0, 
-        "transaction_charges": 0, 
+        "payment_method": order?.paymentMethod === 'COD' ? 'COD' : 'Prepaid',
+        "shipping_charges": 0,
+        "giftwrap_charges": 0,
+        "transaction_charges": 0,
         "total_discount": 0,
         "sub_total": 94.5,
         "length": orderData?.length,
@@ -280,8 +279,7 @@ console.log('formatDateString::: ',formatDateString(order?.invoiceDate) ,order);
             'Authorization': `Bearer ${getShiproketAuthToken?.token}`
         }
     })
-    console.log('shiproketOrder::: ', shiproketOrder);
-    
+
     if (shiproketOrder?.data?.status !== "NEW") {
         return { st: false, data: {}, msg: shiproketOrder?.data?.msg }
     }
@@ -333,7 +331,7 @@ export const shiproketCancelOrder = async (body) => {
 export const cancelOrder = async (body) => {
     let session = await getServerSession(authOptions);
     const { id, data, orderStatus, } = body
-    
+
 
     const TEN_DAYS_IN_SECONDS = 86400 * 10;
 
@@ -390,3 +388,94 @@ export const cancelOrder = async (body) => {
         return { st: true, data: [], msg: "order updated successfully!", }
     }
 }
+
+
+export const getReturnOrdersByPage = async (request) => {
+    const { query } = parse(request.url, true);
+    const { page = 1, limit = 10, search = '', slug = '', from, to } = query;
+
+    const parsedPage = parseInt(page, 10) - 1;
+    const parsedLimit = parseInt(limit, 10);
+    const offset = parsedPage * parsedLimit;
+    const fromDate = from ? new Date(from) : undefined;
+    const toDate = to ? new Date(to) : undefined;
+
+    let where = {
+        isBlocked: false,
+        createdAt: {
+            gte: fromDate,
+            lte: toDate,
+        },
+        OR: search !== "" ? [
+            {
+                OR: [
+                    {
+                        invoiceNo: {
+                            equals: search,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        orderStatus: getOrderStatusEnum(search)
+                    }
+
+                ]
+
+            },
+            {
+                user: {
+                    OR: [
+                        {
+                            email: {
+                                equals: search,
+                                mode: 'insensitive'
+                            }
+                        },
+                        {
+                            mobile: {
+                                equals: search,
+                                mode: 'insensitive'
+                            }
+                        }
+                    ]
+                }
+            }
+        ] : undefined
+    };
+
+
+
+    let count = await prisma.returnOrder.count({
+        where: where,
+    });
+
+    let list = await prisma.returnOrder.findMany({
+        where: where,
+        include: {
+            items: {
+                include: {
+                    product: true,
+                }
+            },
+            user: true,
+        },
+        take: parsedLimit,
+        skip: offset,
+        orderBy: { createdAt: 'desc' }
+    });
+
+    if (!list) {
+        return {
+            st: false,
+            data: [],
+            msg: "No Orders found",
+        };
+    }
+
+    return {
+        limit: parsedLimit,
+        current_page: parsedPage + 1,
+        total_pages: Math.ceil(count / parsedLimit),
+        data: list,
+    };
+};

@@ -225,6 +225,25 @@ const Admin_Sidebar = ({ closeSidebar }: any) => {
                   Maintain Orders
                 </p>
               </Link>
+              <Link
+                href="/admin/orders/returnOrders"
+                className={`flex  justify-start items-center text-small aleo hover:text-[--orange] ${pathname === "/master/hsn_san"
+                  ? " text-[--orange] "
+                  : "text-[--table]"
+                  }`}
+              >
+                <p>
+                  <PiDotOutlineFill className=" font-bold text-xlarge" />{" "}
+                </p>
+                <p
+                  className={`flex justify-center items-center text-small aleo hover:text-[--orange]  ${pathname === "/master/hsn_san"
+                    ? " text-[--orange] "
+                    : "text-[--text-color]"
+                    } `}
+                >
+                  Return Orders
+                </p>
+              </Link>
 
             </div>}
             <SidebarMenu

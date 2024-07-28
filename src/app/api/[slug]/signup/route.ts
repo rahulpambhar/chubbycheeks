@@ -107,7 +107,7 @@ export async function POST(request: Request) {
       }
     } else {
       const email_: any = formData.get("email");
-      console.log('email_::: ', email_);
+      const otp: any = formData.get("otp");
       let data: any = {};
       let result: any = {};
       let user: any = {}
@@ -116,6 +116,10 @@ export async function POST(request: Request) {
         user = await prisma.user.findFirst({
           where: { email: email_?.email },
         });
+
+        if (parseInt(otp) !== user?.otp) {
+          return NextResponse.json({ st: false, data: {}, msg: "Invalid Access" }, { status: 200 });
+        }
       } else {
         user = await prisma.user.findFirst({
           where: { id: userId },
@@ -161,7 +165,7 @@ export async function POST(request: Request) {
       }
 
       result = await prisma.user.update({
-        where: { id: userId }, data
+        where: { id: user?.id }, data
       });
 
       if (result) {

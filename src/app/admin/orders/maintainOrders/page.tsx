@@ -414,7 +414,7 @@ function Page({ className, ...props }: any) {
                                     Status
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Action Date
+                                    Action By
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Total

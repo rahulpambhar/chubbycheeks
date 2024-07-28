@@ -326,7 +326,6 @@ export async function PUT(request: Request) {
             }
 
             if (orderStatus === "CANCELLED") {
-                console.log('orderStatus::: ', orderStatus);
 
                 const getCancelOrder = await cancelOrder(body)
 
@@ -348,6 +347,10 @@ export async function PUT(request: Request) {
                         where: { id: item, isBlocked: false },
                         select: { orderStatus: true },
                     });
+
+                    if (order && ['CANCELLED', 'COMPLETE'].includes(order.orderStatus)) {
+                        return NextResponse.json({st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: 'Order already processed', });
+                    }
 
                     if (!order) {
                         return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Order not found", });

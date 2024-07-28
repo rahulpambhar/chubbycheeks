@@ -8,6 +8,8 @@ import paypal from 'paypal-rest-sdk';
 import authOptions from "@/app/api/auth/[...nextauth]/auth";
 import prisma from "../../../../../../prisma/prismaClient";
 import { getNextInvoice } from "../../utils";
+import { json } from "stream/consumers";
+import { getReturnOrdersByPage } from "../order/functions/route";
 
 
 
@@ -17,9 +19,20 @@ export async function POST(request: Request) {
         let session = await getServerSession(authOptions);
         const userId = session?.user?.id;
 
-        const body = await request.json();
-        const { orderID, selectedItems } = body;
+        const formData = await request.formData();
+        const orderID: any = formData.get("orderID");
+        const returnNote: any = formData.get("returnNote");
 
+        const selectedItemsStr = formData.get("selectedItems") as string | null;
+        const selectedItems = selectedItemsStr ? JSON.parse(selectedItemsStr) : null;
+
+        const attachment = formData.get("attachment") as File | null;
+
+
+
+        if (returnNote.length > 500) {
+            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Return note should be less than 500 characters." });
+        }
 
         if (!session) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Login first." });
@@ -50,6 +63,18 @@ export async function POST(request: Request) {
 
         if (itemsNotInDatabase.length > 0) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Items not found in order" });
+        }
+
+        let returnAttachment = ""
+
+        if (attachment instanceof File && attachment.size > 0) {
+            const bytes = await attachment.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const imageName = `${Date.now()}_${attachment.name}`;
+
+            const path = `${process.cwd()}/public/returnAttachment/${imageName}`;
+            await writeFile(path, buffer);
+            returnAttachment = imageName;
         }
 
         let items: any = []
@@ -123,13 +148,21 @@ export async function POST(request: Request) {
                 netAmount: netAmount,
 
                 isPaid: false,
-                orderRerunrnStatus: "PROCESSING",
+                paidAt: new Date(),
+                paymentNote: "",
+                paymentId: "",
+                paymentMethod: "COD",
+
+                orderStatus: "PROCESSING",
                 processingAt: new Date(),
+
+                returnNote,
+                attachment: returnAttachment,
 
                 user: { connect: { id: userId } },
                 order: { connect: { id: orderID } },
                 Transport: { connect: { id: "65f67705f6a5e7edc22123e4" } },
-                transportMode: "AIR",
+                transportMode: "ROAD",
 
                 createdAt: new Date(),
                 createdBy: session?.user?.id,
@@ -160,24 +193,43 @@ export async function GET(request: Request) {
 
         let session = await getServerSession(authOptions);
         const userId = session?.user?.id;
+        const { query }: any = parse(request.url, true);
+        let { slug, }: any = query
+
+
 
         if (!session) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Login first." });
         }
 
-        const { query } = parse(request.url, true);
-        let { orderID }: any = query;
+        let isOrders: any = []
 
-        if (!orderID) {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Order ID is required" });
+        if (slug === "getAll") {
+            // isOrders = await getOrders(session?.user?.id)
+        } else if (slug === "getPaginated") {
+            isOrders = await getReturnOrdersByPage(request)
         }
 
-        const isReturnOrder: any = await prisma.returnOrder.findFirst({ where: { orderId: orderID, isBlocked: false }, })
 
-        if (!isReturnOrder) {
-            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Return order not found" });
-        }
-        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: isReturnOrder, msg: "Return order found" });
+        return NextResponse.json({
+            st: true,
+            statusCode: StatusCodes.OK,
+            data: isOrders,
+            msg: "return order fetch success!",
+        });
+
+        // let { orderID }: any = query;
+
+        // if (!orderID) {
+        //     return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Order ID is required" });
+        // }
+
+        // const isReturnOrder: any = await prisma.returnOrder.findFirst({ where: { orderId: orderID, isBlocked: false }, })
+
+        // if (!isReturnOrder) {
+        //     return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Return order not found" });
+        // }
+        // return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: isReturnOrder, msg: "Return order found" });
 
     } catch (error) {
         console.log('error::: ', error);

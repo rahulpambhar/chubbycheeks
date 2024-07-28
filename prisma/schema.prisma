@@ -39,7 +39,16 @@ enum Action {
 
 enum PaymentMethod {
     COD
-    ONLINE_PAY
+    Prepaid
+}
+
+enum Size {
+    S
+    M
+    L
+    XL
+    XXL
+    XXXL
 }
 
 model User {
@@ -144,6 +153,7 @@ model Products {
     batchNo      String?
     sku          String?
     name         String?
+    size         Size
     qty          Int?
     price        Float?
     gst          Float?
@@ -354,7 +364,7 @@ model Order {
 
     expectedDate DateTime? @db.Date()
 
-    isBlocked  Boolean @default(false)
+    isBlocked Boolean @default(false)
 
     user   User?   @relation("user", fields: [userId], references: [id])
     userId String? @db.ObjectId
@@ -409,8 +419,8 @@ model ReturnOrder {
 
     itemCount Int?
 
-    discountAmount Float
     total          Int
+    discountAmount Float
     taxableAmount  Int
     gst            Int
     otherCharge    Int
@@ -419,19 +429,19 @@ model ReturnOrder {
 
     isPaid        Boolean
     paidAt        DateTime?
+    paymentId     String?
+    orderStatus   OrderStatus
     paymentNote   Json?
     paymentMethod String?
 
-    orderRerunrnStatus OrderStatus
-    processingAt       DateTime?
-    acceptedAt         DateTime?
-    dispatchedAt       DateTime?
-    deliveredAt        DateTime?
-    cancelledAt        DateTime?
-    returnedAt         DateTime?
-    refundedAt         DateTime?
+    processingAt DateTime?
+    acceptedAt   DateTime?
+    shippedAt    DateTime?
+    cancelledAt  DateTime?
+    completedAt  DateTime?
 
     isBlocked  Boolean @default(false)
+    returnNote String?
     attachment String?
 
     user   User?   @relation("user", fields: [userId], references: [id])
