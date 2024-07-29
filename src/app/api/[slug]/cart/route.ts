@@ -7,6 +7,7 @@ import { getProduct, getCart, getCartItem } from "../utils";
 import authOptions from "../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 import prisma from "../../../../../prisma/prismaClient";
+import { validSizes } from "@/app/utils";
 
 
 export async function POST(request: Request) {
@@ -21,7 +22,12 @@ export async function POST(request: Request) {
             });
         }
         const body = await request.json();
-        const { productId, action } = body.payload
+        const { productId, action, productSize } = body.payload
+
+        const validatedSize = validSizes.includes(productSize);
+        if (!validatedSize) {
+            return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Select a valid size", });
+        }
 
         const product = await getProduct(productId)
         let cart = await getCart(session?.user?.id)
@@ -44,6 +50,7 @@ export async function POST(request: Request) {
                         },
                         data: {
                             qty: updatedQty,
+                            size: productSize,
                             updatedAt: new Date(),
                             updatedBy: session?.user?.id
                         }
@@ -56,6 +63,7 @@ export async function POST(request: Request) {
                         },
                         data: {
                             qty: updatedQty,
+                            size: productSize,
                             updatedAt: new Date(),
                             updatedBy: session?.user?.id
                         }
@@ -68,6 +76,7 @@ export async function POST(request: Request) {
                         },
                         data: {
                             isBlocked: true,
+                            size: productSize,
                             updatedBy: session?.user?.id,
                             updatedAt: new Date(),
                         }
@@ -82,6 +91,7 @@ export async function POST(request: Request) {
                         },
                         data: {
                             checked: !isCartItem?.checked,
+                            size: productSize,
                             updatedBy: session?.user?.id,
                             updatedAt: new Date(),
                         }
@@ -92,6 +102,7 @@ export async function POST(request: Request) {
                 cartItem = await prisma.cartItem.create({
                     data: {
                         qty: 1,
+                        size: productSize,
                         updatedAt: new Date(),
                         Cart: {
                             connect: {
@@ -118,6 +129,7 @@ export async function POST(request: Request) {
                     CartItem: {
                         create: {
                             qty: 1,
+                            size: productSize,
                             createdAt: new Date(),
                             product: {
                                 connect: {

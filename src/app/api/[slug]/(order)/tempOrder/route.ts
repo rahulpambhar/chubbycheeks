@@ -29,6 +29,13 @@ export async function POST(request: Request) {
 
         nextInvoice = await getNextInvoice("tempOrder")
 
+        for (let item of orderMeta?.selectedItems) {
+
+            if (item?.size === "NONE") {
+                return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: `Please select size for ${item?.productId}`, });
+            }
+        }
+
         const products = await prisma.products.findMany({
             where: {
                 id: {
@@ -38,6 +45,7 @@ export async function POST(request: Request) {
             }
         })
 
+
         items = orderMeta?.selectedItems?.map((item: any) => {
             const product = products?.find((product: any) => {
                 return product?.id === item?.productId;
@@ -46,7 +54,8 @@ export async function POST(request: Request) {
             if (product) {
                 return {
                     ...product,
-                    orderedQty: item?.qty
+                    orderedQty: item?.qty,
+                    size: item?.size
                 };
             }
         })
@@ -103,6 +112,7 @@ export async function POST(request: Request) {
         for (let item of items) {
             itemData.push({
                 qty: item?.orderedQty,
+                size: item?.size,
                 price: item?.price,
                 productId: item?.id,
                 createdBy: session?.user?.id

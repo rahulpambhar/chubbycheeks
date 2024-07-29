@@ -12,7 +12,7 @@ const fetchCart = createAsyncThunk('cart/fetchCart', async (id: string | undefin
     }
 });
 
-const actionTocartFunc = createAsyncThunk('cart/createCart', async (payload: { productId: string; action: string }, { rejectWithValue }) => {
+const actionTocartFunc = createAsyncThunk('cart/createCart', async (payload: { productId: string; action: string, productSize: string }, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/addCart/cart`, { payload })
         return response?.data;

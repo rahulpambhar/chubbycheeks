@@ -15,7 +15,7 @@ export const getReviews = createAsyncThunk('/fetchReviewRatings/reviewRatings', 
 });
 
 
-export const reviewSubmit = createAsyncThunk('wishList/add', async (payload: payload, { rejectWithValue }) => {
+export const reviewSubmit = createAsyncThunk('review/add', async (payload: payload, { rejectWithValue }) => {
 
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/addReviewRatings/reviewRatings`, { payload })

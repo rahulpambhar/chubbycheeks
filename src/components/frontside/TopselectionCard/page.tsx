@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks';
 import { useSession } from "next-auth/react";
 import { errorToast, successToast } from "@/components/toster";
@@ -10,7 +10,7 @@ import { actionTocartFunc } from '@/app/redux/slices/cartSclice';
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/react";
 import Link from "next/link";
-
+import { HeartIcon, RedHeartIcon } from '@/components';
 
 export const StarRating = ({ rating }: any) => {
   const maxStars = 5;
@@ -41,9 +41,10 @@ const TopselectionCard = ({
   const { data: session, status }: any = useSession();
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
+  const [productSize, setSize] = useState('NONE');
 
-  const addToCartFunction = async (id: string) => {
-    const payload = { productId: id, action: "add" };
+  const addToCartFunction = async (id: string, productSize: string) => {
+    const payload = { productId: id, action: "add", productSize };
     const data = await dispatch(actionTocartFunc(payload));
     if (data.payload.st) {
       successToast(data?.payload.msg);
@@ -78,7 +79,7 @@ const TopselectionCard = ({
               session ? dispatch(addToWishList({ productId: item?.id })) : dispatch(isLoginModel(true));
             }}
           >
-            {wish ? '♥' : '♡'}
+            {wish ? <RedHeartIcon /> : <HeartIcon />}
           </button>
         </CardBody>
       </Link>
@@ -125,7 +126,7 @@ const TopselectionCard = ({
               variant="outline"
               className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
               onClick={() => {
-                session ? addToCartFunction(item?.id) : dispatch(isLoginModel(true));
+                session ? addToCartFunction(item?.id, productSize) : dispatch(isLoginModel(true));
               }}
             >
               Add to cart

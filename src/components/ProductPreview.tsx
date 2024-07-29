@@ -25,6 +25,7 @@ export default function Example({ openPreview, setOpenPreview, product }: any) {
   const [review, setReview] = useState('');
   const [ratings, setRaings] = useState(0);
   const [reviewTitle, setReviewTitle] = useState("");
+  const [productSize, setSize] = useState("NONE");
 
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
@@ -34,17 +35,17 @@ export default function Example({ openPreview, setOpenPreview, product }: any) {
 
 
 
-  const addToCartFunction = async (id: string) => {
-    const payload = { productId: id, action: "add" };
+  const addToCartFunction = async (id: string, productSize: string) => {
+    const payload = { productId: id, action: "add", productSize };
     const data = await dispatch(actionTocartFunc(payload));
     data.payload.st
       ? successToast(data?.payload.msg)
       : errorToast(data.payload.msg);
   };
 
-  const actionTocartFunction = async (item: any, action: any) => {
+  const actionTocartFunction = async (item: any, action: any, productSize: any) => {
     try {
-      const payload = { productId: item?.productId, action };
+      const payload = { productId: item?.productId, action, productSize };
       if (action === "remove" && item.qty === 1) {
         errorToast("Minimum 1 quantity required");
         return;
@@ -288,7 +289,7 @@ export default function Example({ openPreview, setOpenPreview, product }: any) {
                                   <button type='button'
 
                                     onClick={() => {
-                                      session ? actionTocartFunction(cartItem, "remove") : dispatch(isLoginModel(false));
+                                      session ? actionTocartFunction(cartItem, "remove", productSize) : dispatch(isLoginModel(false));
                                     }}
                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline"
                                   >
@@ -297,7 +298,7 @@ export default function Example({ openPreview, setOpenPreview, product }: any) {
 
                                   <button type='button'
                                     onClick={() => {
-                                      session ? actionTocartFunction(cartItem, "add") : dispatch(isLoginModel(false));
+                                      session ? actionTocartFunction(cartItem, "add", productSize) : dispatch(isLoginModel(false));
                                     }}
                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none focus:shadow-outline"
                                   >
@@ -324,7 +325,7 @@ export default function Example({ openPreview, setOpenPreview, product }: any) {
                                 className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                 onClick={() => {
                                   if (session) {
-                                    addToCartFunction(product.id);
+                                    addToCartFunction(product.id, productSize);
                                   } else {
                                     setOpenPreview(!openPreview);
                                     dispatch(isLoginModel(true));

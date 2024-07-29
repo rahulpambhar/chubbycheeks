@@ -9,7 +9,7 @@ const config: Config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/@nextui-org/theme/dist/components/(card|slider|ripple|popover).js"
+    "./node_modules/@nextui-org/theme/dist/components/(card|select|slider|ripple|listbox|divider|popover|button|spinner|scroll-shadow).js"
   ],
   prefix: '',
   theme: {

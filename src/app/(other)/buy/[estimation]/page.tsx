@@ -7,7 +7,6 @@ import { createTempOrderFunc, createOrderFunc, } from '../../../redux/slices/ord
 import { useSession } from "next-auth/react";
 import { errorToast, successToast } from '@/components/toster';
 import axios from 'axios';
-import ProductPreview from "@/components/ProductPreview";
 import { Product } from '../../../../../types/global';
 // import OTPInputGroup from '@/components/frontside/otp/page';
 import Image from 'next/image';
@@ -398,7 +397,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
             </div>
             <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
-            {/* <ProductPreview openPreview={openPreview} setOpenPreview={setOpenPreview} product={priview} /> */}
         </div >
     );
 };

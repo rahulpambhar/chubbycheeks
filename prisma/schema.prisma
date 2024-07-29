@@ -43,12 +43,25 @@ enum PaymentMethod {
 }
 
 enum Size {
+    AGE_0_AGE_1
+    AGE_1_AGE_2
+    AGE_2_AGE_3
+    AGE_3_AGE_4
+    AGE_4_AGE_5
+    AGE_5_AGE_6
+    AGE_6_AGE_7
+    AGE_7_AGE_8
+    AGE_8_AGE_9
+    AGE_9_AGE_10
+    AGE_10_AGE_11
+    AGE_11_AGE_12
     S
     M
     L
     XL
     XXL
     XXXL
+    NONE
 }
 
 model User {
@@ -153,7 +166,7 @@ model Products {
     batchNo      String?
     sku          String?
     name         String?
-    size         Size
+    size         Size[]
     qty          Int?
     price        Float?
     gst          Float?
@@ -226,8 +239,9 @@ model Cart {
 }
 
 model CartItem {
-    id  String @id @default(auto()) @map("_id") @db.ObjectId
-    qty Int?
+    id   String @id @default(auto()) @map("_id") @db.ObjectId
+    qty  Int?
+    size Size
 
     checked   Boolean @default(true)
     isBlocked Boolean @default(false)
@@ -315,6 +329,7 @@ model tempOrderItem {
 
     qty       Int?
     price     Float?
+    size      Size
     netAmount Int?
     isBlocked Boolean @default(false)
 
@@ -394,6 +409,7 @@ model OrderItem {
 
     qty       Int?
     price     Float?
+    size      Size
     isBlocked Boolean @default(false)
 
     order   Order?  @relation("OrderItem", fields: [orderId], references: [id])
@@ -469,6 +485,7 @@ model ReturnOrderItem {
 
     qty       Int?
     price     Float?
+    size      Size
     netAmount Int?
     isBlocked Boolean @default(false)
 

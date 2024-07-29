@@ -12,6 +12,7 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { MenuIcon, HeartIcon, ShoppingCartIcon } from "@/components";
+import { errorToast } from "@/components/toster";
 
 export default function Component() {
   const { data: session }: any = useSession();
@@ -103,7 +104,8 @@ export default function Component() {
                 )}
               </Button>
               <Button variant="ghost" size="icon" className="rounded-full text-white relative">
-                <ShoppingCartIcon className="h-5 w-5 hover:text-black text-white" onClick={() => dispatch(setOpenCart(!openCart))} />
+                <ShoppingCartIcon className="h-5 w-5 hover:text-black text-white" onClick={() => {
+                cart.CartItem.length > 0 ?  dispatch(setOpenCart(!openCart)): errorToast("Cart is empty") }} />
                 <span className="sr-only">Cart</span>
                 {cart && cart.CartItem?.length > 0 && (
                   <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">

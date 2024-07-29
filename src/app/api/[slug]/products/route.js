@@ -5,8 +5,8 @@ import { parse } from "url";
 import authOptions from "../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 import prisma from "../../../../../prisma/prismaClient";
-import { getproductList ,getCategoryProducts} from "./functions";
-
+import { getproductList, getCategoryProducts } from "./functions";
+import { validSizes } from "../../../utils";
 
 export async function POST(request) {
   try {
@@ -28,6 +28,8 @@ export async function POST(request) {
       });
     }
 
+
+
     const formData = await request.formData();
     const categoryId = formData.get("categoryId");
     const subCategoryId = formData.get("subCategoryId");
@@ -40,6 +42,8 @@ export async function POST(request) {
     const description = formData.get("description");
     const brand = formData.get("brand");
     const qty = formData.get("qty");
+    const size = formData.getAll("size");
+    console.log('size::: ', size);
     const avgRating = formData.get("avgRating");
     const numReviews = formData.get("numReviews");
     const type = formData.get("type");
@@ -48,6 +52,13 @@ export async function POST(request) {
     const productImages = formData.getAll("image");
     const video = formData.get("video");
     const imageIndex = formData.get("imageIndex");
+
+
+    // Validate size array
+    const validatedSize = size.filter(s => validSizes.includes(s));
+    if (validatedSize.length !== size.length) {
+      throw new Error("Invalid size value(s) provided.");
+    }
 
     const product = await prisma.products.findFirst({
       where: {
@@ -108,6 +119,7 @@ export async function POST(request) {
             image: data?.images,
             video: data?.videoName,
             userId,
+            size: validatedSize,
             categoryId,
             subCategoryId,
           },
@@ -192,6 +204,7 @@ export async function POST(request) {
             discount: Number(discount),
             description,
             brand,
+            size,
             qty: Number(qty),
             image: data?.images,
             video: data?.videoName,
@@ -213,6 +226,10 @@ export async function POST(request) {
         });
       }
     }
+    return NextResponse.json({
+      st: false,
+      msg: "something went wrong!!",
+    });
   } catch (error) {
     console.log('error::: ', error);
     return NextResponse.json({
@@ -226,7 +243,7 @@ export async function GET(request) {
   try {
     const { query } = parse(request.url, true);
     const { id, slug, categoryId } = query;
-   
+
 
     let count;
     let list;

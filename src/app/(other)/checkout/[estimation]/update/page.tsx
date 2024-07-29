@@ -335,7 +335,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
                     </div>
                 </div>
                 <Cart />
-                {/* <ProductPreview openPreview={openPreview} setOpenPreview={setOpenPreview} product={priview} /> */}
             </div >
             <Script src="https://checkout.razorpay.com/v1/checkout.js" />
         </>

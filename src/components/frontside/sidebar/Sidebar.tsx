@@ -51,7 +51,7 @@ const Sidebar = ({ priceRange,filteredOptions, selectedSubcategories, handleSubc
         <div className="pt-6">
           <MultiRangeSlider
             min={0}
-            max={3000}
+            max={10000}
             onChange={handlePriceRangeChange}
           />
         </div>

@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Carousel } from "@material-tailwind/react";
 import Cart from "@/components/Cart";
-import ProductPreview from "@/components/ProductPreview";
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks';
 import { fetchCategories } from '@/app/redux/slices/categorySlice';
 import { actionTocartFunc } from '@/app/redux/slices/cartSclice';
@@ -26,6 +25,7 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
   const { data: session, status }: any = useSession();
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
+  const [productSize, setSize] = useState([]);
 
   const handelike = async () => {
     if (session) {
@@ -35,8 +35,8 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
     }
   };
 
-  const addToCartFunction = async (id: string) => {
-    const payload = { productId: id, action: "add" }
+  const addToCartFunction = async (id: string, productSize: string[]) => {
+    const payload = { productId: id, action: "add", productSize }
     const data = await dispatch(actionTocartFunc(payload))
     if (data.payload.st) {
       successToast(data?.payload.msg)
@@ -47,7 +47,8 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
 
   return (
     <>
-      <div className="relative  w-[260px] mx-5 my-3 bg-white pb-5  hover:shadow-2xl shadow">
+      code commented
+      {/* <div className="relative  w-[260px] mx-5 my-3 bg-white pb-5  hover:shadow-2xl shadow">
         <div className="flex justify-end absolute top-2 right-0 pr-5 ">
           <button onClick={handelike}>
 
@@ -103,7 +104,7 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
               <button
                 className="py-3 absolute left-0 border-black border poppins  text-base font-bold opacity-0 group-hover:opacity-100  w-full bg-black text-white"
                 onClick={() => {
-                  session ? addToCartFunction(item.id) : dispatch(isLoginModel(true));
+                  session ? addToCartFunction(item.id,productSize) : dispatch(isLoginModel(true));
                 }}
               >
                 Add to cart
@@ -125,12 +126,8 @@ const Makeupnailscard = ({ item, wish }: { item: any; wish: boolean }) => {
           </Link>
         </div>
         <Cart />
-        {/* <ProductPreview
-          openPreview={openPreview}
-          product={priview}
-          setOpenPreview={setOpenPreview}
-        /> */}
-      </div>
+      
+      </div> */}
     </>
   );
 };

@@ -14,7 +14,7 @@ import Cart from "@/components/Cart";
 
 export default function Component() {
   const [selectedSubcategories, setSelectedSubcategories] = useState<any[]>([]);
-  const [priceRange, setPriceRange] = useState([0, 3000]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [sortOrder, setSortOrder] = useState("low");
   const wishList = useAppSelector((state): any[] => state?.wishListReducer?.wishList) || [];
   const products: any = useAppSelector((state): any[] => state?.categories?.products);

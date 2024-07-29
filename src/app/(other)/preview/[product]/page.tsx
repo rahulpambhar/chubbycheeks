@@ -21,31 +21,41 @@ import { FaEdit } from 'react-icons/fa';
 import { DateRange } from "react-day-picker"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Button } from "@/components/ui/button"
-import { StarIcon } from '@/components/index'
+import { StarRating } from "@/components/frontside/TopselectionCard/page"
+import { addToWishList } from "@/app/redux/slices/wishListSlice";
+import { isLoginModel } from '@/app/redux/slices/utilSlice';
+import { HeartIcon, RedHeartIcon } from '@/components';
+import { setOpenCart } from '@/app/redux/slices/utilSlice';
+import { actionTocartFunc } from '@/app/redux/slices/cartSclice';
+import Cart from "@/components/Cart"
 
 export default function Checkout({ params }: { params: { product: string } }) {
     const productsList: any = useSelector((state: any) => state.categories.productsList);
     const averageRating = useAppSelector((state: any) => state?.reviewReducer?.averageRating) || 0
     const reviews = useAppSelector((state: any) => state?.reviewReducer?.reViewList) || [];
+    const cart = useAppSelector((state: any) => state?.cartReducer?.cart?.CartItem) || [];
+    const openCart = useAppSelector((state: any) => state?.utilReducer?.openCart);
 
     const product = productsList.find((item: any) => item.id === params?.product);
     const filteredProducts = productsList.filter((item: any) => item?.categoryId === product?.categoryId && item?.id !== product?.id);
     const [showModal, setShowModal] = useState(false);
     const [isPurchased, setIsPurchased] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 0, text: '', });
+    const [productSize, setSize] = useState("NONE");
     const fallbackImage = '/image/offer.jpg';
 
     const { data: session, status }: any = useSession();
     const dispatch = useAppDispatch();
     const searchParams = useSearchParams()
     const search = searchParams.get('wish')
-    const orders: any[] = useAppSelector((state) => state?.orderReducer?.orders);
-    const wishlist: any[] = useAppSelector((state) => state?.wishListReducer?.wishList);
-    const [info, setInfo] = useState("description");
+    const orders: any[] = useAppSelector((state: any) => state?.orderReducer?.orders);
+    const [info, setInfo] = useState("reviews");
     const today = new Date();
     const oneMonthAgo = new Date(today);
     oneMonthAgo.setMonth(today.getMonth() - 1);
     const [date, setDate] = useState<DateRange | undefined>({ from: oneMonthAgo, to: today, })
+    const wishList = useAppSelector((state: any) => state?.wishListReducer?.wishList) ;
+    const wish = !!wishList?.find((wish: any) => wish?.productId === product?.id);
 
     const isCurrentUserReviewed = useMemo(() => {
         return reviews.some((review: any) => review?.userId === session?.user?.id && review?.productId === product.id);
@@ -75,7 +85,15 @@ export default function Checkout({ params }: { params: { product: string } }) {
         );
     }
 
-
+    const addToCartFunction = async (id: string, productSize: string) => {
+        const payload = { productId: id, action: "add", productSize };
+        const data = await dispatch(actionTocartFunc(payload));
+        if (data.payload.st) {
+            successToast(data?.payload.msg);
+        } else {
+            errorToast(data.payload.msg);
+        }
+    };
 
     const setSubmit = async (e: any) => {
         e.preventDefault();
@@ -102,7 +120,6 @@ export default function Checkout({ params }: { params: { product: string } }) {
                 payload?.some((item: any) => {
 
                     if (item?.orderStatus === "COMPLETE") {
-                        console.log('item::: ', item);
                         const purchaseFilter = item?.OrderItem?.some((item: any) => item?.productId === product?.id);
 
                         if (purchaseFilter) {
@@ -110,8 +127,6 @@ export default function Checkout({ params }: { params: { product: string } }) {
                             return true;
                         }
                     }
-
-
                     return false;
                 });
             })();
@@ -139,18 +154,175 @@ export default function Checkout({ params }: { params: { product: string } }) {
         }
     }, []);
 
+    useEffect(() => {
+        session && setSize(cart?.find((cartItem: any) => cartItem?.productId === product?.id)?.size);
+
+    }, [session, cart]);
+
     return (
         <>
-            <div className="max-w-6xl px-4 mx-auto py-6 border border-black">
+            <div className="max-w-7xl px-4 mx-auto py-6 space-y-8">
+                <div className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start bg-white p-6 rounded-lg shadow-md">
+                    <div className="grid gap-4 md:gap-10 items-start">
+                        <div className="relative overflow-hidden rounded-lg shadow-lg">
+                            <Carousel showThumbs={false} infiniteLoop={true} showStatus={false}>
+                                {images_video}
+                            </Carousel>
+                        </div>
+                    </div>
+
+                    {
+                        product ? <div className="grid gap-4 md:gap-10 items-start">
+                            <div className="relative grid gap-2">
+                                <h1 className="font-bold text-3xl lg:text-4xl">{product?.name}</h1>
+                                <button
+                                    className={`absolute top-2 right-2 text-xl ${wish ? 'text-red-500' : 'text-black'}`}
+                                    style={{ zIndex: 20, pointerEvents: 'auto' }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        session ? dispatch(addToWishList({ productId: product?.id })) : dispatch(isLoginModel(true));
+                                    }}
+                                >
+                                    {wish ? <RedHeartIcon /> : <HeartIcon />}
+                                </button>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-0.5">
+                                        <StarRating rating={product?.avgRating || 5} />
+                                    </div>
+                                    <div className="text-sm text-muted-foreground">({product?.avgRating || 5} out of 5)</div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="text-4xl font-bold">₹{
+                                        product?.discountType === "PERCENTAGE" ?
+                                            product?.price - ((product?.price) * product?.discount / 100) :
+                                            product?.price - product?.discount
+                                    } </div>
+                                    <div className="text-sm text-muted-foreground line-through">₹ {product.price}</div>
+                                    <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
+                                        {product?.discountType === "PERCENTAGE" ? (
+                                            <span>{product?.discount}% off</span>
+                                        ) : (
+                                            <span>{product?.discount} ₹ off</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid gap-4 text-sm leading-loose">
+                                <p>
+                                    {product?.description}
+                                </p>
+                                <div className="flex">
+                                    <div className="font-semibold">Available Size :</div>
+                                    <div className="flex ml-2 items-center gap-2">
+                                        {session && cart?.find((cartItem: any) => cartItem?.productId === product?.id) ? "" : ""}
+
+                                        <ToggleGroup type="single" value={productSize} variant="outline" onValueChange={(value: any) => {
+                                            setSize(value);
+                                        }}
+                                        >
+                                            {
+                                                product?.size?.map((item: any) => (
+                                                    <ToggleGroupItem
+                                                        key={item}
+                                                        value={item}
+                                                        className="w-8 h-8 bg-black text-gray-200 border border-green-700"
+                                                    >
+                                                        {item}
+                                                    </ToggleGroupItem>
+                                                ))
+                                            }
+                                        </ToggleGroup>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                {session && cart?.find((cartItem: any) => cartItem?.productId === product?.id) ? (
+                                    <Button
+                                        size="lg" className="flex-1"
+                                        onClick={() => {
+                                            session ? dispatch(setOpenCart(!openCart)) : "";
+                                        }}
+                                    >
+                                        Open cart
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        size="lg" className="flex-1"
+                                        onClick={() => {
+                                            session ? addToCartFunction(product?.id, productSize) : dispatch(isLoginModel(true));
+                                        }}
+                                    >
+                                        Add to cart
+                                    </Button>
+                                )}
+                                <Button size="lg" className="flex-1">Buy Now</Button>
+                            </div>
+                        </div> : "No data found"
+                    }
+                </div>
+
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <div className="flex items-center mb-5 space-x-4">
+                        <button
+                            className={`p-3 ${info === "reviews" ? "bg-gray-300" : ""} rounded-lg shadow-md`}
+                            onClick={() => setInfo("reviews")}
+                        >
+                            Reviews
+                        </button>
+                    </div>
+
+                    <div className="bg-gray-100 p-5 rounded-lg">
+                        <>
+                            {session && isPurchased && !isCurrentUserReviewed && (
+                                <div className="flex justify-end mb-4">
+                                    <button
+                                        onClick={() => setShowModal(true)}
+                                        className="bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-600 transition duration-300"
+                                    >
+                                        Add Review
+                                    </button>
+                                </div>
+                            )}
+                            <div className="max-h-96 overflow-y-auto space-y-4">
+                                {reviews.map((review: any) => (
+                                    <div key={review.id} className="p-4 border rounded-lg bg-white bg-opacity-75 shadow-lg flex items-center space-x-4">
+                                        <div className="w-10">
+                                            <Image src={`/users/${review?.user?.profile_pic}` || fallbackImage} alt={`Review ${review.id}`} width={100} height={100} className="w-full rounded-lg" />
+                                        </div>
+                                        <div className="w-3/4">
+                                            <div className="flex items-center mb-1">
+                                                {[...Array(5)].map((star, index) => (
+                                                    <FaStar
+                                                        key={index}
+                                                        className={`mr-1 ${index < review?.rating ? "text-yellow-500" : "text-gray-300"}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <p className="text-gray-800 mb-1">{review?.review}</p>
+                                            <p className="text-gray-500 text-sm">- {review?.user?.name}, {review?.user?.country}</p>
+                                        </div>
+                                        {session?.user.id === review?.user?.id && (
+                                            <div>
+                                                <button className="flex gap-2" onClick={() => { setShowModal(true); setNewReview({ rating: review?.rating, text: review?.review }) }}>
+                                                    <FaEdit />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className="max-w-7xl px-4 mx-auto py-6 ">
                 <div className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start">
                     <div className="grid gap-4 md:gap-10 items-start">
-                        <img
-                            src="/placeholder.svg"
-                            alt="Product Image"
-                            width={600}
-                            height={300}
-                            className="aspect-[2/3] object-cover w-full border border-black h-[56vh] rounded-lg overflow-hidden"
-                        />
+                        <Carousel showThumbs={false}>
+                            {images_video}
+                        </Carousel>
+
                     </div>
 
                     <div className="grid gap-4 md:gap-10 items-start">
@@ -174,8 +346,8 @@ export default function Checkout({ params }: { params: { product: string } }) {
                         </div>
                         <div className="grid gap-4 text-sm leading-loose">
                             <p>
-                                {/* Crafted from premium cotton, this cozy crew neck sweater is the perfect addition to your wardrobe. With a
-              classic design and comfortable fit, it's ideal for everyday wear or layering during the colder months. */}
+                                {product?.description}
+
                             </p>
                             <div className="grid gap-2">
                                 <div className="font-semibold">Size:</div>
@@ -194,75 +366,63 @@ export default function Checkout({ params }: { params: { product: string } }) {
                     </div>
                 </div>
 
-                <div className="grid  bg-white mt-2 p-5">
-                    <div className="flex items-center mb-5">
+
+                <div className="grid  bg-white mt-5 p-">
+                    <div className=" items-center mb-5">
+                      
                         <button
-                            className={`p-3 ${info === "description" ? "bg-gray-300" : ""}`}
-                            onClick={() => setInfo("description")}
-                        >
-                            Description
-                        </button>
-                        <button
-                            className={`p-3 ${info === "reviews" ? "bg-gray-300" : ""}`}
-                            onClick={() => setInfo("reviews")}
+                            className={`p-3 bg-gray-300`}
+                        // onClick={() => setInfo("reviews")}
                         >
                             Reviews
                         </button>
                     </div>
-                    <div className="bg-gray-100 p-5 rounded-lg">
-                        {info === "description" && (
-                            <>
-                                <p>{product?.description}</p>
-                            </>
-                        )}
-                        {info === "reviews" && (
-                            <>
-                                {session && isPurchased && !isCurrentUserReviewed && (
-                                    <div className="flex justify-end mb-4">
-                                        <button
-                                            onClick={() => setShowModal(true)}
-                                            className="bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-600 transition duration-300"
-                                        >
-                                            Add Review
-                                        </button>
-                                    </div>
-                                )}
-                                <div className="max-h-96 overflow-y-auto">
-                                    {reviews.map((review: any) => (
-                                        <div key={review.id} className="mb-2 p-4 border rounded-lg bg-white bg-opacity-75 shadow-lg flex items-center space-x-4">
-                                            <div className="w-10">
-                                                <Image src={`/users/${review?.user?.profile_pic}` || fallbackImage} alt={`Review ${review.id}`} width={100} height={100} className="w-full rounded-lg" />
-                                            </div>
-                                            <div className="w-3/4">
-                                                <div className="flex items-center mb-1">
-                                                    {[...Array(5)].map((star, index) => (
-                                                        <FaStar
-                                                            key={index}
-                                                            className={`mr-1 ${index < review?.rating ? "text-yellow-500" : "text-gray-300"}`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <p className="text-gray-800 mb-1">{review?.review}</p>
-                                                <p className="text-gray-500 text-sm">- {review?.user?.name}, {review?.user?.country}</p>
-                                            </div>
-                                            {session?.user.id === review?.user?.id && (
-                                                <div>
-                                                    <button className="flex gap-2" onClick={() => { setShowModal(true); setNewReview({ rating: review?.rating, text: review?.review }) }}>
-                                                        <FaEdit />
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-                    </div>
+
+
                 </div>
-            </div>
-
-
-          
+                <div className="bg-gray-100 p-5 rounded-lg">
+                    <>
+                        {session && isPurchased && !isCurrentUserReviewed && (
+                            <div className="flex justify-end mb-4">
+                                <button
+                                    onClick={() => setShowModal(true)}
+                                    className="bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-600 transition duration-300"
+                                >
+                                    Add Review
+                                </button>
+                            </div>
+                        )}
+                        <div className="max-h-96 overflow-y-auto">
+                            {reviews.map((review: any) => (
+                                <div key={review.id} className="mb-2 p-4 border rounded-lg bg-white bg-opacity-75 shadow-lg flex items-center space-x-4">
+                                    <div className="w-10">
+                                        <Image src={`/users/${review?.user?.profile_pic}` || fallbackImage} alt={`Review ${review.id}`} width={100} height={100} className="w-full rounded-lg" />
+                                    </div>
+                                    <div className="w-3/4">
+                                        <div className="flex items-center mb-1">
+                                            {[...Array(5)].map((star, index) => (
+                                                <FaStar
+                                                    key={index}
+                                                    className={`mr-1 ${index < review?.rating ? "text-yellow-500" : "text-gray-300"}`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-gray-800 mb-1">{review?.review}</p>
+                                        <p className="text-gray-500 text-sm">- {review?.user?.name}, {review?.user?.country}</p>
+                                    </div>
+                                    {session?.user.id === review?.user?.id && (
+                                        <div>
+                                            <button className="flex gap-2" onClick={() => { setShowModal(true); setNewReview({ rating: review?.rating, text: review?.review }) }}>
+                                                <FaEdit />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                </div>
+            </div> */}
 
             <div className="p-5">
                 <div className="flex justify-center items-center uppercase  text-5xl pt-10 font-normal text- unica-one">
@@ -333,10 +493,49 @@ export default function Checkout({ params }: { params: { product: string } }) {
                     </div>
                 </div>
             )}
+            <Cart />
         </>
     )
 }
 
+
+const abc = {
+    "id": "66a6319e4d69abdb33367361",
+    "batchNo": "women-1",
+    "sku": "women-1",
+    "name": "Ethereal Elegance",
+    "size": [
+        "M",
+        "XL",
+        "XXL",
+        "L"
+    ],
+    "qty": 10,
+    "price": 10000,
+    "gst": 10,
+    "hsn": "909090",
+    "discount": 10,
+    "discountType": "PERCENTAGE",
+    "description": "Experience the ethereal elegance of our Floral Lace Maxi Dress. This breathtaking piece combines delicate lace with a flowing silhouette, creating a timeless look that exudes grace and sophistication. Perfect for any occasion, this dress promises to make you feel like a goddess.\"",
+    "image": [
+        "1722167710636_0_ladies-1.jpeg"
+    ],
+    "video": null,
+    "brand": "chubbycheeks",
+    "isBlocked": false,
+    "avgRating": null,
+    "numReviews": null,
+    "uomId": null,
+    "userId": "6583359361dcddf7afe7e355",
+    "categoryId": "6692113607a56a680307df86",
+    "subCategoryId": "66a61b7ab6b0ae99b8985ce6",
+    "topSelected": false,
+    "isNew": false,
+    "createdAt": "2024-07-28T11:55:10.640Z",
+    "createdBy": null,
+    "updatedAt": "2024-07-28T11:55:10.640Z",
+    "updatedBy": null
+}
 
 
 // export default function Checkout({ params }: { params: { product: string } }) {

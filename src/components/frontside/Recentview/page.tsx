@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from '@/app/redux/hooks';
 import { useSession } from "next-auth/react";
@@ -24,6 +24,7 @@ const Recentviewedcard = ({
   const { data: session }: any = useSession();
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
+  const [productSize, setSize] = useState("NONE");
 
   const handleLike = async () => {
     if (session) {
@@ -33,8 +34,8 @@ const Recentviewedcard = ({
     }
   };
 
-  const addToCartFunction = async (id: string) => {
-    const payload = { productId: id, action: "add" };
+  const addToCartFunction = async (id: string, productSize: string) => {
+    const payload = { productId: id, action: "add" ,productSize};
     const data = await dispatch(actionTocartFunc(payload));
     if (data.payload.st) {
       successToast(data?.payload.msg);
@@ -117,7 +118,7 @@ const Recentviewedcard = ({
               variant="outline"
               className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
               onClick={() => {
-                session ? addToCartFunction(item?.id) : dispatch(isLoginModel(true));
+                session ? addToCartFunction(item?.id,productSize) : dispatch(isLoginModel(true));
               }}
             >
               Add to cart

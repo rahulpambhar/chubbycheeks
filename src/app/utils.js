@@ -514,27 +514,82 @@ export const orderStatus = ["ALL", "PROCESSING", "ACCEPTED", "SHIPPED", "CANCELL
 
 export const shipped = z.object({
     length: z
-    .string()
-    .min(1, "Length is required")
-    .refine(value => !isNaN(Number(value)), "Length must be a number")
-    .transform(Number)
-    .refine(value => value > 0, "Length must be a positive number"),
-  breadth: z
-    .string()
-    .min(1, "Breadth is required")
-    .refine(value => !isNaN(Number(value)), "Breadth must be a number")
-    .transform(Number)
-    .refine(value => value > 0, "Breadth must be a positive number"),
-  height: z
-    .string()
-    .min(1, "Height is required")
-    .refine(value => !isNaN(Number(value)), "Height must be a number")
-    .transform(Number)
-    .refine(value => value > 0, "Height must be a positive number"),
-  weight: z
-    .string()
-    .min(1, "Weight is required")
-    .refine(value => !isNaN(Number(value)), "Weight must be a number")
-    .transform(Number)
-    .refine(value => value > 0, "Weight must be a positive number"),
+        .string()
+        .min(1, "Length is required")
+        .refine(value => !isNaN(Number(value)), "Length must be a number")
+        .transform(Number)
+        .refine(value => value > 0, "Length must be a positive number"),
+    breadth: z
+        .string()
+        .min(1, "Breadth is required")
+        .refine(value => !isNaN(Number(value)), "Breadth must be a number")
+        .transform(Number)
+        .refine(value => value > 0, "Breadth must be a positive number"),
+    height: z
+        .string()
+        .min(1, "Height is required")
+        .refine(value => !isNaN(Number(value)), "Height must be a number")
+        .transform(Number)
+        .refine(value => value > 0, "Height must be a positive number"),
+    weight: z
+        .string()
+        .min(1, "Weight is required")
+        .refine(value => !isNaN(Number(value)), "Weight must be a number")
+        .transform(Number)
+        .refine(value => value > 0, "Weight must be a positive number"),
 })
+
+export const size = [
+    { key: "AGE_0_AGE_1", label: "0-1" },
+    { key: "AGE_1_AGE_2", label: "1-2" },
+    { key: "AGE_2_AGE_3", label: "2-3" },
+    { key: "AGE_3_AGE_4", label: "3-4" },
+    { key: "AGE_4_AGE_5", label: "4-5" },
+    { key: "AGE_5_AGE_6", label: "5-6" },
+    { key: "AGE_6_AGE_7", label: "6-7" },
+    { key: "AGE_7_AGE_8", label: "7-8" },
+    { key: "AGE_8_AGE_9", label: "8-9" },
+    { key: "AGE_9_AGE_10", label: "9-10" },
+    { key: "AGE_10_AGE_11", label: "10-11" },
+    { key: "AGE_11_AGE_12", label: "11-12" },
+    { key: "S", label: "S" },
+    { key: "M", label: "M" },
+    { key: "L", label: "L" },
+    { key: "XL", label: "XL" },
+    { key: "XXL", label: "2X" },
+    { key: "XXXL", label: "3X" },
+];
+
+export const validSizes = [
+    "AGE_0_AGE_1",
+    "AGE_1_AGE_2",
+    "AGE_2_AGE_3",
+    "AGE_3_AGE_4",
+    "AGE_4_AGE_5",
+    "AGE_5_AGE_6",
+    "AGE_6_AGE_7",
+    "AGE_7_AGE_8",
+    "AGE_8_AGE_9",
+    "AGE_9_AGE_10",
+    "AGE_10_AGE_11",
+    "AGE_11_AGE_12",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL",
+    "XXXL",
+    "NONE",
+];
+
+export const checkSizes = (selectedItems) => {
+
+    for (let item of selectedItems) {
+
+        if (item?.checked === true && item?.size === "NONE") {
+            return { st: false, msg: `Please select size for ${item?.product?.name}`, }
+        }
+    }
+    return { st: true, msg: "", }
+}
+

@@ -76,6 +76,7 @@ export async function POST(request: Request) {
             itemData.push({
                 qty: items[x]?.qty,
                 price: items[x]?.price,
+                size: items[x]?.size,
                 productId: items[x]?.productId,
                 createdBy: session?.user?.id
             })
@@ -349,7 +350,7 @@ export async function PUT(request: Request) {
                     });
 
                     if (order && ['CANCELLED', 'COMPLETE'].includes(order.orderStatus)) {
-                        return NextResponse.json({st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: 'Order already processed', });
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: 'Order already processed', });
                     }
 
                     if (!order) {
