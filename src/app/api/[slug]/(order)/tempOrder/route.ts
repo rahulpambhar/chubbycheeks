@@ -18,6 +18,8 @@ export async function POST(request: Request) {
 
         const body = await request.json();
         const { orderMeta, } = body
+        const { name, mobile, country_code, address, city, state, country, pincode, paymentMethod } = orderMeta?.data
+
         let nextInvoice: string = ""
         let items: any = []
         let itemCount: number = 0
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
 
         for (let item of orderMeta?.selectedItems) {
 
-            if (item?.size === "NONE") {
+            if (item?.size === "NONE" || item?.size === "") {
                 return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: `Please select size for ${item?.productId}`, });
             }
         }
@@ -81,26 +83,37 @@ export async function POST(request: Request) {
             totalAmt += total;
             itemCount += qty
         }
-        taxableAmount = totalAmt - discountAmount
-        netAmount = taxableAmount + GST
+        taxableAmount = Math.floor(totalAmt - discountAmount)
+        netAmount = Math.floor(taxableAmount + GST)
 
         let data: any = {
+
+            name,
+            country_code,
+            mobile,
+
+            address,
+            city,
+            state,
+            pincode,
+            country,
+
             invoiceNo: nextInvoice,
             invoiceDate: new Date(),
 
             itemCount,
 
-            total: totalAmt,
-            discountAmount,
+            total: Math.floor(totalAmt),
+            discountAmount: Math.floor(discountAmount),
             taxableAmount,
-            gst: GST,
+            gst: Math.floor(GST),
             otherCharge: 0,
             netAmount: netAmount,
 
-            isPaid: orderMeta?.paymentMethod === "COD" ? false : true,
+            isPaid: paymentMethod === "COD" ? false : true,
             paidAt: new Date(),
-            paymentNote: orderMeta?.paymentMethod === "COD" ? "COD" : "Razorpay",
-            paymentMethod: orderMeta?.paymentMethod,
+            paymentNote: paymentMethod === "COD" ? "COD" : "Razorpay",
+            paymentMethod: paymentMethod,
 
             user: { connect: { id: session?.user?.id } },
             Transport: { connect: { id: "65f67705f6a5e7edc22123e4" } },
@@ -121,7 +134,7 @@ export async function POST(request: Request) {
 
         let razorPayRes: any = {}
 
-        if (orderMeta?.paymentMethod == "Prepaid") {
+        if (paymentMethod == "Prepaid") {
 
             const razorpay = new Razorpay({
                 key_id: process.env.RAZORPAY_KEY_ID as string,
@@ -155,7 +168,7 @@ export async function POST(request: Request) {
         })
 
         await activityLog("INSERT", "tempOrder", data, session?.user?.id);
-        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: orderMeta?.paymentMethod === "Prepaid" ? razorPayRes : {}, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
+        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: paymentMethod === "Prepaid" ? razorPayRes : {}, msg: "Temp order created successfully!", temOrdrId: createTemp.id });
 
     } catch (error) {
         console.log('error::: ', error);

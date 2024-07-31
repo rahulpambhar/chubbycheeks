@@ -539,6 +539,24 @@ export const shipped = z.object({
         .refine(value => value > 0, "Weight must be a positive number"),
 })
 
+export const paymentSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    country_code: z.string().min(1, "Country code is required"),
+    mobile: z.string()
+        .min(10, "Mobile number must be at least 10 digits")
+        .max(10, "Mobile number must be at most 10 digits")
+        .regex(/^[0-9]+$/, "Mobile number must contain only numbers"),
+    address: z.string().min(1, "Address is required").max(100, "Address must be at most 100 characters"),
+    city: z.string().min(1, "City is required").max(15, "City must be at most 15 characters"),
+    state: z.string().min(1, "State is required"),
+    pincode: z.string()
+        .min(6, "PIN code must be at least 6 digits")
+        .max(6, "PIN code must be at most 6 digits")
+        .regex(/^[0-9]+$/, "PIN code must contain only numbers"),
+    country: z.string().min(1, "Country is required").max(15, "Country must be at most 15 characters"),
+    paymentMethod: z.string().min(1, "Payment method is required"),
+})
+
 export const size = [
     { key: "AGE_0_AGE_1", label: "0-1" },
     { key: "AGE_1_AGE_2", label: "1-2" },
@@ -587,7 +605,7 @@ export const checkSizes = (selectedItems) => {
     for (let item of selectedItems) {
 
         if (item?.checked === true && item?.size === "NONE") {
-            return { st: false, msg: `Please select size for ${item?.product?.name}`, }
+            return { st: false, msg: `Please select size of ${item?.product?.name ? item?.product?.name : ""} Product`, }
         }
     }
     return { st: true, msg: "", }

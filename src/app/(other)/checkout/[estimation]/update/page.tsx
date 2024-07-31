@@ -1,25 +1,32 @@
 "use client";
 
-import { Fragment, useEffect, useState } from 'react'
-import { RedirectType, useRouter, useSearchParams, } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams, } from 'next/navigation'
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
-import { createTempOrderFunc, createOrderFunc, getOrdersFunc, updateOrdersFunc } from '../../../../redux/slices/orderSlices';
+import { getOrdersFunc, } from '../../../../redux/slices/orderSlices';
 import { useSession } from "next-auth/react";
-import { errorToast, successToast } from '@/components/toster';
-import axios from 'axios';
-import { truncate } from 'fs';
-import { actionTocartFunction_ } from '@/components/Cart';
+
 import { fetchCategories } from "../../../../redux/slices/categorySlice";
 import Image from 'next/image';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Button } from '@/components/ui/button';
-import { addYears, setHours, setMinutes, setSeconds, setMilliseconds, addDays, format } from "date-fns";
-import Script from 'next/script';
-import { getCurrentDateFormatted } from '@/app/utils'
-import { fetchCart } from '@/app/redux/slices/cartSclice';
+import { addYears, setHours, setMinutes, setSeconds, setMilliseconds, } from "date-fns";
+
 import Cart from '@/components/Cart';
 import { DateRange } from "react-day-picker"
+import {
+    Card as CardComponent,
+    CardHeader,
+    CardTitle,
+    CardContent,
+} from "@/components/ui/card";
+import { StarRating } from "@/components/frontside/TopselectionCard/page";
+import { Card, CardBody, Slider } from "@nextui-org/react";
+import Link from 'next/link';
+import { Checkbox } from "@/components/ui/checkbox";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import UpdateOrder from '@/components/frontside/Payment/updateOrder';
 
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
@@ -30,6 +37,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
     const [totalDiscount, setDiscountTotal] = useState(0)
     const [gstTotal, setGat] = useState(0)
     const [totalAmount, setTotalAmount] = useState(0)
+    const [loader, setLoad] = useState(false)
     const today = new Date();
     const oneMonthAgo = new Date(today);
     oneMonthAgo.setMonth(today.getMonth() - 1);
@@ -85,7 +93,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
         )
         setDiscountTotal(
             order_?.reduce((acc: any, item: any) => {
-                let discount = 0
+                let discount = 0.00
 
 
                 if (item?.product?.discountType === "PERCENTAGE") {
@@ -149,194 +157,188 @@ export default function Checkout({ params }: { params: { estimation: string } })
     }, [dispatch, id]);
 
     return (
-        <>
-            <div className="flex flex-col min-h-screen py-12 md:py-24 items-center justify-start space-y-4">
-                <div className="w-full max-w-2xl px-4">
-                    <div className="grid gap-4 md:grid-cols-2">
-                        <div className="border border-gray-200 dark:border-gray-800 rounded-lg">
-                            <div className="p-4">
-                                <h3 className="text-lg font-semibold">Update Order</h3>
-                            </div>
-                            <div className="border-t border-gray-200 dark:border-gray-800">
-                                <ScrollArea className="h-[350px] w-auto rounded-md border">
-                                    <div className="p-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:gap-12 max-w-6xl px-4 mx-auto mt-8 mb-8 py-6">
 
-                                        {session && order_?.length > 0 ? order_?.map((item: any, i: number) => (
-                                            <>
+            <CardComponent className="w-full">
+                <CardHeader>
+                    <CardTitle>Order Summary</CardTitle>
+                </CardHeader>
+                <ScrollArea className="h-[500px] w-auto mt-1 rounded-md border">
+                    {session && order_?.length > 0 ? (
+                        order_?.map((item: any, i: number) => (
+                            <Card
+                                className="border-none m-2 bg-background/60 dark:bg-default-100/50 max-w-[610px]"
+                                shadow="sm"
+                            >
+                                <CardBody>
+                                    <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
+                                        <div className="relative col-span-6 md:col-span-4">
+                                            <Image
+                                                height={100}
+                                                src={`/products/${item?.product?.image[0]}`}
+                                                width={150}
+                                                alt={item?.product?.name || "Product Image"}
+                                                className="rounded-xl w-[150px] h-[130px] object-cover object-center"
+                                            />
+                                        </div>
 
-                                                <div key={item.id} className="flex items-center justify-between text-sm ">
-                                                    <div className="flex items-center space-x-4">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={item?.checked}
-                                                            onChange={() => {
-                                                                if (orderID) {
-                                                                    toggleSelect(item.id, i)
-                                                                }
-                                                            }}
-                                                        />
-                                                        <div className="w-16 h-16 rounded-md overflow-hidden">
-                                                            <Image height={100} width={100} alt="Product image" className="object-cover w-full h-full" src={`/products/${item?.product?.image[0]}`} />
+                                        <div className="flex flex-col col-span-6 md:col-span-8">
+                                            <div className="flex relative justify-between items-start">
+                                                <Checkbox checked={item?.checked} onCheckedChange={(e) => {
+
+                                                    orderID && toggleSelect(item.id, i)
+                                                }} id="terms" className='absolute right-0 top-0 '
+                                                />
+
+                                                <div className="flex flex-col gap-0">
+                                                    <h3 className="font-semibold  text-sm text-foreground/90">
+                                                        {item?.product?.name}
+                                                    </h3>
+                                                    <p className="text-tiny text-foreground/80">
+                                                        {item?.product?.description.split(' ').slice(0, 10).join(' ')}...
+                                                        <Link href={`/preview/${item?.product?.id}`} className="text-orange-500">
+                                                            Preview
+                                                        </Link>
+                                                    </p>
+                                                    <h1 className=" flex justify-between text-sm font-medium mt-2">
+                                                        <div>
+
+                                                            <StarRating rating={item?.product?.avgRating || 5} />
                                                         </div>
-                                                        <div className="text-sm">
-                                                            <div className="font-medium">{item?.product?.name}</div>
-                                                            <div className="text-gray-500 dark:text-gray-400">₹{orderID ? item?.product?.price : item?.product?.price} x {item?.qty}</div>
+                                                        <div className="flex justify-between  ">
+                                                            <p className="text-sm ">₹{
+                                                                item?.product?.discountType === "PERCENTAGE" ?
+                                                                    item?.product?.price - ((item?.product?.price) * item?.product?.discount / 100) :
+                                                                    item?.product?.price - item?.product?.discount
+                                                            }
+                                                            </p>
+                                                            <div className="text-sm text-muted-foreground ml-2 line-through">₹{item?.product.price}</div>
+                                                            <p className="text-green-500 ml-2 text-sm font-semibold">
+                                                                {item?.product?.discountType === "PERCENTAGE" ? (
+                                                                    <span>{item?.product?.discount}% off</span>
+                                                                ) : (
+                                                                    <span>{item?.product?.discount} ₹ off</span>
+                                                                )}
+                                                            </p>
                                                         </div>
+                                                    </h1>
+                                                </div>
+                                            </div>
 
-                                                        {item.checked &&
-                                                            <div className=" justify-center items-center space-x-2">
+                                            <div className="flex justify-between w-full mt-2 ">
+                                                <div className="flex items-center gap-2">
+                                                    <p className='text-sm'> Select size</p>
+                                                    <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
+                                                        const newArray = order_?.map((e: any) => {
+                                                            if (e.id === item.id) {
+                                                                return { ...e, size: value };
+                                                            }
+                                                            return e;
 
-                                                                <Button className='bg-green-200  h-[5px] w-[5px] rounded-sm' disabled={isLoading} onClick={() => {
-                                                                    const updatedItems: any = order_.map((o: any) => {
-                                                                        const orderQty = order?.find((val: any) => val.id === item.id)?.qty || 0;
-                                                                        if (o.id === item.id) {
-                                                                            return { ...o, qty: o.qty + 1 };
-                                                                        }
-                                                                        return o;
-                                                                    });
-                                                                    setOrder(updatedItems);
-                                                                }}>+</Button>
-                                                                <h1>{item.qty}</h1>
-                                                                <Button className=' bg-red-200  h-[5px] w-[5px] rounded-sm' disabled={isLoading} onClick={() => {
-                                                                    const updatedItems: any = order_.map((o: any) => {
-                                                                        if (o.id === item.id && o.qty > 1) {
-                                                                            return { ...o, qty: o.qty - 1 };
-                                                                        }
-                                                                        return o;
-                                                                    });
-                                                                    setOrder(updatedItems);
-                                                                }}>-</Button>
-                                                            </div>
+                                                        })
+                                                        setOrder(newArray)
+                                                    }} >
+                                                        {
+                                                            item?.product?.size?.map((item: any) => (
+                                                                <ToggleGroupItem
+                                                                    key={item}
+                                                                    value={item}
+                                                                    className="w-3 h-6 bg-gray-400 text-black  border-black "
+                                                                >
+                                                                    <p className="text-tiny">{item}</p>
+                                                                </ToggleGroupItem>
+                                                            ))
                                                         }
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <div className="font-medium"> ₹ {item?.product?.price * item.qty}</div>
-                                                    </div>
+                                                    </ToggleGroup>
                                                 </div>
 
-                                                <Separator className="my-2" />
-                                            </>
-                                        )) : "NO ITEMS FOUND"}
-                                    </div>
-                                </ScrollArea>
-                                {<>
-                                    <div className="flex items-center justify-between px-4">
-                                        <div>Sub Total  </div>
-                                        <div> ₹ {subTotal}</div>
-                                    </div>
+                                                {item.checked && <div className="flex items-center gap-2 ml-2">
+                                                    <Button className=" bg-white border border-black text-black h-[30px] w-2 rounded-sm hover:bg-green-700" disabled={isLoading} onClick={() => {
+                                                        const updatedItems: any = order_.map((o: any) => {
+                                                            const orderQty = order?.find((val: any) => val.id === item.id)?.qty || 0;
+                                                            if (o.id === item.id) {
+                                                                return { ...o, qty: o.qty + 1 };
+                                                            }
+                                                            return o;
+                                                        });
+                                                        setOrder(updatedItems);
+                                                    }}>+</Button>
+                                                    <h1 className="text-sm">{item.qty}</h1>
+                                                    <Button className="bg-white border border-black text-black  h-[30px] w-2 rounded-sm  hover:bg-red-700" disabled={isLoading} onClick={() => {
+                                                        const updatedItems: any = order_.map((o: any) => {
+                                                            if (o.id === item.id && o.qty > 1) {
+                                                                return { ...o, qty: o.qty - 1 };
+                                                            }
+                                                            return o;
+                                                        });
+                                                        setOrder(updatedItems);
+                                                    }}>-</Button>
 
-                                    <div className="flex items-center justify-between px-4">
-                                        <div> Discount </div>
-                                        <div> ₹ {totalDiscount}</div>
-                                    </div>
-                                    <div className="flex items-center justify-between px-4">
-                                        <div>Taxable Amount </div>
-                                        <div> ₹ {taxableAmtTotal}</div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between px-4">
-                                        <div>Gst</div>
-                                        <div> ₹ {gstTotal}</div>
-                                    </div>
-                                    <div className="flex items-center justify-between px-4">
-                                        <div>{orderID ? "Checked Total" : "Total Amount"}</div>
-                                        <div> ₹ {totalAmount}</div>
-                                    </div>
-                                </>
-                                }
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            <div className="border border-gray-200 dark:border-gray-800 rounded-lg">
-                                <div className="p-4">
-                                    <h3 className="text-lg font-semibold">Shipping information</h3>
-                                </div>
-                                <div className="p-4">
-                                    <div className="text-sm">
-                                        <div className="font-medium">{session?.user?.name}</div>
-                                        <div>{session?.user?.address}</div>
-                                        <div>{session?.user?.city}</div>
-                                        <div>{session?.user?.country}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="border hi border-gray-200 dark:border-gray-800 rounded-lg">
-                                <div className="p-4">
-                                    <h3 className="text-lg font-semibold">Order information</h3>
-                                </div>
-                                <div className="p-4">
-                                    <div className="text-sm">
-                                        <div className="grid gap-2">
-                                            <label className="font-medium" htmlFor="name">
-                                                Name
-                                            </label>
-                                            <input className="input" id="name" placeholder="Enter your name" type="text" />
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <label className="font-medium" htmlFor="card">
-                                                Card number
-                                            </label>
-                                            <input className="input" id="card" placeholder="Enter your card number" type="password" />
-                                        </div>
-
-                                        <div className="flex gap-4">
-                                            <div className="grid gap-2">
-                                                <label className="font-medium" htmlFor="expiry">
-                                                    Expiry date
-                                                </label>
-                                                <input className="input" id="expiry" placeholder="MM/YY" type="text" />
-                                            </div>
-                                            <div className="grid gap-2">
-                                                <label className="font-medium" htmlFor="cvv">
-                                                    CVV
-                                                </label>
-                                                <input className="input" id="cvv" placeholder="Enter your CVV" type="password" />
+                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            {
-                                session &&
-                                <div>
+                                </CardBody>
+                            </Card>
+                        ))
+                    ) : (
+                        <p className="text-center text-sm text-foreground/80">No Items</p>
+                    )}
+                </ScrollArea>
 
-                                    <button
-                                        onClick={async () => {
-                                            try {
-                                                let orderMeta: any = {
-                                                    selectedItems: order_.map((item: any, index: number) => {
-                                                        if (item.checked === true) {
-                                                            return { productId: item.product.id, qty: item.qty, };
-                                                        }
-                                                        return null;
-                                                    }).filter(Boolean)
-                                                }
-                                                if (orderMeta.selectedItems.length === 0) {
-                                                    errorToast("Please select atleast one item to proceed")
-                                                    return
-                                                }
+                <div className="border border-gray-200 dark:border-gray-800 rounded-lg m-4 p-4">
+                    <div className="flex items-center text-sm justify-between px-4">
+                        <div>Sub Total  </div>
+                        <div> ₹ {subTotal}.00</div>
+                    </div>
 
-                                                const res: any = await dispatch(updateOrdersFunc({ id: orderID, data: orderMeta, orderStatus: "UPDATE" }))
+                    <div className="flex items-center  text-sm  justify-between px-4">
+                        <div> Discount </div>
+                        <div> ₹ {totalDiscount}.00</div>
+                    </div>
+                    <div className="flex items-center text-sm justify-between px-4">
+                        <div>Taxable Amount </div>
+                        <div> ₹ {taxableAmtTotal}.00</div>
+                    </div>
 
-                                                res?.payload?.st ? successToast(res?.payload?.msg) : errorToast(res?.payload?.msg);
-
-                                            } catch (error) {
-                                                console.log('error--> ', error);
-                                                errorToast("Something went wrong!!!")
-                                            }
-                                        }}
-                                        className="w-full max-w-xs ml-auto bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900"
-                                    >
-                                        Update Order
-                                    </button>
-                                </div>
-                            }
-                        </div>
+                    <div className="flex items-center  text-sm justify-between px-4">
+                        <div>Gst</div>
+                        <div> ₹ {gstTotal}.00</div>
                     </div>
                 </div>
-                <Cart />
-            </div >
-            <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-        </>
+
+                <Separator className="my-2" />
+                <div className="flex items-center  text-xl   justify-between px-4 py-4">
+                    <div>{orderID ? "Checked Total" : "Total Amount"}</div>
+                    <div> ₹ {totalAmount}.00</div>
+                </div>
+
+            </CardComponent>
+
+            <div>
+                <CardComponent className="w-full">
+                    <CardHeader>
+                        <CardTitle>Payment</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-6">
+                            <div className="grid grid-cols-[1fr_100px] items-center gap-4">
+                                <div className="grid gap-1">
+                                    <p className="text-sm text-muted-foreground">Payable Amount</p>
+                                </div>
+                                <p className="font-semibold text-right">₹ {Math.floor(totalAmount) || 0}</p>
+                            </div>
+
+                            <Separator />
+
+                            <UpdateOrder order_={order_} />
+                        </div>
+                    </CardContent>
+                </CardComponent>
+            </div>
+            <Cart />
+        </div>
     );
 };
+

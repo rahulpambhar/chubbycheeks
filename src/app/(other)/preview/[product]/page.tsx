@@ -54,7 +54,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
     const oneMonthAgo = new Date(today);
     oneMonthAgo.setMonth(today.getMonth() - 1);
     const [date, setDate] = useState<DateRange | undefined>({ from: oneMonthAgo, to: today, })
-    const wishList = useAppSelector((state: any) => state?.wishListReducer?.wishList) ;
+    const wishList = useAppSelector((state: any) => state?.wishListReducer?.wishList);
     const wish = !!wishList?.find((wish: any) => wish?.productId === product?.id);
 
     const isCurrentUserReviewed = useMemo(() => {
@@ -255,7 +255,11 @@ export default function Checkout({ params }: { params: { product: string } }) {
                                         Add to cart
                                     </Button>
                                 )}
-                                <Button size="lg" className="flex-1">Buy Now</Button>
+                                <Button size="lg" className="flex-1">
+                                    <Link href={`/buy/${product?.id}`} >
+                                        Buy Now
+                                    </Link>
+                                </Button>
                             </div>
                         </div> : "No data found"
                     }

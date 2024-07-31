@@ -70,7 +70,7 @@ const LoginComponents = () => {
                                     });
 
                                     if (res?.error) {
-                                        errorToast("Something Went wrong try again !! ");
+                                        errorToast("Something went wrong try. again !!");
                                     } else {
                                         successToast("login successful.");
                                         dispatch(isLoginModel(false))

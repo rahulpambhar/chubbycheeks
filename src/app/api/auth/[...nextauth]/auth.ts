@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { compareSync } from "bcrypt";
 import prisma from "../../../../../prisma/prismaClient";
+import { stat } from "fs";
 
 const authOptions: NextAuthOptions = {
     pages: {
@@ -77,13 +78,17 @@ const authOptions: NextAuthOptions = {
             return {
                 id: userInfo.id,
                 name: userInfo.name,
+                mobile: userInfo.mobile,
+                country_code: userInfo.country_code,
                 email: userInfo.email,
                 isAdmin: userInfo.isAdmin,
                 gender: userInfo.gender,
                 address: userInfo.address,
                 city: userInfo.city,
+                state: userInfo.state,
                 country: userInfo.country,
-                pincode: userInfo.pincode
+                pincode: userInfo.pincode,
+                
             }
         },
 

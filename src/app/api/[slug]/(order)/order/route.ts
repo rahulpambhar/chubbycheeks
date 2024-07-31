@@ -6,15 +6,15 @@ import authOptions from "../../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 import prisma from "../../../../../../prisma/prismaClient";
 import { parse } from "url";
-import {
-    getOrdersByPage, getOrders, getOrdersById, shiproketOrder, shiproketLogin, cancelOrder
-
-} from './functions/route.js'
+import { getOrdersByPage, getOrders, getOrdersById, shiproketOrder, shiproketLogin, cancelOrder } from './functions/route.js'
+import { orderStatus as OrderStatus } from "../../../../utils";
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
         const { temOrdrId, paymentId, repeatOrder, } = body?.orderInfo
+
+
 
         const temp: any = await prisma.tempOrder.findFirst({
             where: {
@@ -43,6 +43,17 @@ export async function POST(request: Request) {
         }
 
         const data: any = {
+
+            name: temp?.name,
+            country_code: temp?.country_code,
+            mobile: temp?.mobile,
+
+            address: temp?.address,
+            city: temp?.city,
+            state: temp?.state,
+            pincode: temp?.pincode,
+            country: temp?.country,
+
             invoiceNo: nextInvoice,
             invoiceDate: new Date(),
 
@@ -196,7 +207,6 @@ export async function PUT(request: Request) {
     try {
 
         let session: any = await getServerSession(authOptions);
-        const userId = session?.user?.id;
 
         if (!session) {
             return NextResponse.json({
@@ -372,9 +382,19 @@ export async function PUT(request: Request) {
 
         } else {
             const { id, data, orderStatus, } = body
+            const { name, mobile, country_code, address, city, state, country, pincode, } = data?.data
+
 
             if (orderStatus === "UPDATE") {
 
+
+                for (let item of data?.selectedItems) {
+                    if (item?.size === "NONE" || item?.size === "") {
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: `Please select size for ${item?.productId}`, });
+                    }
+                }
+
+                const isOrderString = OrderStatus.includes(orderStatus);
                 const isOrder = await prisma.order.findUnique({
                     where:
                     {
@@ -411,11 +431,11 @@ export async function PUT(request: Request) {
                     if (product) {
                         return {
                             ...product,
-                            orderedQty: item?.qty
+                            orderedQty: item?.qty,
+                            size: item?.size
                         };
                     }
                 })
-
 
                 for (let item of items) {
 
@@ -443,6 +463,16 @@ export async function PUT(request: Request) {
                 netAmount = taxableAmount + GST
 
                 const data_ = {
+                    name,
+                    country_code,
+                    mobile,
+
+                    address,
+                    city,
+                    state,
+                    pincode,
+                    country,
+
                     invoiceNo: isOrder.invoiceNo,
                     invoiceDate: isOrder.invoiceDate,
                     itemCount,
@@ -459,7 +489,7 @@ export async function PUT(request: Request) {
                     paymentId: isOrder.paymentId,
                     paymentMethod: isOrder.paymentMethod,
                     paymentNote: isOrder.paymentNote,
-                    orderStatus: orderStatus || isOrder.orderStatus,
+                    orderStatus: isOrderString ? orderStatus : isOrder.orderStatus,
                     processingAt: isOrder.processingAt,
                     acceptedAt: isOrder.acceptedAt,
                     shippedAt: isOrder.shippedAt,
@@ -489,6 +519,8 @@ export async function PUT(request: Request) {
                             },
                             data: {
                                 qty: item.qty,
+                                size: item.size,
+
                                 price: isOrder?.OrderItem[x].price,
                                 isBlocked: isOrder?.OrderItem[x].isBlocked,
 

@@ -176,7 +176,7 @@ const ChangePassword = () => {
                                                 placeholder="Enter your password"
                                                 className="pr-10"
                                                 value={values.password}
-                                                onChange={(e:any) => {
+                                                onChange={(e: any) => {
                                                     setFieldValue('password', e.target.value)
                                                 }}
                                             />
@@ -203,7 +203,7 @@ const ChangePassword = () => {
                                                 placeholder="Enter confirm password"
                                                 className="pr-10"
                                                 value={values.Confirm_password}
-                                                onChange={(e:any) => {
+                                                onChange={(e: any) => {
                                                     setFieldValue('Confirm_password', e.target.value)
                                                 }}
                                             />
@@ -230,7 +230,8 @@ const ChangePassword = () => {
                         </>
                     )}
 
-                </Formik>}
+                </Formik>
+            }
         </ >
     )
 }

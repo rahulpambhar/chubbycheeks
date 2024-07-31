@@ -279,6 +279,16 @@ model Whishlist {
 model tempOrder {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
+    name         String
+    country_code String
+    mobile       String
+
+    address String
+    city    String
+    state   String
+    pincode String
+    country String
+
     invoiceNo   String?
     invoiceDate DateTime @db.Date()
 
@@ -350,6 +360,16 @@ model tempOrderItem {
 
 model Order {
     id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    name         String
+    country_code String
+    mobile       String
+
+    address String
+    city    String
+    state   String
+    pincode String
+    country String
 
     invoiceNo   String?
     invoiceDate DateTime @db.Date()

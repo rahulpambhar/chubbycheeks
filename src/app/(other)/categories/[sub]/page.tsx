@@ -54,15 +54,8 @@ export default function Component() {
     setSortOrder(order);
   };
 
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
-
-
-
   const categories: Categories[] = useAppSelector((state): any => state?.categories?.categories);
   const subCategories = categories?.filter((item: any) => item?.name === params.sub).flatMap((category: any) => category.SubCategory);
-
 
   const filteredOptions = useMemo(() => {
 
@@ -89,7 +82,11 @@ export default function Component() {
     if (selectedSubcategories.length !== allSubcategoryIds.length) {
       setSelectedSubcategories(allSubcategoryIds);
     }
-  }, []);
+  }, [productsList]);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 justify-between">

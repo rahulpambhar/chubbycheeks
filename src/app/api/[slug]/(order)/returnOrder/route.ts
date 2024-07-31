@@ -55,13 +55,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Order not found" });
         }
 
-        let itemsNotInDatabase = selectedItems.filter((item: any) => {
+        let itemsNotInOrder = selectedItems.filter((item: any) => {
             return !order.OrderItem.find((orderItem: any) => {
                 return orderItem.productId === item.productId;
             });
         });
 
-        if (itemsNotInDatabase.length > 0) {
+        if (itemsNotInOrder.length > 0) {
             return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Items not found in order" });
         }
 
@@ -105,7 +105,8 @@ export async function POST(request: Request) {
             if (product) {
                 return {
                     ...product,
-                    orderedQty: item?.qty
+                    orderedQty: item?.qty,
+                    size: item?.size
                 };
             }
         })
@@ -170,7 +171,8 @@ export async function POST(request: Request) {
                     create: items.map((item: any) => {
                         return {
                             product: { connect: { id: item.id } },
-                            qty: item.orderedQty
+                            qty: item.orderedQty,
+                            size: item.size,
                         }
                     })
                 },
