@@ -50,7 +50,7 @@ export async function POST(request: Request) {
                         },
                         data: {
                             qty: updatedQty,
-                            size: productSize,
+                            size: isItemExist?.size,
                             updatedAt: new Date(),
                             updatedBy: session?.user?.id
                         }
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
                         },
                         data: {
                             qty: updatedQty,
-                            size: productSize,
+                            size: isItemExist?.size,
                             updatedAt: new Date(),
                             updatedBy: session?.user?.id
                         }
@@ -76,21 +76,32 @@ export async function POST(request: Request) {
                         },
                         data: {
                             isBlocked: true,
-                            size: productSize,
+                            size: isItemExist?.size,
                             updatedBy: session?.user?.id,
                             updatedAt: new Date(),
                         }
                     })
                 } else if (action === "checked") {
 
-                    const isCartItem = await getCartItem(cart.id, product.id)
 
                     cartItem = await prisma.cartItem.update({
                         where: {
                             id: isItemExist.id,
                         },
                         data: {
-                            checked: !isCartItem?.checked,
+                            checked: !isItemExist?.checked,
+                            size: isItemExist?.size,
+                            updatedBy: session?.user?.id,
+                            updatedAt: new Date(),
+                        }
+                    })
+                } else if (action === "size") {
+                    cartItem = await prisma.cartItem.update({
+                        where: {
+                            id: isItemExist.id,
+                        },
+                        data: {
+                            checked: isItemExist?.checked,
                             size: productSize,
                             updatedBy: session?.user?.id,
                             updatedAt: new Date(),

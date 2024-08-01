@@ -17,32 +17,26 @@ const Recentviewed = () => {
 
 
   return (
-    <div>
-      {Topselectionitem?.length > 0 && (
-        <div className="py-10">
-          <div className="flex justify-center items-center uppercase font-normal text-5xl pt-10 unica-one">
-            Recent Viewed
-          </div>
-
-          <div className={`pt-5 lg:mx-48 overflow-x-auto gap-1 flex justify-center items-center`}>
-            {Topselectionitem.map((item: any) => {
-              const wish: boolean = wishList?.find((wish) => (wish?.productId === item?.id)) ? true : false;
-              return (
-                <div key={item.id} className="inline-block rounded-sm  w-80 mx-2">
-                  <Recentviewedcard
-                    item={item}
-                    wish={wish}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <div className="hidden lg:flex justify-center items-center pt-10">
-            <img src="/image/Slider.svg" alt="" />
-          </div>
+    <section className="container mx-auto py-12 font-sans mt-[100px]">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex-grow flex justify-center items-center uppercase font-normal text-5xl pt-10 unica-one">
+          Recent Viewed
         </div>
-      )}
-    </div>
+
+      </div>
+      <div className={`gap-4 flex overflow-x-auto mt-10`}>
+        {Topselectionitem?.length > 0 && Topselectionitem.map((item: any, index: number) => {
+          const wish: boolean = wishList?.find((wish) => (wish?.productId === item?.id)) ? true : false;
+
+          return (
+            <div key={index} className={`p-2 inline-block w-96`}>
+              {item && <Recentviewedcard item={item} wish={wish} />}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+ 
   );
 };
 

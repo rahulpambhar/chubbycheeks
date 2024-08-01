@@ -8,7 +8,7 @@ const OfferPage = () => {
       <Image width={2000} height={1000}
         src="/image/chubbyCheeks/offer-4.jpeg"
         alt="offer"
-        className=" bg-[#69C8E5] lg:bg-none w-full h-[700px]"
+        className=" bg-[#69C8E5] object-contain object-right lg:bg-none w-full h-[700px]"
       />
       <div className=" bg-[#69C8E5] sm:absolute md:top-4 md:left-10 lg:top-28 lg:left-28  md:bg-transparent py-5  px-5 ">
         <div className="text-2xl lg:text-5xl font-semibold">

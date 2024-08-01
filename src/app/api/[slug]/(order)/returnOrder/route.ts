@@ -9,7 +9,7 @@ import authOptions from "@/app/api/auth/[...nextauth]/auth";
 import prisma from "../../../../../../prisma/prismaClient";
 import { getNextInvoice } from "../../utils";
 import { json } from "stream/consumers";
-import { getReturnOrdersByPage } from "../order/functions/route";
+import { getReturnOrders, getReturnOrdersByPage } from "./functions/route";
 
 
 
@@ -207,7 +207,7 @@ export async function GET(request: Request) {
         let isOrders: any = []
 
         if (slug === "getAll") {
-            // isOrders = await getOrders(session?.user?.id)
+            isOrders = await getReturnOrders(userId)
         } else if (slug === "getPaginated") {
             isOrders = await getReturnOrdersByPage(request)
         }

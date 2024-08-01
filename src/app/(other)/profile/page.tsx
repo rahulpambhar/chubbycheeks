@@ -25,13 +25,22 @@ import AddressSection from '@/components/frontside/profile/addressSection';
 import ChangePassword from '@/components/frontside/profile/changePassword';
 import axios from 'axios';
 import Pagination from 'react-js-pagination';
-import { FaStar, FaHeart } from "react-icons/fa6";
-import { FaRegHeart } from "react-icons/fa";
+import { FaStar, FaHeart, } from "react-icons/fa6";
+import { BsHeartbreak } from "react-icons/bs";
 import { addDays, format } from "date-fns"
 import { getStatusClass } from "@/app/admin/orders/maintainOrders/page";
 import Dropdown from '@/components/frontside/Dropdown/page'
 import { FaCopy } from 'react-icons/fa';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from "@/components/ui/button";
+
+import {
+    Card,
+    CardHeader,
+
+    CardContent,
+} from "@/components/ui/card";
+import { StarRating } from '@/components/frontside/TopselectionCard/page';
 
 export default function Checkout() {
     const { data: session, status }: any = useSession();
@@ -57,7 +66,7 @@ export default function Checkout() {
     })
 
     const getOrders = async () => await dispatch(getOrdersFunc({ page: currentPage, limit: ordersPerPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getAll" }))
-    const getReturnOrders = async () => await dispatch(getReturnOrdersFunc())
+    const getReturnOrders = async () => await dispatch(getReturnOrdersFunc({ page: currentPage, limit: ordersPerPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getAll", }))
     const getProfile = async () => await dispatch(getUser(session?.user?.id))
 
     const indexOfLastOrder = currentPage * ordersPerPage;
@@ -128,7 +137,7 @@ export default function Checkout() {
 
     return (
         <>
-            <div className="container border-t border-grey-dark">
+            <div className="container border-t border-grey-dark ">
                 <div className="flex flex-col justify-between pt-10 pb-16 sm:pt-12 sm:pb-20 lg:flex-row lg:pb-24">
                     <div className="lg:w-1/4">
                         <div className="flex flex-col pl-3">
@@ -204,88 +213,98 @@ export default function Checkout() {
                     }
                     {
                         component === "Wishlist" &&
+
+
                         <div className="mt-12 lg:mt-0 lg:w-3/4">
                             <div className="bg-grey-light py-8 px-5 md:px-8">
-                                <h1 className="font-hkbold pb-6 text-center text-2xl  sm:text-left">
+                                <h1 className="font-hk bold pb-6 text-center text-2xl  sm:text-left">
                                     My Wishes
                                 </h1>
                                 {filterWishes && filterWishes.map((item: any) => {
                                     const wish: boolean = wishList?.find((wish) => (wish?.productId === item?.productId)) ? true : false
 
                                     return (
-                                        <div className="mb-3 flex flex-col items-center justify-between rounded bg-white px-4 py-5 shadow sm:flex-row sm:py-4">
-
-                                            <div className="flex flex-col w-full border-b border-grey-dark pb-4  text-center sm:w-1/3 sm:border-b-0 sm:pb-0 sm:text-left md:w-2/5 md:flex-row md:items-center border">
-
-                                                <Image width={100} height={100} src={`/products/${item?.product?.image[0]}`} alt='No image found' className="mt-2 font-hk text-base  border border-black " />
-                                                <div className='border ml-2 '>
-                                                    <p className="font-bold ">{item?.product?.name}</p>
-                                                    <p className="text-sm">{item?.product?.description}</p>
-                                                    {/* <h6 className="font-hk ">{item?.product?.avgRating}</h6>  */}
-                                                    <div className="flex items-center mb-1">
-                                                        {[...Array(5)].map((star, index) => (
-                                                            <FaStar
-                                                                key={index}
-                                                                className={`mr-1 ${index < item?.product?.avgRating ? "text-yellow-500" : "text-gray-300"}`}
-                                                            />
-                                                        ))}
+                                        <Card className="shadow-xl border rounded-3 mt-5 mb-3">
+                                            <CardContent>
+                                                <div className="flex flex-wrap">
+                                                    <div className="w-full lg:w-1/4 p-4">
+                                                        <Link href={`/preview/${item?.product?.id}`} className="">
+                                                            <Image src={`/products/${item?.product?.image[0]}`} alt='No image found' width={150} height={150} className="rounded-xl  w-[150px] h-[170px] object-cover object-center hover:shadow-lg transition-shadow duration-300 ease-in-out" />
+                                                        </Link>
                                                     </div>
-                                                    <h6 className="text-sm ">Review : {item?.product?.numReviews ? item?.product?.numReviews : 0}</h6>
+                                                    <div className="w-full lg:w-2/4 p-4  ">
+                                                        <div className='flex justify-between'>
+                                                            <h5>{item?.product.name}</h5>
+                                                            <BsHeartbreak onClick={() => handelike(item?.product?.id)} className="w-7 h-7 text-red-500" />
+                                                        </div>
+
+
+                                                        <div className="flex items-center text-red-500 mb-2">
+                                                            <StarRating rating={item?.product?.avgRating || 5} />
+                                                        </div>
+
+                                                        <p className="text-gray-600 text-sm">
+                                                            {item?.product.description}
+                                                        </p>
+                                                        <div className="flex items-center mt-1 ">
+                                                            <h6 className="font-hk "> ₹ {
+                                                                item?.product?.discountType === "PERCENTAGE" ? (item?.product?.price * 1 - ((item?.product?.price * 1) * item?.product?.discount / 100)) : ((item?.product?.price - item?.product?.discount) * 1)
+                                                            } </h6>
+                                                            <h4 className="ml-2 text-red-500 line-through ">₹ {item?.product?.price} </h4>
+
+                                                            <span className="text-xl ml-2 font-semibold mr-2 text-green-600">{item?.product?.discountType === "PERCENTAGE" ? `${item?.product?.discount}% Off` : `${item?.product?.discount} ₹ off`}</span>
+
+                                                            <p className="border-l-black border-l-2 pl-2  text-green-600">Free shipping</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 my-2">
+                                                            <p className='text-tiny'>Available size</p>
+                                                            <ToggleGroup type="single" variant="outline"
+                                                            >
+                                                                {
+                                                                    item?.product?.size?.map((item: any) => (
+                                                                        <ToggleGroupItem key={item} value={item} className="w-3 h-6 "
+                                                                        >
+                                                                            <p className="text-tiny">  {item}</p>
+                                                                        </ToggleGroupItem>
+                                                                    ))
+                                                                }
+                                                            </ToggleGroup>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-full lg:w-1/4 p-4 border-t lg:border-t-0 lg:border-l">
+
+                                                        <div className="flex flex-col mt-4">
+                                                            <Button className="mt-2">
+                                                                <Link href={`/preview/${item?.product?.id}`} className="">
+                                                                    Preview
+                                                                </Link>
+                                                            </Button>
+                                                            {session && cart?.find((cartItem: any) => cartItem?.productId === item?.product?.id) ?
+                                                                <Button variant="outline" className="mt-2 border border-green-800" onClick={() => {
+                                                                    dispatch(setOpenCart(!openCart))
+                                                                }}>
+                                                                    Open cart
+                                                                </Button>
+
+                                                                :
+                                                                <Button variant="outline" className="mt-2 border border-green-800" onClick={() => {
+                                                                    session ? addToCartFunction(item?.product?.id, productSize) : dispatch(isLoginModel(true));
+                                                                }}>
+                                                                    Add to cart
+                                                                </Button>
+                                                            }
+
+                                                            <Button variant="outline" className="mt-2  border border-green-500">
+                                                                <Link href={`/buy/${item?.product?.id}`} className="" >
+                                                                    Buy
+                                                                </Link>
+                                                            </Button>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                            <div className="w-full border-b border-grey-dark pb-4 text-center sm:w-1/6 sm:border-b-0 sm:pr-6 sm:pb-0 sm:text-right xl:w-1/5 xl:pr-16">
-                                                <h6 className="font-hk ">{item?.product?.price} ₹</h6>
-                                                <h6 className="font-hk ">{item?.product?.discountType === "PERCENTAGE" ? `${item?.product?.discount}% Off` : `${item?.product?.discount} ₹ off`}</h6>
-                                                <h6 className="font-hk ">  {
-                                                    item?.product?.discountType === "PERCENTAGE" ? (item?.product?.price * 1 - ((item?.product?.price * 1) * item?.product?.discount / 100)) : ((item?.product?.price - item?.product?.discount) * 1)
-                                                } ₹</h6>
-                                            </div>
-
-                                            <Link href={`/preview/${item?.product?.id}`} className="border rounded-full text-xs border-indigo-400 px-2 py-1 hover:border-amber-800 text-black">
-                                                Preview
-                                            </Link>
-                                            <Link href={`/buy/${item?.product?.id}`} className="border rounded-full text-xs border-indigo-400 px-2 py-1 hover:border-amber-800 text-black" >
-                                                Buy
-                                            </Link>
-                                            <div className="">
-                                                {
-                                                    session && cart?.find((cartItem: any) => cartItem?.productId === item?.product?.id) ?
-                                                        <button className='border rounded-full text-xs border-indigo-400 px-2 py-1 hover:border-amber-800 text-black'
-                                                            onClick={() => {
-                                                                session ? dispatch(setOpenCart(!openCart)) : ""
-                                                            }}
-                                                        >
-                                                            Open cart
-                                                        </button> :
-                                                        <button className='border rounded-full text-xs border-indigo-400 px-2 py-1 hover:border-amber-800 text-black'
-                                                            onClick={() => {
-                                                                session ? addToCartFunction(item?.product?.id, productSize) : dispatch(isLoginModel(true));
-                                                            }}
-                                                        >
-                                                            Add to cart
-                                                        </button>
-                                                }
-                                            </div>
-
-                                            <button className='border rounded-full text-xs border-indigo-400 px-2 py-1 hover:border-amber-800 text-black'
-                                                onClick={() => {
-                                                    handelike(item?.product?.id)
-                                                }}
-                                            >
-                                                Remove from cart
-                                            </button>
-                                            <div className="pr-5 pt-5">
-                                                <button onClick={() => handelike(item?.product?.id)}>
-                                                    {wish ? (
-                                                        <FaHeart className="w-7 h-7 text-red-500" />
-                                                    ) : (
-                                                        <FaRegHeart className="w-7 h-7 " />
-                                                    )}
-                                                </button>
-
-                                            </div>
-                                        </div>
+                                            </CardContent>
+                                        </Card>
                                     )
                                 })}
                                 <div className="flex justify-center pt-6 md:justify-end">
@@ -401,7 +420,8 @@ export default function Checkout() {
                     }
                     {
                         component === "ReturnOrders" &&
-                        <div className="mt-12 lg:mt-0 lg:w-3/4">
+
+                        <div className="mt-12 lg:mt-0 lg:w-3/4 ">
                             <div className="bg-grey-light py-8 px-5 md:px-8">
                                 <h1 className="font-hkbold pb-6 text-center text-2xl  sm:text-left">
                                     Return Orders
@@ -468,8 +488,8 @@ export default function Checkout() {
                         </div>
                     }
                 </div>
-                <Cart />
             </div>
+            <Cart />
         </>
     )
 }

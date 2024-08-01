@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/react";
 import { StarRating } from "../TopselectionCard/page";
+import { HeartIcon, RedHeartIcon } from '@/components';
 
 const Recentviewedcard = ({
   item,
@@ -35,7 +36,7 @@ const Recentviewedcard = ({
   };
 
   const addToCartFunction = async (id: string, productSize: string) => {
-    const payload = { productId: id, action: "add" ,productSize};
+    const payload = { productId: id, action: "add", productSize };
     const data = await dispatch(actionTocartFunc(payload));
     if (data.payload.st) {
       successToast(data?.payload.msg);
@@ -44,44 +45,41 @@ const Recentviewedcard = ({
     }
   };
 
-  const buyNowFunction = async (id: string) => {
-    // Implement the buy now functionality here
-    // This could involve directly navigating to the checkout page with the selected item
-  };
-
   return (
-    <Card shadow="lg" isPressable className="w-[250px] border border-gray-300 max-w-sm my-5  md:mx-0 mx-3">
-      <CardBody className="overflow-visible p-0 relative ">
-        {item?.isNew && (
-          <div className="absolute top-2 left-2 bg-primary px-2 py-1 rounded-md text-white text-xs font-medium">
-            New Arrival
-          </div>
-        )}
-        <Image
-          loading="lazy"
-          width={300}
-          height={300}
-          alt={item.title}
-          className="w-full object-cover h-64 md:h-72"
-          src={`/products/${item?.image[0]}`}
-        />
-        <button
-          className={`absolute top-2 right-2 text-xl ${wish ? 'text-red-500' : 'text-gray-500'}`}
-          style={{ zIndex: 20, pointerEvents: 'auto' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            session ? dispatch(addToWishList({ productId: item?.id })) : dispatch(isLoginModel(true));
-          }}
-        >
-          {wish ? '♥' : '♡'}
-        </button>
-      </CardBody>
+    <Card shadow="lg" isPressable className="w-[250px]  max-w-sm mx-auto md:mx-0">
+      <Link href={`/preview/${item?.id}`} legacyBehavior>
+        <CardBody className="overflow-visible p-0 relative" onClick={() => { }}>
+          {item?.isNew && (
+            <div className="absolute top-2 left-2 bg-primary px-2 py-1 rounded-md text-white text-xs font-medium">
+              New Arrival
+            </div>
+          )}
+          <Image
+            loading="lazy"
+            width={300}
+            height={300}
+            alt={item.title}
+            className="w-full   object-cover object-center h-64 md:h-72"
+            src={`/products/${item?.image[0]}`}
+          />
+          <button
+            className={`absolute top-2 right-2 text-xl ${wish ? 'text-red-500' : 'text-gray-500'}`}
+            style={{ zIndex: 20, pointerEvents: 'auto' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              session ? dispatch(addToWishList({ productId: item?.id })) : dispatch(isLoginModel(true));
+            }}
+          >
+            {wish ? <RedHeartIcon /> : <HeartIcon />}
+          </button>
+        </CardBody>
+      </Link>
       <CardFooter className="flex flex-col items-start p-2 space-y-2">
-        <b className="text-lg font-semibold">{item.title}</b>
-        <p className="text-sm text-gray-700">
+        <b className="text-sm font-semibold">{item.name}</b>
+        <p className="text-tiny text-left text-gray-700 overflow-auto max-h-12">
           {item?.description.split(' ').slice(0, 15).join(' ')}...
           <Link href={`/preview/${item?.id}`} className="text-orange-500">
-            More
+            Preview
           </Link>
         </p>
         <div className="flex flex-col sm:flex-row justify-between items-center w-full space-y-2 sm:space-y-0">
@@ -98,8 +96,9 @@ const Recentviewedcard = ({
           </div>
         </div>
         <div className="flex flex-col justify-center sm:flex-row gap-2 w-full">
-          <Button variant="outline" className="w-full sm:w-auto border-green-300 text-green-600 hover:bg-green-100">
-            <Link href={`/buy/${item.id}`}>
+
+          <Button variant="outline" className="w-full   sm:w-auto border-green-300 text-green-600 hover:bg-green-100">
+            <Link href={`/buy/${item.id}`} >
               Buy Now
             </Link>
           </Button>
@@ -118,7 +117,7 @@ const Recentviewedcard = ({
               variant="outline"
               className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
               onClick={() => {
-                session ? addToCartFunction(item?.id,productSize) : dispatch(isLoginModel(true));
+                session ? addToCartFunction(item?.id, productSize) : dispatch(isLoginModel(true));
               }}
             >
               Add to cart
@@ -127,6 +126,7 @@ const Recentviewedcard = ({
         </div>
       </CardFooter>
     </Card>
+ 
   );
 };
 

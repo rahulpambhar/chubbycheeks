@@ -173,7 +173,7 @@ const ChangePassword = () => {
                             :
                             <div>
                                 <OTPInputGroup timer={timer} setOTP={setOTP} setVerifyOTP={setVerifyOTP} isVerifyOTP={isVerifyOTP} setTimer={setTimer} setInputValues={setInputValues} inputValues={inputValues} intervalId={intervalId} setTimeInSeconds={setTimeInSeconds} email={email} />
-                                <> <span className='' >OTP Expires In : {timerDisplay}</span></>
+                                <> <span className='' >Time Left to Use OTP : {timerDisplay}</span></>
                             </div>
                     }
                 </>

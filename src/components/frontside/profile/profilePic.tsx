@@ -66,7 +66,7 @@ const ProfilePic = () => {
 
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label htmlFor="picture">Picture</Label>
-                    <Input id="picture" type="file" onChange={(e:any) => {
+                    <Input id="picture" type="file"  onChange={(e:any) => {
                         if (e.target.files && e.target.files[0]) {
                             const selectedFile = e.target.files[0];
                             const error = validateFile(selectedFile);
@@ -85,7 +85,7 @@ const ProfilePic = () => {
             </div>
 
             <Button onClick={updateProfilePic}>
-                Save Changes
+                    Update Profile Pic
             </Button>
 
         </div>

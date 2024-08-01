@@ -11,6 +11,7 @@ import { errorToast, successToast } from '@/components/toster';
 import axios from "axios";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { MailIcon, ChevronDownIcon, PhoneIcon } from '@/components'
+import Cart from '@/components/Cart';
 
 export default function Component() {
     return (
@@ -86,7 +87,7 @@ export default function Component() {
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="name">Name <span className="text-red-600">*</span></Label>
-                                                    <Input id="name" value={values.name} placeholder="Enter your name" onChange={(e:any) => {
+                                                    <Input id="name" value={values.name} placeholder="Enter your name" onChange={(e: any) => {
                                                         setFieldValue('name', e.target.value)
                                                     }} />
                                                     <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
@@ -94,7 +95,7 @@ export default function Component() {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label htmlFor="email">Email <span className="text-red-600">*</span></Label>
-                                                    <Input id="email" type="email" value={values.email} placeholder="Enter your email" onChange={(e:any) => {
+                                                    <Input id="email" type="email" value={values.email} placeholder="Enter your email" onChange={(e: any) => {
                                                         setFieldValue('email', e.target.value)
                                                     }} />
                                                     <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
@@ -210,6 +211,7 @@ export default function Component() {
                     </div>
                 </div>
             </main>
+            <Cart />
         </div>
     )
 }

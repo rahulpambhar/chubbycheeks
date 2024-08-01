@@ -67,7 +67,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
         product.image.forEach((item: any, index: number) => {
             images_video.push(
                 <div className="item" key={`image-${index}`}>
-                    <img src={`/products/${item}`} alt={`Image ${index}`} className="media h-[600px] w-[500px]" />
+                    <img src={`/products/${item}`} alt={`Image ${index}`} className="media h-[600px] w-[500px] object-cover object-center p-2 rounded-xl" />
                 </div>
             );
         });
@@ -319,121 +319,13 @@ export default function Checkout({ params }: { params: { product: string } }) {
                     </div>
                 </div>
             </div>
-
-            {/* <div className="max-w-7xl px-4 mx-auto py-6 ">
-                <div className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start">
-                    <div className="grid gap-4 md:gap-10 items-start">
-                        <Carousel showThumbs={false}>
-                            {images_video}
-                        </Carousel>
-
-                    </div>
-
-                    <div className="grid gap-4 md:gap-10 items-start">
-                        <div className="grid gap-2">
-                            <h1 className="font-bold text-3xl lg:text-4xl">Cozy Cotton Crew Neck Sweater</h1>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-0.5">
-                                    <StarIcon className="w-5 h-5 fill-primary" />
-                                    <StarIcon className="w-5 h-5 fill-primary" />
-                                    <StarIcon className="w-5 h-5 fill-primary" />
-                                    <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                                    <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                                </div>
-                                <div className="text-sm text-muted-foreground">(4.3 out of 5)</div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="text-4xl font-bold">$59.99</div>
-                                <div className="text-sm text-muted-foreground line-through">$79.99</div>
-                                <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">25% OFF</div>
-                            </div>
-                        </div>
-                        <div className="grid gap-4 text-sm leading-loose">
-                            <p>
-                                {product?.description}
-
-                            </p>
-                            <div className="grid gap-2">
-                                <div className="font-semibold">Size:</div>
-                                <div className="flex items-center gap-2">
-                                    <ToggleGroup type="single" defaultValue="m" variant="outline">
-                                        <ToggleGroupItem value="s">S</ToggleGroupItem>
-                                        <ToggleGroupItem value="m">M</ToggleGroupItem>
-                                        <ToggleGroupItem value="l">L</ToggleGroupItem>
-                                        <ToggleGroupItem value="xl">XL</ToggleGroupItem>
-                                    </ToggleGroup>
-                                </div>
-                            </div>
-                        </div>
-                        <Button size="lg">Add to Cart</Button>
-                        <Button size="lg">Buy Now</Button>
-                    </div>
-                </div>
-
-
-                <div className="grid  bg-white mt-5 p-">
-                    <div className=" items-center mb-5">
-                      
-                        <button
-                            className={`p-3 bg-gray-300`}
-                        // onClick={() => setInfo("reviews")}
-                        >
-                            Reviews
-                        </button>
-                    </div>
-
-
-                </div>
-                <div className="bg-gray-100 p-5 rounded-lg">
-                    <>
-                        {session && isPurchased && !isCurrentUserReviewed && (
-                            <div className="flex justify-end mb-4">
-                                <button
-                                    onClick={() => setShowModal(true)}
-                                    className="bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-600 transition duration-300"
-                                >
-                                    Add Review
-                                </button>
-                            </div>
-                        )}
-                        <div className="max-h-96 overflow-y-auto">
-                            {reviews.map((review: any) => (
-                                <div key={review.id} className="mb-2 p-4 border rounded-lg bg-white bg-opacity-75 shadow-lg flex items-center space-x-4">
-                                    <div className="w-10">
-                                        <Image src={`/users/${review?.user?.profile_pic}` || fallbackImage} alt={`Review ${review.id}`} width={100} height={100} className="w-full rounded-lg" />
-                                    </div>
-                                    <div className="w-3/4">
-                                        <div className="flex items-center mb-1">
-                                            {[...Array(5)].map((star, index) => (
-                                                <FaStar
-                                                    key={index}
-                                                    className={`mr-1 ${index < review?.rating ? "text-yellow-500" : "text-gray-300"}`}
-                                                />
-                                            ))}
-                                        </div>
-                                        <p className="text-gray-800 mb-1">{review?.review}</p>
-                                        <p className="text-gray-500 text-sm">- {review?.user?.name}, {review?.user?.country}</p>
-                                    </div>
-                                    {session?.user.id === review?.user?.id && (
-                                        <div>
-                                            <button className="flex gap-2" onClick={() => { setShowModal(true); setNewReview({ rating: review?.rating, text: review?.review }) }}>
-                                                <FaEdit />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                </div>
-            </div> */}
-
+            
             <div className="p-5">
                 <div className="flex justify-center items-center uppercase  text-5xl pt-10 font-normal text- unica-one">
                     <p>Related Products</p>
                 </div>
                 <p className="flex justify-center">
-                    Get the latest updates from Roshan stones
+                    Get the latest updates
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 pt-10  lg:mx-44 gap-5 ">

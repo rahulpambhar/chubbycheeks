@@ -47,7 +47,7 @@ const Unitedfreecard = ({
         <Image
           src={`/products/${image}`}
           alt={label}
-          className="w-full h-64 object-cover"
+          className="w-full h-64 object-cover object-center"
           width={300}
           height={300}
         />
@@ -55,8 +55,6 @@ const Unitedfreecard = ({
           <div className="flex flex-col gap-12">
             <div className="flex text-white gap-3 justify-center items-center">
               <StarRating rating={averageRating || 5} />
-
-
             </div>
             <div className="text-white font-normal text-2xl unica-one flex justify-center items-center">
               ₹ {price}
@@ -86,7 +84,7 @@ const Unitedfreecard = ({
       <p className="text-2xl font-normal pt-5 roboto">
         <label htmlFor="">{label}</label>
       </p>
-      <p className="pt-1 text-base text-[#6D6D6D] roboto">{discription}</p>
+      <p className="pt-1 text-base text-[#6D6D6D] overflow-auto max-h-40 roboto">{discription}</p>
       <Cart />
     </div>
   );

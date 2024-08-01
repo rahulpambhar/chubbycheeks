@@ -311,7 +311,7 @@ export default function Checkout({
                                                             if (orderID && repeatOrder || returnOrder) {
                                                                 toggleSelect(item.id, i)
                                                             } else {
-                                                                actionTocartFunction(item, "checked")
+                                                                actionTocartFunction(item, "checked ")
                                                             }
 
                                                         }} id="terms" className='absolute right-0 top-0 '
@@ -359,10 +359,10 @@ export default function Checkout({
                                                                 <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
                                                                     const newArray = order_?.map((e: any) => {
                                                                         if (e.id === item.id) {
+                                                                            actionTocartFunction({ ...e, size: value }, "size")
                                                                             return { ...e, size: value };
                                                                         }
                                                                         return e;
-
                                                                     })
                                                                     setOrder(newArray)
                                                                 }} >

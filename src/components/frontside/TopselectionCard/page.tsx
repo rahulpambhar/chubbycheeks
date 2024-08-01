@@ -68,7 +68,7 @@ const TopselectionCard = ({
             width={300}
             height={300}
             alt={item.title}
-            className="w-full object-cover h-64 md:h-72"
+            className="w-full   object-cover object-center h-64 md:h-72"
             src={`/products/${item?.image[0]}`}
           />
           <button
@@ -84,8 +84,8 @@ const TopselectionCard = ({
         </CardBody>
       </Link>
       <CardFooter className="flex flex-col items-start p-2 space-y-2">
-        <b className="text-lg font-semibold">{item.name}</b>
-        <p className="text-sm text-gray-700">
+        <b className="text-sm font-semibold">{item.name}</b>
+        <p className="text-tiny text-left text-gray-700 overflow-auto max-h-12">
           {item?.description.split(' ').slice(0, 15).join(' ')}...
           <Link href={`/preview/${item?.id}`} className="text-orange-500">
             Preview

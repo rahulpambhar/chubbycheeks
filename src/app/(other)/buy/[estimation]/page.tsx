@@ -42,13 +42,9 @@ export default function Checkout({ params }: { params: { estimation: string } })
     const [totalDiscount, setDiscountTotal] = useState(0)
     const [gstTotal, setGat] = useState(0)
     const [totalAmount, setTotalAmount] = useState(0)
-    const [loader, setLoader] = useState(false)
     const [thankingMsg, setThankingMsg] = useState(false)
+const [productSize, setProductSize] = useState("NONE")
 
-    const [productSize, setProductSize] = useState("NONE")
-
-
-    const dispatch = useAppDispatch();
     const router = useRouter()
     const id = params?.estimation;
 
@@ -129,8 +125,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
         )
     }, [order_])
 
-
-
     useEffect(() => {
         !session ? () => { return router.push('/') } : null
         const getProducts = async () => {
@@ -139,6 +133,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
 
             if (productForBuy?.st) {
                 const productData = productForBuy.data;
+                console.log('productData::: ', productData);
                 if (productData) {
                     productData.qty = 1;
                     setOrder([productData]);
@@ -314,7 +309,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                             <p className="font-semibold text-right">₹ {Math.floor(totalAmount) || 0}</p>
                                         </div>
                                         <Separator />
-
                                         <Payment order_={order_} setThankingMsg={setThankingMsg} productSize={productSize} setProductSize={setProductSize} checkSizes={checkSizes} returnOrder={false} />
                                     </div>
                                 </CardContent>
@@ -331,7 +325,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
             }
             <Cart />
             <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-
         </div>
     );
 };

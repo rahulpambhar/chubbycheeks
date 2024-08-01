@@ -96,8 +96,8 @@ const OTPInputGroup = ({ setInputValues, inputValues, setOTP, timer, setVerifyOT
                 />
 
             </div>
-            <div >
-                {isVerifyOTP?.st === true ? <span className="text-green-600">{isVerifyOTP?.msg}</span> : <span className="text-red-600 text-center">{isVerifyOTP.msg}</span>}
+            <div className="text-center" >
+                {isVerifyOTP?.st === true ? <span className="text-green-600  text-sm">{isVerifyOTP?.msg}</span> : <span className="text-red-600 text-center text-sm ">{isVerifyOTP.msg}</span>}
             </div>
         </>
     );

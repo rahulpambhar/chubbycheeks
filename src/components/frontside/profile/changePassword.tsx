@@ -127,7 +127,7 @@ const ChangePassword = () => {
                                     Generate OTP To Change Password
                                 </Button>
                             </div> :
-                            <> <span className='' >OTP Expires In : {timerDisplay}</span></>
+                            <> <span className='' >Time Left to Use OTP : {timerDisplay}</span></>
                     }
                 </>
 

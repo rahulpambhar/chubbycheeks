@@ -12,7 +12,7 @@ const toggleWishlistItem = (item: any) => ({
 
 export default function Component() {
   const Topselectionitem: any = useSelector((state: any) => state.categories.productsList);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const wishList: any[] = useAppSelector((state) => state?.wishListReducer?.wishList);
 
   const handleSeeAll = () => {
@@ -35,7 +35,6 @@ export default function Component() {
         <div className={`gap-4 ${showAll ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-h-screen overflow-y-auto' : 'flex overflow-x-auto'} mt-10`}>
           {Topselectionitem?.length > 0 && Topselectionitem.map((item: any, index: number) => {
             const wish: boolean = wishList?.find((wish) => (wish?.productId === item?.id)) ? true : false;
-
             return (
               <div key={index} className={`p-2 ${showAll ? '' : 'inline-block w-96'}`}>
                 {item && <TopselectionCard item={item} wish={wish} />}

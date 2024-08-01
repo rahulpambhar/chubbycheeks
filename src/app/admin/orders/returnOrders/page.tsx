@@ -95,7 +95,6 @@ function Page({ className, ...props }: any) {
 
     const getOrders = async () => await dispatch(getReturnOrdersFunc({ page: page, limit: perPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getPaginated", }))
     const data: any = useAppSelector((state) => state?.returnOrderReducer?.returnOrders);
-    console.log('data::: ', data);
     const total_pages = data?.total_pages;
 
     const handlePageChange = (pageNumber: number) => {
