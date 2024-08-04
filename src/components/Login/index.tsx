@@ -17,6 +17,8 @@ import ChangePassword from './changePasword';
 import { XIcon } from "..";
 import axios from "axios";
 
+
+
 const PasswordField = ({ field, form, ...props }: any) => {
     const [showPassword, setShowPassword] = useState(false);
     return (
@@ -37,6 +39,14 @@ const PasswordField = ({ field, form, ...props }: any) => {
     );
 };
 
+
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import Link from "next/link"
+
 const LoginComponents = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
@@ -50,34 +60,30 @@ const LoginComponents = () => {
 
     return (
         <>
-            <div className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-75">
-                <div className="bg-white w-full max-w-md p-8 rounded-lg shadow-lg relative">
-                    {!forgotPassword ? <div>
-                        <XIcon onClick={() => { dispatch(isLoginModel(false)); }} className="cursor-pointer absolute top-2 right-2 text-red-800 w-6 h-6" />
-                        <h1 className="text-3xl font-bold mb-4 text-center">Login</h1>
+            {!forgotPassword ?
+                <Dialog defaultOpen>
+                    <DialogContent className="sm:max-w-[425px]">
                         <Formik
                             initialValues={loginInitials}
                             validationSchema={loginValidationSchema}
                             onSubmit={async (values: any, { resetForm }) => {
 
                                 try {
-                                    const { mobile, email, password } = values;
-                                    const res = await signIn("credentials", {
-                                        mobile,
-                                        email,
-                                        password,
-                                        redirect: false,
-                                    });
+                                    let { mobile, email, password, isMobile } = values;
 
-                                    if (res?.error) {
-                                        errorToast("Something went wrong try. again !!");
-                                    } else {
-                                        successToast("login successful.");
+                                    isMobile ? email = "" : mobile = ""
+
+                                    const res = await signIn("credentials", { mobile, email, password, redirect: false, });
+
+                                    if (res?.ok) {
+                                        successToast("login success...");
                                         dispatch(isLoginModel(false))
                                         resetForm()
                                         if (pathname === "/register") {
                                             router.push('/')
                                         }
+                                    } else {
+                                        errorToast(res?.error || "Something went wrong try. again !!");
                                     }
                                 } catch (error) {
                                     errorToast("Something Went wrong!!");
@@ -86,88 +92,68 @@ const LoginComponents = () => {
                         >
                             {({ values, errors, setFieldValue, isSubmitting }) => (
                                 <Form className="flex flex-col gap-4">
-                                    <div className="mb-4 flex items-center">
-                                        <label htmlFor="loginMethod" className="block font-semibold mr-4">
-                                            Login using:
-                                        </label>
-                                        <div>
-                                            <button
-                                                type="button"
-                                                name="isMobile"
-                                                className={`mr-4 px-4 py-2 rounded ${values?.isMobile ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}
-                                                onClick={() => {
-                                                    setFieldValue("isMobile", !values?.isMobile);
-                                                }}
-                                            >
-                                                {values?.isMobile ? "Mobile" : "Email"}
-                                            </button>
+                                    <DialogHeader>
+                                        <DialogTitle>Log In</DialogTitle>
+                                        <DialogDescription>Enter your credentials to access your account.</DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <Tabs defaultValue="email">
+                                            <TabsList>
+                                                <TabsTrigger onClick={() => { setFieldValue("isMobile", false); }} value="email">Email </TabsTrigger>
+                                                <TabsTrigger onClick={() => { setFieldValue("isMobile", true); }} value="mobile">Mobile</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="email">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="email">Email</Label>
+                                                    <Field type="email" className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500" id="email" name="email" placeholder="pambharrahul@gmail.com" />
+                                                    <ErrorMessage name="email" component="div" className="text-red-500 text-tiny" />
+                                                </div>
+                                            </TabsContent>
+                                            <TabsContent value="mobile">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="mobile">Mobile</Label>
+                                                    <Field type="text" className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500" id="mobile" name="mobile" placeholder="8000555268" />
+                                                    <ErrorMessage name="mobile" component="div" className="text-red-500 text-tiny" />
+                                                </div>
+                                            </TabsContent>
+                                        </Tabs>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <Label htmlFor="password">Password</Label>
+                                                <button onClick={() => setForgotPassword(true)} className="text-sm underline" >
+                                                    Forgot Password?
+                                                </button>
+                                            </div>
+                                            <Field type="password" className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500" id="password" name="password" component={PasswordField} />
+                                            <ErrorMessage name="password" component="div" className="text-red-500 text-tiny" />
                                         </div>
                                     </div>
-
-                                    {values?.isMobile ? (
-                                        <div className="mb-4">
-                                            <label htmlFor="mobile" className="block font-semibold">
-                                                Mobile No
-                                            </label>
-                                            <Field
-                                                type="text"
-                                                className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
-                                                id="mobile"
-                                                name="mobile"
-                                            />
-                                            <ErrorMessage name="mobile" component="div" className="text-red-500 text-sm" />
-                                        </div>
-                                    ) : (
-                                        <div className="mb-4">
-                                            <label htmlFor="email" className="block font-semibold">
-                                                Email
-                                            </label>
-                                            <Field
-                                                type="email"
-                                                className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
-                                                id="email"
-                                                name="email"
-                                            />
-                                            <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
-                                        </div>
-                                    )}
-
-                                    <div className="mb-4">
-                                        <label htmlFor="password" className="block font-semibold">
-                                            Password
-                                        </label>
-                                        <Field
-                                            type="password"
-                                            className="w-full px-4 py-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
-                                            id="password"
-                                            name="password"
-                                            component={PasswordField}
-                                        />
-                                        <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
-                                    </div>
-
-                                    <button
-                                        disabled={isSubmitting}
-                                        className={`bg-blue-500 text-white font-bold cursor-pointer px-6 py-3 rounded-lg w-full text-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
-                                    >
-                                        {isSubmitting ? 'Loading' : 'Login'}
-                                    </button>
+                                    <DialogFooter>
+                                        <Button disabled={isSubmitting} type="submit" className="w-full">
+                                            {isSubmitting ? 'Loading...' : 'Login'}
+                                        </Button>
+                                    </DialogFooter>
                                 </Form>
                             )}
                         </Formik>
-                        <div className="font-bold text-lg mt-6" onClick={() => setForgotPassword(true)}>Forgot Password ??</div>
-                        <div className="text-center font-bold text-lg mt-6">OR</div>
-                        <div className="text-center mt-4">
-                            <button onClick={handleClick}>Go to Register Page</button>
+
+                        <div className="mt-4 text-center text-sm">
+                            Don&apos;t have an account?{" "}
+                            <button type="button" onClick={handleClick} className="underline" >
+                                Sign up
+                            </button>
                         </div>
+
+                    </DialogContent>
+                </Dialog>
+                :
+                <div className="fixed z-10 inset-0 overflow-y-auto flex items-center justify-center bg-gray-500 bg-opacity-75">
+
+                    <div className="bg-white w-full max-w-md p-8 rounded-lg shadow-lg relative">
+                        <ChangePassword />
                     </div>
-                        :
-                        <>
-                            <ChangePassword />
-                        </>
-                    }
                 </div>
-            </div>
+            }
         </>
     )
 }

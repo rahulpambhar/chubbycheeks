@@ -118,7 +118,7 @@ export default function Component() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full text-white">
-                      <img src="/image/chubbycheeks/logo.png" width="36" height="36" alt="User Avatar" className="rounded-full" />
+                      <img src={`/users/${session?.user?.profile_pic}`} width="36" height="36" alt="User Avatar" className="rounded-full" />
                       <span className="sr-only">Toggle user menu</span>
                     </Button>
                   </DropdownMenuTrigger>

@@ -7,17 +7,17 @@ export const profileInitials = {
     gender: '',
     profile_pic: null,
 
-    country_code: '',
+    country_code: '+91',
     mobile: '',
 
     address: '',
     city: '',
     state: '',
-    country: '',
+    country: 'India',
     pincode: '',
 
     password: '',
-    Confirm_password: '',
+    confirm_password: '',
 }
 
 const passwordRules = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
@@ -41,14 +41,14 @@ export const profileValidate = Yup.object().shape({
         .min(10, 'Address must be at least 10 character')
         .max(100, 'Address must be at most 100 characters')
         .required('Address is required'),
-    city: Yup.string().required('City is required').max(15, 'Address number must be at most 100 characters'),
-    state: Yup.string().required('State is required').max(15, 'Address number must be at most 100 characters'),
-    pincode: Yup.string().required('Zip code is required').max(6, 'Address number must be at most 100 characters'),
+    city: Yup.string().required('City is required').max(15, "city must be at most 100 characters"),
+    state: Yup.string().required('State is required').max(15, 'state must be at most 100 characters'),
+    pincode: Yup.string().required('Pin code is required').max(6, 'Pin code must be at most 6 characters'),
 
     password: Yup.string()
         .matches(passwordRules, { message: 'Password must be 8-20 characters long and include at least one lowercase letter, one digit, and one special character.' })
         .required('Password is required'),
-    Confirm_password: Yup.string()
+    confirm_password: Yup.string()
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
         .required('Password is required'),
 });

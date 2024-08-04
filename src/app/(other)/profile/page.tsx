@@ -42,6 +42,7 @@ import {
 import { StarRating } from '@/components/frontside/TopselectionCard/page';
 import MyOrders from '@/components/frontside/MyOrders/page';
 import MyReturnOrders from '@/components/frontside/MyReturnOrders/page';
+import { RedirectType, useRouter, } from 'next/navigation'
 
 export default function Checkout() {
     const { data: session, status }: any = useSession();
@@ -53,7 +54,7 @@ export default function Checkout() {
     const wishlist: any[] = useAppSelector((state) => state?.wishListReducer?.wishList);
     const returnOrder: any[] = useAppSelector((state) => state?.returnOrderReducer.returnOrders);
     const [productSize, setSize] = useState("NONE");
-
+    const router = useRouter()
     const [component, setComponent] = useState("Profile");
     const [pegiLenght, setLength] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
@@ -113,7 +114,10 @@ export default function Checkout() {
         }
     };
 
+
     useEffect(() => {
+
+        !session && router.push("/")
         session && getOrders()
         session && getReturnOrders()
         session && getProfile();

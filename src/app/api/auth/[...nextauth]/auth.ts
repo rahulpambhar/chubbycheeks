@@ -34,11 +34,11 @@ const authOptions: NextAuthOptions = {
 
                 try {
                     if (!user) {
-                        throw new Error("signin.user_not_found");
+                        throw new Error("Wrong credentials!");
                     }
 
                     if (user.isBlocked) {
-                        throw new Error("Denied.title");
+                        throw new Error("User is blocked contact support!");
                     }
                     const result = compareSync(credentials?.password, user?.password);
 
@@ -80,6 +80,7 @@ const authOptions: NextAuthOptions = {
                 name: userInfo.name,
                 mobile: userInfo.mobile,
                 country_code: userInfo.country_code,
+                profile_pic: userInfo.profile_pic,
                 email: userInfo.email,
                 isAdmin: userInfo.isAdmin,
                 gender: userInfo.gender,
@@ -88,7 +89,7 @@ const authOptions: NextAuthOptions = {
                 state: userInfo.state,
                 country: userInfo.country,
                 pincode: userInfo.pincode,
-                
+
             }
         },
 
