@@ -117,7 +117,7 @@ export default function Checkout() {
 
     useEffect(() => {
 
-        !session && router.push("/")
+        !session && router.push("/¡")
         session && getOrders()
         session && getReturnOrders()
         session && getProfile();
