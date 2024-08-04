@@ -38,12 +38,12 @@ export default function Checkout({ params }: { params: { estimation: string } })
     const { data: session, status }: any = useSession();
     let [subTotal, setSubTotal] = useState(0)
     const [taxableAmtTotal, setTaxableTotal] = useState(0)
-
+    let [OTP, setOTP] = useState(false)
     const [totalDiscount, setDiscountTotal] = useState(0)
     const [gstTotal, setGat] = useState(0)
     const [totalAmount, setTotalAmount] = useState(0)
     const [thankingMsg, setThankingMsg] = useState(false)
-const [productSize, setProductSize] = useState("NONE")
+    const [productSize, setProductSize] = useState("NONE")
 
     const router = useRouter()
     const id = params?.estimation;
@@ -133,8 +133,7 @@ const [productSize, setProductSize] = useState("NONE")
 
             if (productForBuy?.st) {
                 const productData = productForBuy.data;
-                console.log('productData::: ', productData);
-                if (productData) {
+                if (productData && !OTP) {
                     productData.qty = 1;
                     setOrder([productData]);
                 }
@@ -304,12 +303,12 @@ const [productSize, setProductSize] = useState("NONE")
                                     <div className="grid gap-6">
                                         <div className="grid grid-cols-[1fr_100px] items-center gap-4">
                                             <div className="grid gap-1">
-                                                <p className="text-sm text-muted-foreground">Payable Amount</p>
+                                                <p className="text-sm text-muted-foreground">Amount</p>
                                             </div>
                                             <p className="font-semibold text-right">₹ {Math.floor(totalAmount) || 0}</p>
                                         </div>
                                         <Separator />
-                                        <Payment order_={order_} setThankingMsg={setThankingMsg} productSize={productSize} setProductSize={setProductSize} checkSizes={checkSizes} returnOrder={false} />
+                                        <Payment OTP={OTP} setOTP={setOTP} order_={order_} setThankingMsg={setThankingMsg} productSize={productSize} setProductSize={setProductSize} checkSizes={checkSizes} returnOrder={false} />
                                     </div>
                                 </CardContent>
                             </CardComponent>

@@ -107,8 +107,11 @@ export async function POST(request: Request) {
             discountAmount: Math.floor(discountAmount),
             taxableAmount,
             gst: Math.floor(GST),
-            otherCharge: 0,
+            shippingCharge: 0,
+            handlingCharge: 0,
+            CODCharges: 0,
             netAmount: netAmount,
+            narration: "", 
 
             isPaid: paymentMethod === "COD" ? false : true,
             paidAt: new Date(),

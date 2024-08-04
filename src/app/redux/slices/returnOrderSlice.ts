@@ -24,15 +24,30 @@ export const getReturnOrdersFunc = createAsyncThunk('returnOrder/getReturnOrderF
     }
 });
 
+export const updateReturnOrdersFunc = createAsyncThunk('returnOrder/updateReturnOrdersFunc', async ({ id, data, orderStatus }: { id: any, data: any, orderStatus: string }, thunkApiConfig: ThunkApiConfig) => {
+    const { rejectWithValue } = thunkApiConfig;
+    try {
+        const payload = { id, data, orderStatus }
+
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/slug/returnOrder`, payload)
+        return response.data;
+    } catch (error) {
+        const errorMessage = (error as Error).message || 'Unknown error occurred';
+        return rejectWithValue(errorMessage);
+    }
+});
+
+
 const initialState: any = {
     returnOrders: [],
+    returnOrderId: {},
     loading: false,
     error: null,
     status: 'idle',
 };
 
 const returnOrderReducer = createSlice({
-    name: 'order',
+    name: 'returnOrder',
     initialState,
     reducers: {
         addToCart: (state, action: any) => {
@@ -48,6 +63,8 @@ const returnOrderReducer = createSlice({
             .addCase(getReturnOrdersFunc.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.returnOrders = action.payload?.data;
+                state.returnOrderId = action.payload?.data?.data;
+
             })
             .addCase(getReturnOrdersFunc.rejected, (state, action) => {
                 state.status = 'failed';

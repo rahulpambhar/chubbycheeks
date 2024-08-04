@@ -69,8 +69,10 @@ export const getNextInvoice = async (typeOrder) => {
     if (!lastInvoice) {
         if (typeOrder === "order") {
             return `${process.env.ORDER_PRFIX}-1`;
-        } else {
+        } else if (typeOrder === "tempOrder") {
             return `${process.env.TEMP_ORDER_PRFIX}-1`;
+        } else if (typeOrder === "returnOrder") {
+            return `${process.env.RETURN_ORDER_PRFIX}-1`;
         }
     }
 
@@ -78,11 +80,16 @@ export const getNextInvoice = async (typeOrder) => {
         let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${process.env.ORDER_PRFIX}-`, ""));
         numericalPart++;
         inv = `${process.env.ORDER_PRFIX}-` + numericalPart.toString().padStart(0, '0');
-    } else {
+    } else if (typeOrder === "tempOrder") {
         let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${process.env.TEMP_ORDER_PRFIX}-`, ""));
         numericalPart++;
         inv = `${process.env.TEMP_ORDER_PRFIX}-` + numericalPart.toString().padStart(0, '0');
+    } else if (typeOrder === "returnOrder") {
+        let numericalPart = parseInt(lastInvoice?.invoiceNo.replace(`${process.env.RETURN_ORDER_PRFIX}-`, ""));
+        numericalPart++;
+        inv = `${process.env.RETURN_ORDER_PRFIX}-` + numericalPart.toString().padStart(0, '0');
     }
+    
     return inv;
 }
 

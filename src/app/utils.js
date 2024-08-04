@@ -509,7 +509,7 @@ export function getCurrentDateFormatted() {
 }
 
 
-export const orderStatus = ["ALL", "PROCESSING", "ACCEPTED", "SHIPPED", "CANCELLED", "COMPLETE",]
+export const orderStatus = ["ALL", "PROCESSING", "ACCEPTED", "SHIPPED", "CANCELLED", "COMPLETE", "RETURNED"]
 
 
 export const shipped = z.object({
@@ -611,3 +611,23 @@ export const checkSizes = (selectedItems) => {
     return { st: true, msg: "", }
 }
 
+export const getStatusClass = (status) => {
+    switch (status) {
+        case "ALL":
+            return 'border border-gray-500 text-black-500';
+        case "PROCESSING":
+            return 'border border-yellow-500 text-black-500';
+        case "ACCEPTED":
+            return 'border border-blue-500 text-black-500';
+        case "SHIPPED":
+            return 'border border-indigo-500 text-black-500';
+        case "CANCELLED":
+            return 'border border-red-500 text-red-500';
+        case "COMPLETE":
+            return 'border border-green-500 text-green-500';
+        case "RETURNED":
+            return 'border border-orange-500 text-orange-500';
+        default:
+            return 'bg-gray-500 text-white';
+    }
+};

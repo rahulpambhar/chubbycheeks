@@ -33,11 +33,11 @@ export default function Template({ children }: any) {
 
   return (
     <div id="root">
-      <div>
+      <div  className="flex flex-col min-h-screen">
         <Navbar />
         <Toaster position="top-right" reverseOrder={false} />
-        {children}
-        {/* <Example/> */}
+        <main className="flex-grow">{children}</main>
+   
         <Footer />
       </div>
       {isLoginModelOpen && <LoginModal />}

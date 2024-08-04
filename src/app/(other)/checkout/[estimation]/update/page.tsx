@@ -325,7 +325,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                         <div className="grid gap-6">
                             <div className="grid grid-cols-[1fr_100px] items-center gap-4">
                                 <div className="grid gap-1">
-                                    <p className="text-sm text-muted-foreground">Payable Amount</p>
+                                    <p className="text-sm text-muted-foreground">Amount</p>
                                 </div>
                                 <p className="font-semibold text-right">₹ {Math.floor(totalAmount) || 0}</p>
                             </div>

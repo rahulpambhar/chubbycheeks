@@ -30,7 +30,7 @@ export type Payment = {
     email: string
 }
 
-export const columns: ColumnDef<any>[] = [
+ const columns: ColumnDef<any>[] = [
     {
         id: "select",
         header: ({ table }) => (

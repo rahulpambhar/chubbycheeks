@@ -9,6 +9,7 @@ import moment from "moment";
 import { successToast, errorToast } from "../../../../components/toster/index";
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
 import { createTempOrderFunc, updateOrdersFunc, getOrdersFunc } from '../../../redux/slices/orderSlices';
+import { updateReturnOrdersFunc, } from '../../../redux/slices/returnOrderSlice';
 import { useSession } from "next-auth/react";
 import Pagination from "react-js-pagination";
 import { orderStatus, shipped } from "../../../utils"
@@ -34,25 +35,9 @@ import { Select as Select_, SelectTrigger, SelectContent, SelectItem, SelectGrou
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from "@/components/ui/drawer"
 import Link from "next/link";
 import { getReturnOrdersFunc } from "@/app/redux/slices/returnOrderSlice";
+import { getStatusClass } from "@/app/utils";
 
-export const getStatusClass = (status: any) => {
-    switch (status) {
-        case "ALL":
-            return 'border border-gray-500 text-black-500';
-        case "PROCESSING":
-            return 'border border-yellow-500 text-black-500';
-        case "ACCEPTED":
-            return 'border border-blue-500 text-black-500';
-        case "SHIPPED":
-            return 'border border-indigo-500 text-black-500';
-        case "CANCELLED":
-            return 'border border-red-500 text-red-500';
-        case "COMPLETE":
-            return 'border border-green-500 text-green-500';
-        default:
-            return 'bg-gray-500 text-white';
-    }
-};
+
 
 function Page({ className, ...props }: any) {
     const { data: session, status }: any = useSession();
@@ -93,7 +78,7 @@ function Page({ className, ...props }: any) {
     const dispatch = useAppDispatch();
 
 
-    const getOrders = async () => await dispatch(getReturnOrdersFunc({ page: page, limit: perPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getPaginated", }))
+    const getReturnOrders = async () => await dispatch(getReturnOrdersFunc({ page: page, limit: perPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getPaginated", }))
     const data: any = useAppSelector((state) => state?.returnOrderReducer?.returnOrders);
     const total_pages = data?.total_pages;
 
@@ -103,9 +88,9 @@ function Page({ className, ...props }: any) {
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text).then(() => {
-            successToast('Address copied to clipboard');
+            successToast('copied to clipboard');
         }).catch((err) => {
-            errorToast('Failed to copy address');
+            errorToast('Failed to copy');
         });
     };
 
@@ -183,11 +168,11 @@ function Page({ className, ...props }: any) {
 
     const onSubmit = async (data: any) => {
 
-        const res = await dispatch(updateOrdersFunc({ id: SHIPPEDid, data, orderStatus: "SHIPPED" }));
+        const res = await dispatch(updateReturnOrdersFunc({ id: SHIPPEDid, data, orderStatus: "SHIPPED" }));
         if (res?.payload?.st === true) {
 
             successToast(res?.payload?.msg);
-            getOrders()
+            getReturnOrders()
             setSHIPPEDid("");
             setDrawerOpen(false);
             form.reset();
@@ -197,7 +182,7 @@ function Page({ className, ...props }: any) {
     };
 
     useEffect(() => {
-        session && selectedOption === "ALL" && getOrders()
+        session && selectedOption === "ALL" && getReturnOrders()
     }, [session, page, perPage])
 
 
@@ -333,7 +318,7 @@ function Page({ className, ...props }: any) {
 
                         <div className="mx-6 my-3">
                             <Select_ value={selectedOption} onValueChange={(e) => {
-                                e === "ALL" ? getOrders() : getOrderSearch(e)
+                                e === "ALL" ? getReturnOrders() : getOrderSearch(e)
                                 setSelectedOption(e)
                             }}>
                                 <SelectTrigger className={`font-normal ${getStatusClass(selectedOption)} rounded px-2 py-1`} >
@@ -382,7 +367,7 @@ function Page({ className, ...props }: any) {
                                 className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Invoice No, Email, Mobile"
                             />
-                            {searchOrder !== "" && <button onClick={() => { setSearch(""); getOrders() }} type="button" className="absolute inset-y-0 end-0 flex items-center pe-3">
+                            {searchOrder !== "" && <button onClick={() => { setSearch(""); getReturnOrders() }} type="button" className="absolute inset-y-0 end-0 flex items-center pe-3">
                                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -402,6 +387,9 @@ function Page({ className, ...props }: any) {
                                     </th>
                                 }
 
+                                <th scope="col" className="px-6 py-3">
+                                    Return Order Id
+                                </th>
                                 <th scope="col" className="px-6 py-3">
                                     Order Id
                                 </th>
@@ -451,6 +439,14 @@ function Page({ className, ...props }: any) {
                                                 title="Copy to clipboard"
                                             />
                                         </td>
+                                        <td scope="row" className=" items-center px-6  text-gray-900 whitespace-nowrap dark:text-white">
+                                            <h6 className="font-normal text-gray-500">{`${item?.orderId?.slice(0, 3)}...${item?.orderId.slice(-4)}`}</h6>
+                                            <FaCopy
+                                                className="ml-2 cursor-pointer text-blue-500"
+                                                onClick={() => handleCopy(item?.orderId)}
+                                                title="Copy to clipboard"
+                                            />
+                                        </td>
                                         <td className="px-6 ">
                                             <div className="font-normal text-gray-500">{moment(item?.createdAt).format("DD-MM-YYYY")}</div>
                                             <div className="font-normal text-gray-500">{moment(item?.createdAt).format("HH:mm:ss")}</div>
@@ -468,12 +464,10 @@ function Page({ className, ...props }: any) {
                                                     return
                                                 }
 
-                                                const res = await dispatch(updateOrdersFunc({ id: ids?.length > 0 ? ids : item?.id, data: {}, orderStatus: e, }));
+                                                const res = await dispatch(updateReturnOrdersFunc({ id: ids?.length > 0 ? ids : item?.id, data: {}, orderStatus: e, }));
                                                 if (res?.payload?.st === true) {
-
                                                     successToast(res?.payload?.msg);
-                                                    item?.orderStatus === selectedOption ? getOrderSearch(selectedOption) : getOrders()
-
+                                                    item?.orderStatus === selectedOption ? getReturnOrderSearch(selectedOption) : getReturnOrders()
                                                 } else {
                                                     errorToast(res?.payload?.msg);
                                                 }
@@ -498,7 +492,7 @@ function Page({ className, ...props }: any) {
                                         </td>
 
                                         <td className=" px-6 ">
-                                        <h6 className="font-normal text-gray-500">{`${item?.updatedBy?.slice(0, 3)}...${item?.updatedBy?.slice(-4)}`}</h6>
+                                            <h6 className="font-normal text-gray-500">{`${item?.updatedBy?.slice(0, 3)}...${item?.updatedBy?.slice(-4)}`}</h6>
 
                                             <h6 className="font-normal  text-gray-500">{item?.netAmount}</h6>
                                         </td>

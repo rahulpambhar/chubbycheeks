@@ -141,3 +141,17 @@ h6 {
   text-transform: capitalize;
 }
 
+
+/* styles/globals.css */
+html, body, #__next {
+  height: 100%;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex-grow: 1;
+}

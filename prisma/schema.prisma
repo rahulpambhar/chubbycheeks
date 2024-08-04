@@ -16,6 +16,7 @@ enum OrderStatus {
     SHIPPED
     CANCELLED
     COMPLETE
+    RETURNED
 }
 
 enum transportMode {
@@ -294,13 +295,15 @@ model tempOrder {
 
     itemCount Int?
 
-    discountAmount Float
     total          Int
+    discountAmount Float
     taxableAmount  Int
     gst            Int
-    otherCharge    Int
-    charge         Json? // note for charges or extra charges
+    shippingCharge Int
+    handlingCharge Int
+    CODCharges     Int
     netAmount      Int
+    narration     Json? // note for charges or extra charges & other Notes
 
     isPaid        Boolean
     paidAt        DateTime
@@ -340,7 +343,7 @@ model tempOrderItem {
     qty       Int?
     price     Float?
     size      Size
-    netAmount Int?
+    netAmount Int? // see if any use ?
     isBlocked Boolean @default(false)
 
     tempOrder   tempOrder? @relation("tempOrderItem", fields: [tempOrderId], references: [id])
@@ -376,12 +379,14 @@ model Order {
 
     itemCount Int?
 
-    discountAmount Float
     total          Int
+    discountAmount Float
     taxableAmount  Int
     gst            Int
-    otherCharge    Int
-    charge         Json? // note for charges or extra charges
+    shippingCharge Int
+    handlingCharge Int
+    CODCharges     Int
+    narration     Json? // note for charges or extra charges & other Notes
     netAmount      Int
 
     isPaid        Boolean
@@ -459,8 +464,9 @@ model ReturnOrder {
     discountAmount Float
     taxableAmount  Int
     gst            Int
-    otherCharge    Int
-    charge         Json? // note for charges or extra charges
+    shippingCharge Int
+    handlingCharge Int
+    CODCharges     Int
     netAmount      Int
 
     isPaid        Boolean
@@ -506,7 +512,7 @@ model ReturnOrderItem {
     qty       Int?
     price     Float?
     size      Size
-    netAmount Int?
+    netAmount Int? // see if any use ?
     isBlocked Boolean @default(false)
 
     createdAt DateTime @default(now())
@@ -627,6 +633,8 @@ model ShiprockeOrders {
     shipment_id Int
 
     isBlocked Boolean @default(false)
+    isReturn Boolean @default(false)
+     
 
     createdAt DateTime @default(now())
     createdBy String?

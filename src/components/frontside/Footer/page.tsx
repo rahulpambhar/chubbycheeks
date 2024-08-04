@@ -56,27 +56,27 @@ export default function Component() {
             <Link href="/aboutUs" className="">
               Legacy
             </Link>
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
+            {/* <Link href="#" className="text-sm hover:underline" prefetch={false}>
               Our Story
             </Link>
             <Link href="#" className="text-sm hover:underline" prefetch={false}>
               Our Team
-            </Link>
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
+            </Link> */}
+            {/* <Link href="#" className="text-sm hover:underline" prefetch={false}>
               Careers
-            </Link>
+            </Link> */}
           </nav>
         </div>
         <div className="space-y-2">
           <h4 className="text-lg font-semibold">Resources</h4>
           <nav className="grid gap-1">
-            <Link href="#" className="text-sm hover:underline" prefetch={false}>
+            {/* <Link href="#" className="text-sm hover:underline" prefetch={false}>
               Blog
-            </Link>
-            <Link href="/terms-and-conditions" className="text-sm hover:underline" prefetch={false}>
+            </Link> */}
+            <Link href="/terms-and-conditions" className="text-sm  " prefetch={false}>
               Terms and Conditions
             </Link>
-            <Link href="/contactUs" className="">
+            <Link href="/contactUs" className="text-sm  ">
               Support
             </Link>
 

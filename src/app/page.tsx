@@ -14,7 +14,7 @@ import Singlenailpaint from "@/components/frontside/singlenailpaint/page";
 
 export default function Home() {
   return (
-    <main>
+    <div className="main-content ">
       <ImageSlider />
       <Topselectionpart />
       <OfferPage />
@@ -25,6 +25,6 @@ export default function Home() {
       {/* <Howitwork /> */}
       <Recentviewed />
       <Submitemail />
-    </main>
+    </div>
   );
 }

@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import moment from "moment"
 
 import Link from "next/link";
 import { StarRating } from "@/components/frontside/TopselectionCard/page";
@@ -55,6 +56,7 @@ import GlobalError from "next/dist/client/components/error-boundary";
 import { checkSizes } from "@/app/utils";
 import Payment from "@/components/frontside/Payment/page";
 import { tree } from "next/dist/build/templates/app-page";
+import { getReturnOrdersFunc } from "@/app/redux/slices/returnOrderSlice";
 
 export default function Checkout({
     params,
@@ -72,12 +74,6 @@ export default function Checkout({
     const [returnOrder, setReturnOrder] = useState(false);
     const [returnOrderDisabled, setReturnOrderDisabled] = useState(false);
     const [thankingMsg, setThankingMsg] = useState(false);
-    const [error, setError] = useState("");
-    const [productSize, setSize] = useState("");
-
-
-
-
 
     const today = new Date();
     const oneMonthAgo = new Date(today);
@@ -119,6 +115,8 @@ export default function Checkout({
 
     const router = useRouter();
     const orderID: string | null = searchParams.get("orderID");
+    const returnOrderID: string | null = searchParams.get("returnOrderID");
+
     const expectedDate = useAppSelector((state: any) =>
         state?.orderReducer?.orders?.find((order: any) => order.id === orderID)
     );
@@ -137,9 +135,23 @@ export default function Checkout({
                     (order: any) => order.id === orderID
                 )?.OrderItem
         )
-        : useAppSelector((state: any) => state?.cartReducer?.cartItem) || [];
-    const isLoading = useAppSelector((state: any) => state?.cartReducer?.loading);
+        : returnOrderID
+            ? useAppSelector(
+                (state: any) =>
+                    state?.returnOrderReducer?.returnOrderId?.items)
+            : useAppSelector((state: any) => state?.cartReducer?.cartItem) || [];
 
+    const isLoading = useAppSelector((state: any) => state?.cartReducer?.loading);
+    const orderDetail = orderID
+        ? useAppSelector(
+            (state: any) =>
+                state?.orderReducer?.orders?.find(
+                    (order: any) => order.id === orderID
+                )
+        )
+        : returnOrderID ? useAppSelector(
+            (state: any) =>
+                state?.returnOrderReducer?.returnOrderId) : [];
     useEffect(() => {
         orderID
             ? setOrder(order?.map((item: any) => ({ ...item, checked: true })))
@@ -264,19 +276,22 @@ export default function Checkout({
         if (orderID) {
             const isReturnOrderFunc = async () => {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder?orderID=${orderID}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder?slug=getById&orderID=${orderID}`
                 );
                 if (!response.data.st) {
-                    setReturnOrderDisabled(false);
+                    setReturnOrderDisabled(true);
                 }
             };
             isReturnOrderFunc();
         }
     }, [orderID]);
 
+    const getReturnOrder = async () => await dispatch(getReturnOrdersFunc({ page: 1, limit: 10, search: returnOrderID, from: "", to: "", slug: "getById", }))
+
     useEffect(() => {
-        dispatch(fetchCategories());
-    }, [dispatch, id]);
+        !returnOrderID && !orderID && dispatch(fetchCategories());
+        returnOrderID && !orderID && getReturnOrder();
+    }, [dispatch, id, returnOrderID]);
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:gap-12 max-w-6xl px-4 mx-auto mt-8 mb-8 py-6">
 
@@ -284,7 +299,17 @@ export default function Checkout({
                 <>
                     <CardComponent className="w-full">
                         <CardHeader>
-                            <CardTitle>Order Summary</CardTitle>
+                            {!returnOrderID ? <CardTitle>Order Summary</CardTitle> : <CardTitle>Return Order Summary</CardTitle>}
+
+                            {orderDetail && orderID || returnOrderID ?
+                                <div>
+                                    <h6 className="text-tiny font-bold">ID: {orderDetail?.id}</h6>
+                                    <h6 className="text-tiny font-bold">Date: {moment(orderDetail?.createdAt).format('DD-MM-YYYY')}</h6>
+                                </div>
+                                : null
+                            }
+
+
                         </CardHeader>
                         <ScrollArea className="h-[500px] w-auto mt-1 rounded-md border">
                             {session && order_?.length > 0 ? (
@@ -308,7 +333,7 @@ export default function Checkout({
                                                 <div className="flex flex-col col-span-6 md:col-span-8">
                                                     <div className="flex relative justify-between items-start">
                                                         <Checkbox checked={item?.checked} onCheckedChange={(e) => {
-                                                            if (orderID && repeatOrder || returnOrder) {
+                                                            if (orderID && repeatOrder || returnOrder || returnOrderID) {
                                                                 toggleSelect(item.id, i)
                                                             } else {
                                                                 actionTocartFunction(item, "checked ")
@@ -339,7 +364,7 @@ export default function Checkout({
                                                                             item?.product?.price - item?.product?.discount
                                                                     }
                                                                     </p>
-                                                                    <div className="text-sm text-muted-foreground ml-2 line-through">₹{item?.product.price}</div>
+                                                                    <div className="text-sm text-muted-foreground ml-2 line-through">₹{item?.product?.price}</div>
                                                                     <p className="text-green-500 ml-2 text-sm font-semibold">
                                                                         {item?.product?.discountType === "PERCENTAGE" ? (
                                                                             <span>{item?.product?.discount}% off</span>
@@ -359,7 +384,7 @@ export default function Checkout({
                                                                 <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
                                                                     const newArray = order_?.map((e: any) => {
                                                                         if (e.id === item.id) {
-                                                                            actionTocartFunction({ ...e, size: value }, "size")
+                                                                            !returnOrderID && actionTocartFunction({ ...e, size: value }, "size")
                                                                             return { ...e, size: value };
                                                                         }
                                                                         return e;
@@ -471,7 +496,7 @@ export default function Checkout({
                                 <div className="grid gap-6">
                                     <div className="grid grid-cols-[1fr_100px] items-center gap-4">
                                         <div className="grid gap-1">
-                                            <p className="text-sm text-muted-foreground">Payable Amount</p>
+                                            <p className="text-sm text-muted-foreground">Amount</p>
                                         </div>
                                         <p className="font-semibold text-right">₹ {Math.floor(totalAmount) || 0}</p>
                                     </div>

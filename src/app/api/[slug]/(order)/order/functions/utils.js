@@ -5,7 +5,7 @@ import authOptions from "../../../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 
 
-export async function getOrders(id) {
+export const getOrders = async (id) => {
 
     const orders = await prisma.order.findMany({
         where: {
@@ -19,14 +19,14 @@ export async function getOrders(id) {
                     isBlocked: false
                 },
                 include: {
-
                     product: {
                         where: {
                             isBlocked: false
                         }
                     },
                 }
-            }
+            },
+            ReturnOrder: true,
         },
         orderBy: {
             createdAt: 'desc'
@@ -42,6 +42,7 @@ const orderStatusMap = {
     SHIPPED: 'SHIPPED',
     CANCELLED: 'CANCELLED',
     COMPLETE: 'COMPLETE',
+    RETURNED: 'RETURNED',
 };
 
 const getOrderStatusEnum = (search) => {
@@ -116,6 +117,11 @@ export const getOrdersByPage = async (request) => {
                 }
             },
             user: true,
+            ReturnOrder: {
+                include: {
+                    items: true
+                }
+            }
         },
         take: parsedLimit,
         skip: offset,
@@ -213,9 +219,9 @@ export const shiproketOrder = async (body) => {
         "name": item?.product?.name,
         "sku": item?.product?.sku,
         "units": item?.qty,
-        "selling_price": 94 + 4.5,
-        "discount": item?.OrderItem?.discount || 0,
-        "tax": item?.OrderItem?.gst || 0,
+        "selling_price": item?.product?.price || 0,
+        "discount": item?.product?.discount || 0,
+        "tax": item?.product?.gst || 0,
         "hsn": item?.product?.hsn || ''
     }));
 
@@ -280,6 +286,7 @@ export const shiproketOrder = async (body) => {
         }
     })
 
+
     if (shiproketOrder?.data?.status !== "NEW") {
         return { st: false, data: {}, msg: shiproketOrder?.data?.msg }
     }
@@ -289,7 +296,6 @@ export const shiproketOrder = async (body) => {
 export const shiproketCancelOrder = async (body) => {
 
     const { id, orderStatus } = body
-    console.log('id::: ', id);
     const ids = []
 
     await Promise.all(

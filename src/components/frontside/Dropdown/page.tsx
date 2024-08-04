@@ -3,7 +3,7 @@ import {
     DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal, MoreVertical } from "lucide-react"
 import Link from 'next/link'
 import { useAppDispatch } from '@/app/redux/hooks'
 import { updateOrdersFunc } from '@/app/redux/slices/orderSlices'
@@ -12,6 +12,7 @@ import { errorToast, successToast } from '@/components/toster'
 import { useSession } from "next-auth/react";
 
 const page = ({ item, getOrders }: any) => {
+    console.log('item::: ', item);
     const { data: session, status }: any = useSession();
 
     const dispatch = useAppDispatch();
@@ -23,11 +24,20 @@ const page = ({ item, getOrders }: any) => {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
                     <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
+                    <MoreVertical className="h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                    <Link href={`/checkout/estimation/?orderID=${item?.id}`} className='text-gray-500'>
+                        View Order
+                    </Link>
+                </DropdownMenuLabel>
+                {item?.orderStatus === "RETURNED" && <DropdownMenuLabel>
+                    <Link href={`/checkout/estimation/?returnOrderID=${item?.ReturnOrder[0]?.id}`} className='text-red-500'>
+                        View Return Order
+                    </Link>
+                </DropdownMenuLabel>}
                 {item?.paymentMethod === "COD" && item?.orderStatus === "PROCESSING" || item?.orderStatus === "ACCEPTED" ?
                     <DropdownMenuItem>
                         <Link href={`/checkout/estimation/update/?orderID=${item?.id}`} legacyBehavior>
@@ -44,9 +54,9 @@ const page = ({ item, getOrders }: any) => {
                     </Link>
                 </DropdownMenuItem>
 
-                {item?.orderStatus !== "CANCELLED" && item?.orderStatus !== "COMPLETE" && (
+                {item?.orderStatus !== "CANCELLED" && item?.orderStatus !== "COMPLETE" && item?.orderStatus !== "RETURNED" && (
                     <DropdownMenuItem className='text-red-500' onClick={async () => {
-                        const res: any = await dispatch(updateOrdersFunc({ id: item?.id, data: {}, orderStatus: "CANCELLED" }))
+                        const res: any = await dispatch(updateOrdersFunc({ id: [item?.id], data: {}, orderStatus: "CANCELLED" }))
 
                         if (res?.payload?.st === true) {
                             successToast(res?.payload?.msg)

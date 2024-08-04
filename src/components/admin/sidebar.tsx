@@ -241,7 +241,7 @@ const Admin_Sidebar = ({ closeSidebar }: any) => {
                     : "text-[--text-color]"
                     } `}
                 >
-                  Return Orders
+                  Return Items / Orders
                 </p>
               </Link>
 

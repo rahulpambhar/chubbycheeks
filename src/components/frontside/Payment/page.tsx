@@ -184,6 +184,7 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
                 }).filter(Boolean)
             }
 
+
             if (data?.paymentMethod === "Prepaid") {
                 orderMeta.data = data
 
@@ -261,7 +262,7 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
                     }
                 }
 
-            } else {
+            } else if (data?.paymentMethod === "COD") {
                 orderMeta.data = data
                 const tempData = await dispatch(createTempOrderFunc(orderMeta))
 
@@ -290,6 +291,28 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
                     setLoader(false)
                     setVerifyOTP({ st: false, msg: "", })
                 }
+            } else if (returnOrder) {
+                const data = {
+                    orderID: orderID,
+                    returnNote: returnNote,
+                    selectedItems: orderMeta?.selectedItems
+                }
+
+                const formData = new FormData();
+
+                orderID && formData.append('orderID', orderID)
+                formData.append('returnNote', returnNote)
+                formData.append('selectedItems', JSON.stringify(orderMeta?.selectedItems))
+                file && formData.append("attachment", file);
+
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/return/returnOrder`, formData);
+                if (response.data.st) {
+                    successToast(response.data.msg)
+                    setReturnNote("")
+                } else {
+                    errorToast(response.data.msg)
+                }
+
             }
         } catch (error) {
             console.log('error::: ', error);
@@ -302,7 +325,6 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
     useEffect(() => {
 
         if (isVerifyOTP?.st === true) {
-
             onSubmit(form.control?._formValues)
         }
     }, [isVerifyOTP, form])
@@ -407,8 +429,8 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
                             </div>
 
                             :
-                            <Button type='button' onClick={() => {
-
+                            <Button type='button' onClick={async () => {
+                                setLoader(true)
                                 let orderMeta: any = {
                                     selectedItems: order_.map((item: any, index: number) => {
                                         if (item.checked === true) {
@@ -423,21 +445,24 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
 
                                 if (!isSizes.st) {
                                     errorToast(isSizes.msg);
+                                    setLoader(false)
                                     return
                                 }
 
                                 if (orderMeta.selectedItems.length === 0) {
                                     errorToast("Please select atleast one item to proceed")
+                                    setLoader(false)
                                     return
                                 }
 
-                                if (form.control?._formValues?.paymentMethod === "COD") {
+                                if (form.control?._formValues?.paymentMethod === "COD" || returnOrder) {
                                     setTimeInSeconds(60);
                                     generateOTP();
+                                    setLoader(false)
 
                                 } else {
-
                                     onSubmit(form.control?._formValues)
+                                    setLoader(false)
                                 }
                             }} disabled={loader} className="w-full max-w-xs sm:ml-20 md:ml-20 bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900" >
                                 PROCEED

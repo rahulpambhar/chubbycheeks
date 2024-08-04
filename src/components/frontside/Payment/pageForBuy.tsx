@@ -13,14 +13,13 @@ import PaymentFields from './paymentFields'
 import axios from 'axios'
 import OTPInputGroup from '@/components/frontside/changePasswordOtp/page';
 
-const Payment = ({ setThankingMsg, order_, checkSizes, returnOrder, productSize, setProductSize }: {
-    setThankingMsg: any, order_: any; checkSizes: any; returnOrder: any; productSize: string, setProductSize: any
+const Payment = ({ OTP, setOTP, setThankingMsg, order_, checkSizes, returnOrder, productSize, setProductSize }: {
+    setThankingMsg: any, order_: any; checkSizes: any; returnOrder: any; productSize: string, setProductSize: any; OTP: any, setOTP: any,
 }) => {
     const { data: session, status }: any = useSession();
 
     const [loader, setLoader] = useState(false);
-    let [OTP, setOTP] = useState(false)
-    console.log('OTP::: ', OTP);
+
     let [timer, setTimer] = useState(false)
     const [timeInSeconds, setTimeInSeconds] = useState(60);
     const [intervalId, setIntervalId] = useState<number | null>(null);

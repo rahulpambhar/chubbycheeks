@@ -6,7 +6,7 @@ import authOptions from "../../../auth/[...nextauth]/auth";
 import { getServerSession } from "next-auth";
 import prisma from "../../../../../../prisma/prismaClient";
 import { parse } from "url";
-import { getOrdersByPage, getOrders, getOrdersById, shiproketOrder, shiproketLogin, cancelOrder } from './functions/route.js'
+import { getOrdersByPage, getOrders, getOrdersById, shiproketOrder, shiproketLogin, cancelOrder } from './functions/utils.js'
 import { orderStatus as OrderStatus } from "../../../../utils";
 
 export async function POST(request: Request) {
@@ -58,13 +58,16 @@ export async function POST(request: Request) {
             invoiceDate: new Date(),
 
             itemCount: temp.itemCount,
+
             total: temp.total,
             discountAmount: temp.discountAmount,
             taxableAmount: temp.taxableAmount,
-            tax: temp.tax,
-            otherCharge: temp.otherCharge,
-            netAmount: temp.netAmount,
             gst: temp.gst,
+            shippingCharge: temp.shippingCharge,
+            handlingCharge: temp.handlingCharge,
+            CODCharges: temp.CODCharges,
+            netAmount: temp.netAmount,
+            narration: temp.narration,
 
             isPaid: temp?.isPaid,
             paidAt: new Date(),
@@ -292,6 +295,7 @@ export async function PUT(request: Request) {
                                 channel_order_id: setShiproketOrder?.data?.channel_order_id,
                                 order_id: setShiproketOrder?.data?.order_id,
                                 shipment_id: setShiproketOrder?.data?.shipment_id,
+                                isReturn: false,
                                 createdAt: new Date(),
                                 createdBy: session.user.id
                             }
@@ -310,6 +314,7 @@ export async function PUT(request: Request) {
                                 channel_order_id: setShiproketOrder?.data?.channel_order_id,
                                 order_id: setShiproketOrder?.data?.order_id,
                                 shipment_id: setShiproketOrder?.data?.shipment_id,
+                                isReturn: false,
                                 createdAt: new Date(),
                                 createdBy: session.user.id
                             }
@@ -382,7 +387,7 @@ export async function PUT(request: Request) {
 
         } else {
             const { id, data, orderStatus, } = body
-            const { name, mobile, country_code, address, city, state, country, pincode, } = data?.data
+            const { name, mobile, country_code, address, city, state, country, pincode, } = data?.data || {}
 
 
             if (orderStatus === "UPDATE") {
@@ -590,6 +595,7 @@ export async function PUT(request: Request) {
                             updatedBy: session?.user?.id
                         }
                     })
+
                     await activityLog("CANCEL", "order", data, session?.user?.id);
                     return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order cancelled successfully!", });
                 }

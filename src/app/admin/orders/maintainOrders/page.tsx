@@ -33,25 +33,9 @@ import { FaEdit } from 'react-icons/fa';
 import { Select as Select_, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectLabel } from '@radix-ui/react-select';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, } from "@/components/ui/drawer"
 import Link from "next/link";
+import { getStatusClass } from "@/app/utils";
+import toast from "react-hot-toast";
 
-export const getStatusClass = (status: any) => {
-    switch (status) {
-        case "ALL":
-            return 'border border-gray-500 text-black-500';
-        case "PROCESSING":
-            return 'border border-yellow-500 text-black-500';
-        case "ACCEPTED":
-            return 'border border-blue-500 text-black-500';
-        case "SHIPPED":
-            return 'border border-indigo-500 text-black-500';
-        case "CANCELLED":
-            return 'border border-red-500 text-red-500';
-        case "COMPLETE":
-            return 'border border-green-500 text-green-500';
-        default:
-            return 'bg-gray-500 text-white';
-    }
-};
 
 function Page({ className, ...props }: any) {
     const { data: session, status }: any = useSession();
@@ -59,7 +43,6 @@ function Page({ className, ...props }: any) {
     const today = new Date();
     const oneMonthAgo = new Date(today);
     oneMonthAgo.setMonth(today.getMonth() - 1);
-
     const [searchOrder, setSearch] = useState("")
     const [page, setPage] = useState(1)
     const [SHIPPEDid, setSHIPPEDid] = useState("")
@@ -102,7 +85,7 @@ function Page({ className, ...props }: any) {
 
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text).then(() => {
-            successToast('Address copied to clipboard');
+            successToast('copied to clipboard');
         }).catch((err) => {
             errorToast('Failed to copy address');
         });
@@ -386,8 +369,6 @@ function Page({ className, ...props }: any) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>}
-
-
                         </div>
 
                     </div>
@@ -462,6 +443,11 @@ function Page({ className, ...props }: any) {
                                         <td className="">
                                             <Select_ value={item?.orderStatus} onValueChange={async (e) => {
                                                 const ids = [item?.id]
+                                                if (item?.orderStatus === "RETURNED") {
+                                                    errorToast("You can't change status");
+                                                    return
+                                                }
+
                                                 if (e === "SHIPPED") {
                                                     openDrawer(item?.id, "SHIPPED")
                                                     return
@@ -497,7 +483,7 @@ function Page({ className, ...props }: any) {
                                         </td>
 
                                         <td className=" px-6 ">
-                                        <h6 className="font-normal text-gray-500">{`${item?.updatedBy?.slice(0, 3)}...${item?.updatedBy?.slice(-4)}`}</h6>
+                                            <h6 className="font-normal text-gray-500">{`${item?.updatedBy?.slice(0, 3)}...${item?.updatedBy?.slice(-4)}`}</h6>
 
                                             <h6 className="font-normal  text-gray-500">{item?.netAmount}</h6>
                                         </td>
