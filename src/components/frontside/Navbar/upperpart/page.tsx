@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { MenuIcon, HeartIcon, ShoppingCartIcon } from "@/components";
 import { errorToast } from "@/components/toster";
+import { Avatar, AvatarFallback, AvatarImage, } from "@/components/ui/avatar"
 
 export default function Component() {
   const { data: session }: any = useSession();
@@ -37,7 +38,7 @@ export default function Component() {
       <div className="container mx-auto flex h-16 items-center justify-between py-2 sm:h-20">
         <div className="flex items-center">
           <Link href="/" className="mr-4 flex items-center" prefetch={false}>
-            <Image width={100} height={100} src="/image/chubbycheeks/logo.png" className="mt-4 w-30 h-30" alt="Logo" />
+            <Image width={100} height={100} src="/image/chubbyCheeks/logo.png" className="mt-4 w-30 h-30" alt="Logo" />
           </Link>
 
           <nav className="hidden space-x-4 md:flex">
@@ -68,7 +69,7 @@ export default function Component() {
 
           <SheetContent side="left" className="w-64 text-white bg-black border-none">
             <Link href="/" className="mr-4 flex items-center" prefetch={false}>
-              <Image width={100} height={100} src="/image/chubbycheeks/logo.png" className="mt-4 w-40 h-30" alt="Logo" />
+              <Image width={100} height={100} src="/image/chubbyCheeks/logo.png" className="mt-4 w-40 h-30" alt="Logo" />
             </Link>
             <nav className="grid mt-20 gap-6 text-lg font-medium text-white">
               <Link href="/" className="flex items-center gap-4 px-2.5 text-white" prefetch={false}>
@@ -105,7 +106,8 @@ export default function Component() {
               </Button>
               <Button variant="ghost" size="icon" className="rounded-full text-white relative">
                 <ShoppingCartIcon className="h-5 w-5 hover:text-black text-white" onClick={() => {
-                cart.CartItem.length > 0 ?  dispatch(setOpenCart(!openCart)): errorToast("Cart is empty") }} />
+                  cart.CartItem.length > 0 ? dispatch(setOpenCart(!openCart)) : errorToast("Cart is empty")
+                }} />
                 <span className="sr-only">Cart</span>
                 {cart && cart.CartItem?.length > 0 && (
                   <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
@@ -118,8 +120,10 @@ export default function Component() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full text-white">
-                      <img src={`/users/${session?.user?.profile_pic}`} width="36" height="36" alt="User Avatar" className="rounded-full" />
-                      <span className="sr-only">Toggle user menu</span>
+                      <Avatar>
+                        <AvatarImage src={`/users/${session?.user?.profile_pic}`} alt="" />
+                        <AvatarFallback  ><img src="/image/chubbyCheeks/logo.png" alt="" /></AvatarFallback>
+                      </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-black text-white">

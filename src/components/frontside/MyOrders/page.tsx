@@ -42,7 +42,7 @@ const MyOrders = ({ currentOrders, getOrders, ordersPerPage, handlePageChange, p
                     My Order's
                 </h1>
                 <Table>
-                    <TableCaption>A list of your recent invoices....</TableCaption>
+                    <TableCaption>{currentOrders?.length > 0 ? "A list of your recent invoices... " : "No orders found "}</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[100px] text-left">Order Id</TableHead>
@@ -90,20 +90,22 @@ const MyOrders = ({ currentOrders, getOrders, ordersPerPage, handlePageChange, p
 
                     </TableBody>
                 </Table>
-                <div className="flex justify-center pt-6 md:justify-end">
-                    <Pagination
-                        activePage={currentPage}
-                        itemsCountPerPage={ordersPerPage}
-                        totalItemsCount={pegiLenght}
-                        pageRangeDisplayed={5}
-                        onChange={handlePageChange}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                        activeClass="active"
-                    />
-                </div>
+                {currentOrders?.length > 0 &&
+                    <div className="flex justify-center pt-6 md:justify-end">
+                        <Pagination
+                            activePage={currentPage}
+                            itemsCountPerPage={ordersPerPage}
+                            totalItemsCount={pegiLenght}
+                            pageRangeDisplayed={5}
+                            onChange={handlePageChange}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            activeClass="active"
+                        />
+                    </div>
+                }
             </div>
-        </div>
+        </div >
     )
 }
 

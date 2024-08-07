@@ -6,7 +6,6 @@ import TopselectionCard from "@/components/frontside/TopselectionCard/page";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/frontside/sidebar/Sidebar";
 import _ from "lodash";
-// import { Categories, SubCategory } from "../../../../types/global";
 import { Categories, SubCategory } from "../../../../../types/global";
 import { useParams } from "next/navigation";
 import Deals from "@/components/frontside/deals/Deals";

@@ -27,21 +27,21 @@ const items = [
 
   <div className="aspect-video overflow-hidden ">
     <video autoPlay loop muted className="w-full h-[80vh] object-cover">
-      <source src="/image/chubbycheeks/video-4.mp4" />
+      <source src="/image/chubbyCheeks/video-4.mp4" />
     </video>
   </div>,
 
-  <img src="/image/chubbycheeks/image-11.png" alt="Carousel Image" width={1200} height={675} className="w-full h-[80vh] object-cover"
+  <img src="/image/chubbyCheeks/image-11.png" alt="Carousel Image" width={1200} height={675} className="w-full h-[80vh] object-cover"
   />,
 
   <div className="aspect-video overflow-hidden ">
     <video autoPlay loop muted className="w-full h-[80vh] object-cover">
-      <source src="/image/chubbycheeks/video-5.mp4" />    </video>
+      <source src="/image/chubbyCheeks/video-5.mp4" />    </video>
   </div>,
 
   <div className="aspect-video overflow-hidden ">
     <video autoPlay loop muted className="w-full h-[80vh] object-cover">
-      <source src="/image/chubbycheeks/video-3.mp4" />    </video>
+      <source src="/image/chubbyCheeks/video-3.mp4" />    </video>
   </div>,
 ];
 

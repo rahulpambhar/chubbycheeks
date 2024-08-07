@@ -41,7 +41,7 @@ const RegisterComponents = () => {
     return (
         <>
             <div className="flex w-full min-h-[calc(100vh-80px)]">
-                <div className="hidden lg:flex w-1/2 bg-[url('/image/chubbycheeks/signup-1.jpg')] bg-cover bg-center object-cover object-center" />
+                <div className="hidden lg:flex w-1/2 bg-[url('/image/chubbyCheeks/signup-1.jpg')] bg-cover bg-center object-cover object-center" />
                 <div className="flex-1 flex items-center justify-center p-6 lg:p-10">
                     <div className="max-w-[450px] w-full space-y-6 mt-10">
                         <div className="space-y-2 text-center">

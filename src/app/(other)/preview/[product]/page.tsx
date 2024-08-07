@@ -417,7 +417,7 @@ const abc = {
         "1722167710636_0_ladies-1.jpeg"
     ],
     "video": null,
-    "brand": "chubbycheeks",
+    "brand": "chubbyCheeks",
     "isBlocked": false,
     "avgRating": null,
     "numReviews": null,

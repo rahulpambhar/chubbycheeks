@@ -29,9 +29,9 @@ const careAboutItems1 = [
 
 const About = () => {
   return (
-    <div className="bg-[#eeeeee] pt-4 pb-10 ">
+    <div className="bg-[#eeeeee] pt-8 pb-10 ">
       <div className="flex-grow flex justify-center items-center uppercase sm:text-3xl md:text-5xl pt-10 unica-one">
-        Just like you, we care about
+        <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-black">Just like you, we care about  </h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-10 lg:mx-20  ">
         {careAboutItems1.map((item) => (

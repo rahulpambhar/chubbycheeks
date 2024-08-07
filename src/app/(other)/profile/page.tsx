@@ -32,7 +32,7 @@ import { Card, CardContent, } from "@/components/ui/card";
 import { StarRating } from '@/components/frontside/TopselectionCard/page';
 import MyOrders from '@/components/frontside/MyOrders/page';
 import MyReturnOrders from '@/components/frontside/MyReturnOrders/page';
-import {  useRouter, } from 'next/navigation'
+import { useRouter, } from 'next/navigation'
 
 export default function Checkout() {
     const { data: session, status }: any = useSession();
@@ -294,7 +294,7 @@ export default function Checkout() {
                                         </Card>
                                     )
                                 })}
-                                <div className="flex justify-center pt-6 md:justify-end">
+                                {filterWishes?.length > 0 ? <div className="flex justify-center pt-6 md:justify-end">
                                     <Pagination
                                         activePage={currentPage}
                                         itemsCountPerPage={ordersPerPage}
@@ -305,7 +305,8 @@ export default function Checkout() {
                                         linkClass="page-link"
                                         activeClass="active"
                                     />
-                                </div>
+                                </div> : <h1 className='  text-bold text-center mt-10'>No Wishes Found</h1> 
+                                }
                             </div>
                         </div>
                     }

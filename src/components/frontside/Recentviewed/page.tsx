@@ -17,12 +17,16 @@ const Recentviewed = () => {
 
 
   return (
-    <section className="container mx-auto py-12 font-sans mt-[100px]">
+    <section className="container mx-auto font-sans mt-[100px]">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex-grow flex justify-center items-center uppercase font-normal text-5xl pt-10 unica-one">
+        {/* <div className="flex-grow flex justify-center items-center uppercase font-normal text-5xl pt-10 unica-one">
           Recent Viewed
-        </div>
-
+        </div> */}
+        <div className="flex-grow flex justify-center items-center mb-4">
+            <div className="w-full flex justify-center lg:justify-center lg:w-auto mb-6 lg:mb-0 ">
+              <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-black">Recent Viewed</h1>
+            </div>
+          </div>
       </div>
       <div className={`gap-4 flex overflow-x-auto mt-10`}>
         {Topselectionitem?.length > 0 && Topselectionitem.map((item: any, index: number) => {
@@ -36,7 +40,7 @@ const Recentviewed = () => {
         })}
       </div>
     </section>
- 
+
   );
 };
 
