@@ -192,7 +192,6 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
                     const tempData = await dispatch(createTempOrderFunc(orderMeta))
 
                     if (tempData?.payload.st) {
-                        // successToast("Temp order done!")
                         const options = {
                             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                             key_secret: process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET,
@@ -330,11 +329,50 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
     }, [isVerifyOTP, form])
 
 
+
+
     return (
         <div className="">
-            <Form {...form}  >
+            <Form {...form} >
 
-                <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                <form onSubmit={form.handleSubmit(() => {
+
+                    setLoader(true)
+                    let orderMeta: any = {
+                        selectedItems: order_.map((item: any, index: number) => {
+                            if (item.checked === true) {
+
+                                return { productId: item.product.id, qty: item.qty, size: item?.size, };
+                            }
+                            return null;
+                        }).filter(Boolean)
+                    }
+
+                    const isSizes: any = checkSizes(order_)
+
+                    if (!isSizes.st) {
+                        errorToast(isSizes.msg);
+                        setLoader(false)
+                        return
+                    }
+
+                    if (orderMeta.selectedItems.length === 0) {
+                        errorToast("Please select atleast one item to proceed")
+                        setLoader(false)
+                        return
+                    }
+
+                    if (form.control?._formValues?.paymentMethod === "COD" || returnOrder) {
+                        setTimeInSeconds(60);
+                        generateOTP();
+                        setLoader(false)
+
+                    } else {
+                        onSubmit(form.control?._formValues)
+                        
+                    }
+
+                })}  >
 
                     <PaymentFields form={form} returnOrder={returnOrder} />
 
@@ -358,8 +396,6 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
                             </div> :
                             <p className='h-[144px]'></p>
                     }
-
-
                     {
                         orderID && <div className=" flex gap-4 m-4 justify-center">
                             <Button type='button' onClick={toggleRepeatOrder} style={{ color: repeatOrder ? 'green' : 'black' }} className='bg-white border border-black' >
@@ -425,50 +461,12 @@ const Payment = ({ toggleRepeatOrder, repeatOrder, setThankingMsg, returnOrderDi
 
                                 <OTPInputGroup timer={timer} setOTP={setOTP} setVerifyOTP={setVerifyOTP} isVerifyOTP={isVerifyOTP} setTimer={setTimer} setInputValues={setInputValues} inputValues={inputValues} intervalId={intervalId} setTimeInSeconds={setTimeInSeconds} />
                                 <div className='text-rsm' >Time Left to Use OTP : {timerDisplay}</div>
-
                             </div>
-
                             :
-                            <Button type='button' onClick={async () => {
-                                setLoader(true)
-                                let orderMeta: any = {
-                                    selectedItems: order_.map((item: any, index: number) => {
-                                        if (item.checked === true) {
-
-                                            return { productId: item.product.id, qty: item.qty, size: item?.size, };
-                                        }
-                                        return null;
-                                    }).filter(Boolean)
-                                }
-
-                                const isSizes: any = checkSizes(order_)
-
-                                if (!isSizes.st) {
-                                    errorToast(isSizes.msg);
-                                    setLoader(false)
-                                    return
-                                }
-
-                                if (orderMeta.selectedItems.length === 0) {
-                                    errorToast("Please select atleast one item to proceed")
-                                    setLoader(false)
-                                    return
-                                }
-
-                                if (form.control?._formValues?.paymentMethod === "COD" || returnOrder) {
-                                    setTimeInSeconds(60);
-                                    generateOTP();
-                                    setLoader(false)
-
-                                } else {
-                                    onSubmit(form.control?._formValues)
-                                    setLoader(false)
-                                }
-                            }} disabled={loader} className="w-full max-w-xs sm:ml-20 md:ml-20 bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900" >
+                            <Button type='submit' disabled={loader} className="w-full max-w-xs sm:ml-20 md:ml-20 bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900" >
                                 PROCEED
                             </Button>
                     }
-
                 </form>
             </Form>
         </div >

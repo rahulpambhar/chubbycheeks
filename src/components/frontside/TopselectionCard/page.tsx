@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/react";
 import Link from "next/link";
 import { HeartIcon, RedHeartIcon } from '@/components';
+import { useRouter } from "next/navigation";
 
 export const StarRating = ({ rating }: any) => {
   const maxStars = 5;
@@ -42,6 +43,7 @@ const TopselectionCard = ({
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
   const [productSize, setSize] = useState('NONE');
+  const router = useRouter()
 
   const addToCartFunction = async (id: string, productSize: string) => {
     const payload = { productId: id, action: "add", productSize };
@@ -86,13 +88,13 @@ const TopselectionCard = ({
       <CardFooter className="flex flex-col items-start p-2 space-y-2">
         <b className="text-sm font-semibold">{item.name}</b>
         <p className="text-tiny text-left text-gray-700 overflow-auto max-h-12">
-          {item?.description.split(' ').slice(0, 15).join(' ')}...
+          {item?.description.split(' ').slice(0, 4).join(' ')}...
           <Link href={`/preview/${item?.id}`} className="text-orange-500">
-            Preview
+            More
           </Link>
         </p>
         <div className="flex flex-col sm:flex-row justify-between items-center w-full space-y-2 sm:space-y-0">
-          <StarRating rating={item?.avgRating || 5} />
+          {/* <StarRating rating={item?.avgRating || 5} /> */}
           <div className="flex items-baseline space-x-2">
             <p className="text-default-500 text-sm font-bold">₹ {item.price}</p>
             <p className="text-green-500 text-sm font-semibold">
@@ -106,17 +108,17 @@ const TopselectionCard = ({
         </div>
         <div className="flex flex-col justify-center sm:flex-row gap-2 w-full">
 
-          <Button variant="outline" className="w-full   sm:w-auto border-green-300 text-green-600 hover:bg-green-100">
-            <Link href={`/buy/${item.id}`} >
-              Buy Now
-            </Link>
+          <Button variant="outline" className="w-full   sm:w-auto border-gray-600 text-green-600 hover:bg-green-100" onClick={() => {
+            session ? router.push(`/buy/${item?.id}`) : dispatch(isLoginModel(true));
+          }}>
+            Buy Now
           </Button>
           {session && cart?.find((cartItem: any) => cartItem?.productId === item?.id) ? (
             <Button
               variant="outline"
-              className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
+              className="w-full sm:w-auto border-gray-600 text-blue-600 hover:bg-blue-50"
               onClick={() => {
-                session ? dispatch(setOpenCart(!openCart)) : "";
+                session ? dispatch(setOpenCart(!openCart)) : dispatch(isLoginModel(true));
               }}
             >
               Open cart
@@ -124,7 +126,7 @@ const TopselectionCard = ({
           ) : (
             <Button
               variant="outline"
-              className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
+              className="w-full sm:w-auto border-gray-600 text-blue-600 hover:bg-blue-50"
               onClick={() => {
                 session ? addToCartFunction(item?.id, productSize) : dispatch(isLoginModel(true));
               }}

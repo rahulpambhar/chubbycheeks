@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"
 
 export default function Component() {
 
   return (
     <>
-      <Carousel className="w-full h-[80vh] mt-3  md:mx-0 ">
+      <Carousel className="w-full h-[80vh]  md:mx-0 ">
         <CarouselContent>
           {
             items.map((item, index) => (
@@ -23,14 +23,12 @@ export default function Component() {
   )
 }
 
-
-
-
 const items = [
 
   <div className="aspect-video overflow-hidden ">
     <video autoPlay loop muted className="w-full h-[80vh] object-cover">
-      <source src="/image/chubbycheeks/video-4.mp4" />    </video>
+      <source src="/image/chubbycheeks/video-4.mp4" />
+    </video>
   </div>,
 
   <img src="/image/chubbycheeks/image-11.png" alt="Carousel Image" width={1200} height={675} className="w-full h-[80vh] object-cover"

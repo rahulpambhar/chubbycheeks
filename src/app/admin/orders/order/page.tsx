@@ -6,6 +6,7 @@ import {
     ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { getReturnOrdersFunc } from "@/app/redux/slices/returnOrderSlice";
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -30,7 +31,7 @@ export type Payment = {
     email: string
 }
 
- const columns: ColumnDef<any>[] = [
+const columns: ColumnDef<any>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -181,12 +182,17 @@ export default function DataTableDemo() {
     const dispatch = useAppDispatch();
     const searchParams = useSearchParams()
     const orderID: string | null = searchParams.get('orderID')
-    const getOrders = async () => await dispatch(getOrdersFunc({ page: 1, limit: 10, search: orderID, from: "", to: "", slug: "getById", }))
+    const returnOrderID: string | null = searchParams.get('returnOrderID')
+
+    const getOrder = async () => await dispatch(getOrdersFunc({ page: 1, limit: 10, search: orderID, from: "", to: "", slug: "getById", }))
+    const getReturnOrder = async () => await dispatch(getReturnOrdersFunc({ page: 1, limit: 10, search: returnOrderID, from: "", to: "", slug: "getById", }))
 
     const data: any = useAppSelector((state) => state?.orderReducer?.orders);
+    const data_: any = useAppSelector((state) => state?.returnOrderReducer?.returnOrderId);
+    console.log('data_::: ', data_);
 
     const table = useReactTable({
-        data: data?.OrderItem || [],
+        data: orderID ? data?.OrderItem : data_?.items || [],
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -204,8 +210,10 @@ export default function DataTableDemo() {
         },
     })
 
+
     useEffect(() => {
-        orderID && getOrders()
+        orderID && getOrder()
+        returnOrderID && getReturnOrder()
     }, [orderID])
 
 

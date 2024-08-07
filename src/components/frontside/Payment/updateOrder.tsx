@@ -12,14 +12,22 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import PaymentFields from './paymentFields'
 import { updateOrdersFunc } from '../../../app/redux/slices/orderSlices';
 import { useSearchParams, } from 'next/navigation'
+import { updateReturnOrdersFunc } from '@/app/redux/slices/returnOrderSlice';
 
 const UpdateOrder = ({ order_ }: { order_: any; }) => {
     const { data: session, status }: any = useSession();
 
+
     const [loader, setLoader] = useState(false);
     const searchParams = useSearchParams()
     const orderID: string | null = searchParams.get('orderID')
-    const orderData = orderID && useAppSelector((state) => state?.orderReducer?.orders?.find((order: any) => order.id === orderID))
+    const returnOrderID: string | null = searchParams.get('returnOrderID')
+
+    let orderData = orderID && useAppSelector((state) => state?.orderReducer?.orders?.find((order: any) => order.id === orderID))
+
+    if (returnOrderID) {
+        orderData = useAppSelector((state: any) => state?.returnOrderReducer?.returnOrderId?.order)
+    }
 
     const dispatch = useAppDispatch();
 
@@ -39,16 +47,24 @@ const UpdateOrder = ({ order_ }: { order_: any; }) => {
 
             if (orderMeta.selectedItems.length === 0) {
                 errorToast("Please select atleast one item to proceed")
+                setLoader(false)
                 return
             }
 
-            orderMeta.data = data
 
-            const res: any = await dispatch(updateOrdersFunc({ id: orderID, data: orderMeta, orderStatus: "UPDATE" }))
+            if (!returnOrderID) {
+                orderMeta.data = data
+                const res: any = await dispatch(updateOrdersFunc({ id: orderID, data: orderMeta, orderStatus: "UPDATE" }))
 
-            res?.payload?.st ? successToast(res?.payload?.msg) : errorToast(res?.payload?.msg);
-            setLoader(false)
+                res?.payload?.st ? successToast(res?.payload?.msg) : errorToast(res?.payload?.msg);
+                setLoader(false)
+            }
 
+            if (returnOrderID) {
+                const res: any = await dispatch(updateReturnOrdersFunc({ id: returnOrderID, data: orderMeta, orderStatus: "UPDATE" }))
+                res?.payload?.st ? successToast(res?.payload?.msg) : errorToast(res?.payload?.msg);
+                setLoader(false)
+            }
 
         } catch (error) {
             console.log('error::: ', error);
@@ -87,7 +103,7 @@ const UpdateOrder = ({ order_ }: { order_: any; }) => {
 
 
                     {session && <Button type='submit' disabled={loader} className="w-full max-w-xs mt-6 sm:ml-20 md:ml-20 bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900" >
-                        Update Order
+                        Update
                     </Button>}
                 </form>
             </Form>

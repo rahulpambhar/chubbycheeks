@@ -126,7 +126,8 @@ export default function Checkout({ params }: { params: { estimation: string } })
     }, [order_])
 
     useEffect(() => {
-        !session ? () => { return router.push('/') } : null
+        !session && router.push('/')
+
         const getProducts = async () => {
             let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/getProduct/products?id=${id}`);
             const productForBuy = response.data;

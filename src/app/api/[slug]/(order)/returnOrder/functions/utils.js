@@ -2,7 +2,7 @@
 import axios from "axios";
 import prisma from "../../../../../../../prisma/prismaClient";
 import { parse } from "url";
-
+import { orderStatusMap } from "../../order/functions/utils";
 
 export const getReturnOrders = async (userId) => {
 
@@ -20,6 +20,11 @@ export const getReturnOrders = async (userId) => {
         return { st: false, data: [], msg: "something went wrong!!" }
     }
 }
+
+const getOrderStatusEnum = (search) => {
+    return orderStatusMap[search.toUpperCase()] || undefined;
+};
+
 export const getReturnOrdersByPage = async (request) => {
     const { query } = parse(request.url, true);
     const { page = 1, limit = 10, search = '', slug = '', from, to } = query;
@@ -73,8 +78,6 @@ export const getReturnOrdersByPage = async (request) => {
                 }
             ] : undefined
         };
-
-
 
         let count = await prisma.returnOrder.count({
             where: where,
@@ -141,6 +144,9 @@ export const shiproketReturnOrder = async (body) => {
             },
         });
 
+        if (!returnOrder) {
+            return { st: false, data: [], msg: "No Orders found" }
+        }
 
         const order_items = returnOrder?.items.map((item) => {
             const total = item?.qty * item?.product?.price
@@ -251,6 +257,7 @@ export const getReturnOrdersById = async (request) => {
                     }
                 },
                 user: true,
+                order: true
             },
         });
 
@@ -266,3 +273,4 @@ export const getReturnOrdersById = async (request) => {
 
 
 }
+

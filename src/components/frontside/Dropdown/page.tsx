@@ -12,12 +12,9 @@ import { errorToast, successToast } from '@/components/toster'
 import { useSession } from "next-auth/react";
 
 const page = ({ item, getOrders }: any) => {
-    console.log('item::: ', item);
     const { data: session, status }: any = useSession();
 
     const dispatch = useAppDispatch();
-
-
 
     return (
         <DropdownMenu>
@@ -61,7 +58,6 @@ const page = ({ item, getOrders }: any) => {
                         if (res?.payload?.st === true) {
                             successToast(res?.payload?.msg)
                             session && getOrders()
-
                         } else {
                             errorToast(res?.payload?.msg)
                         }

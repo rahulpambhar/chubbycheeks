@@ -6,7 +6,6 @@ import { createTempOrderFunc, createOrderFunc, getOrdersFunc } from '../../redux
 import { useSession } from "next-auth/react";
 import { errorToast, successToast } from '@/components/toster';
 import Link from 'next/link';
-import moment from "moment"
 import { getReturnOrdersFunc } from '@/app/redux/slices/returnOrderSlice';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
@@ -25,24 +24,15 @@ import AddressSection from '@/components/frontside/profile/addressSection';
 import ChangePassword from '@/components/frontside/profile/changePassword';
 import axios from 'axios';
 import Pagination from 'react-js-pagination';
-import { FaStar, FaHeart, } from "react-icons/fa6";
 import { BsHeartbreak } from "react-icons/bs";
 import { addDays, format } from "date-fns"
-import Dropdown from '@/components/frontside/Dropdown/page'
-import { FaCopy } from 'react-icons/fa';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Button } from "@/components/ui/button";
-
-import {
-    Card,
-    CardHeader,
-
-    CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent, } from "@/components/ui/card";
 import { StarRating } from '@/components/frontside/TopselectionCard/page';
 import MyOrders from '@/components/frontside/MyOrders/page';
 import MyReturnOrders from '@/components/frontside/MyReturnOrders/page';
-import { RedirectType, useRouter, } from 'next/navigation'
+import {  useRouter, } from 'next/navigation'
 
 export default function Checkout() {
     const { data: session, status }: any = useSession();

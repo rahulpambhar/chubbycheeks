@@ -178,6 +178,8 @@ function Page({ className, ...props }: any) {
         }
     };
 
+    
+
     useEffect(() => {
         session && selectedOption === "ALL" && getOrders()
     }, [session, page, perPage])
@@ -383,6 +385,9 @@ function Page({ className, ...props }: any) {
                                 }
 
                                 <th scope="col" className="px-6 py-3">
+                                    Invoice No
+                                </th>
+                                <th scope="col" className="px-6 py-3">
                                     Order Id
                                 </th>
                                 <th scope="col" className="px-6 py-3">
@@ -432,6 +437,9 @@ function Page({ className, ...props }: any) {
                                             />
                                         </td>
                                         <td className="px-6 ">
+                                            <div className="font-normal text-gray-500">{item?.invoiceNo}</div>
+                                        </td>
+                                        <td className="px-6 ">
                                             <div className="font-normal text-gray-500">{moment(item?.createdAt).format("DD-MM-YYYY")}</div>
                                             <div className="font-normal text-gray-500">{moment(item?.createdAt).format("HH:mm:ss")}</div>
                                         </td>
@@ -443,7 +451,7 @@ function Page({ className, ...props }: any) {
                                         <td className="">
                                             <Select_ value={item?.orderStatus} onValueChange={async (e) => {
                                                 const ids = [item?.id]
-                                                if (item?.orderStatus === "RETURNED") {
+                                                if (item?.orderStatus === "RETURNED" ) {
                                                     errorToast("You can't change status");
                                                     return
                                                 }

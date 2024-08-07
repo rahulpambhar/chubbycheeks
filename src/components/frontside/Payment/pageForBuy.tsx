@@ -216,16 +216,33 @@ const Payment = ({ OTP, setOTP, setThankingMsg, order_, checkSizes, returnOrder,
     };
 
     useEffect(() => {
+        isVerifyOTP?.st === true && onSubmit(form.control?._formValues)
 
-        if (isVerifyOTP?.st === true) {
-
-            onSubmit(form.control?._formValues)
-        }
     }, [isVerifyOTP, form])
     return (
         <div className="">
             <Form {...form}  >
-                <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                <form onSubmit={form.handleSubmit(() => {
+                    setLoader(true)
+
+                    const orderMeta = { selectedItems: [{ productId: order_[0]?.id, qty: order_[0]?.qty, checked: true, size: productSize }] }
+                    const isSizes: any = checkSizes(orderMeta?.selectedItems)
+
+                    if (!isSizes.st) {
+                        errorToast(isSizes.msg);
+                        setLoader(false)
+                        return
+                    }
+                    if (form.control?._formValues?.paymentMethod === "COD") {
+                        setTimeInSeconds(60);
+                        generateOTP();
+                        setLoader(false)
+
+
+                    } else {
+                        onSubmit(form.control?._formValues)
+                    }
+                })} className="">
                     <PaymentFields form={form} returnOrder={returnOrder} />
 
                     {
@@ -280,24 +297,7 @@ const Payment = ({ OTP, setOTP, setThankingMsg, order_, checkSizes, returnOrder,
                                 <div className=' text-sm' >Time Left to Use OTP : {timerDisplay}</div>
                             </div>
                             :
-                            <Button type='button' disabled={loader} className="w-full max-w-xs sm:ml-20 md:ml-20 bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900" onClick={() => {
-
-                                const orderMeta = { selectedItems: [{ productId: order_[0]?.id, qty: order_[0]?.qty, checked: true, size: productSize }] }
-                                const isSizes: any = checkSizes(orderMeta?.selectedItems)
-
-                                if (!isSizes.st) {
-                                    errorToast(isSizes.msg);
-                                    return
-                                }
-                                if (form.control?._formValues?.paymentMethod === "COD") {
-                                    setTimeInSeconds(60);
-                                    generateOTP();
-
-                                } else {
-                                    onSubmit(form.control?._formValues)
-                                }
-
-                            }} >
+                            <Button type='submit' disabled={loader} className="w-full max-w-xs sm:ml-20 md:ml-20 bg-gray-900 text-white py-2 rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-900"  >
                                 PROCEED
                             </Button>
                     }

@@ -6,16 +6,16 @@ import { signIn } from "next-auth/react";
 import { useRouter, usePathname, redirect } from "next/navigation";
 import Image from "next/image";
 import { useSearchParams } from 'next/navigation';
-import { useSession } from "next-auth/react";
-import { toast } from "react-hot-toast"
 import { isLoginModel } from '../../app/redux/slices/utilSlice';
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { errorToast, successToast } from "../toster";
 import { loginInitials, loginValidationSchema, countryCodes } from "@/app/utils";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import ChangePassword from './changePasword';
-import { XIcon } from "..";
-import axios from "axios";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Label } from "@/components/ui/label"
 
 
 
@@ -40,12 +40,7 @@ const PasswordField = ({ field, form, ...props }: any) => {
 };
 
 
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
+
 
 const LoginComponents = () => {
     const dispatch = useAppDispatch();
@@ -61,7 +56,7 @@ const LoginComponents = () => {
     return (
         <>
             {!forgotPassword ?
-                <Dialog defaultOpen>
+                <Dialog defaultOpen onOpenChange={(open) => !open && dispatch(isLoginModel(false))} >
                     <DialogContent className="sm:max-w-[425px]">
                         <Formik
                             initialValues={loginInitials}

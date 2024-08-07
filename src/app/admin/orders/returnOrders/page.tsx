@@ -79,6 +79,7 @@ function Page({ className, ...props }: any) {
 
 
     const getReturnOrders = async () => await dispatch(getReturnOrdersFunc({ page: page, limit: perPage, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getPaginated", }))
+
     const data: any = useAppSelector((state) => state?.returnOrderReducer?.returnOrders);
     const total_pages = data?.total_pages;
 
@@ -93,11 +94,7 @@ function Page({ className, ...props }: any) {
             errorToast('Failed to copy');
         });
     };
-
-    const getOrderSearch = async (search: string) => await dispatch(getOrdersFunc({ page: page, limit: perPage, search: search, from: date?.from?.toString(), to: date?.to?.toString(), slug: "getPaginated", }))
-
-
-
+    const getReturnOrderSearch = async (search: string) => await dispatch(getReturnOrdersFunc({ page: page, limit: perPage, search: search, from: date?.from?.toString(), to: date?.to?.toString(), slug: "getPaginated", }))
 
     const getActionButton = (status: any) => {
         switch (status) {
@@ -114,7 +111,7 @@ function Page({ className, ...props }: any) {
                     const res = await dispatch(updateOrdersFunc({ id: selectedItems, data: {}, orderStatus: "ACCEPTED", }));
                     if (res?.payload?.st === true) {
                         successToast(res?.payload?.msg);
-                        getOrderSearch(status)
+                        getReturnOrderSearch(status)
                         setSelectedItems([]);
 
                     } else {
@@ -136,7 +133,7 @@ function Page({ className, ...props }: any) {
                         const res = await dispatch(updateOrdersFunc({ id: selectedItems, data: {}, orderStatus: "CANCELLED", }));
                         if (res?.payload?.st === true) {
                             successToast(res?.payload?.msg);
-                            getOrderSearch(status)
+                            getReturnOrderSearch(status)
                             setSelectedItems([]);
 
                         } else {
@@ -318,7 +315,8 @@ function Page({ className, ...props }: any) {
 
                         <div className="mx-6 my-3">
                             <Select_ value={selectedOption} onValueChange={(e) => {
-                                e === "ALL" ? getReturnOrders() : getOrderSearch(e)
+
+                                e === "ALL" ? getReturnOrders() : getReturnOrderSearch(e)
                                 setSelectedOption(e)
                             }}>
                                 <SelectTrigger className={`font-normal ${getStatusClass(selectedOption)} rounded px-2 py-1`} >
@@ -345,13 +343,12 @@ function Page({ className, ...props }: any) {
                         <div className="mx-6 my-3">
                             {selectedOption === "PROCESSING" && getActionButton(selectedOption)}
                             {selectedOption === "SHIPPED" && getActionButton(selectedOption)}
-
                         </div>
 
                         <div className="relative ml-auto">
 
                             <button onClick={(e: any) => {
-                                getOrderSearch(searchOrder)
+                                getReturnOrderSearch(searchOrder)
                             }} type="button" className="absolute  inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 ">
                                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
@@ -389,6 +386,9 @@ function Page({ className, ...props }: any) {
 
                                 <th scope="col" className="px-6 py-3">
                                     Return Order Id
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Invoice No
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Order Id
@@ -439,6 +439,9 @@ function Page({ className, ...props }: any) {
                                                 title="Copy to clipboard"
                                             />
                                         </td>
+                                        <td className="px-6 ">
+                                            <div className="font-normal text-gray-500">{item?.invoiceNo}</div>
+                                        </td>
                                         <td scope="row" className=" items-center px-6  text-gray-900 whitespace-nowrap dark:text-white">
                                             <h6 className="font-normal text-gray-500">{`${item?.orderId?.slice(0, 3)}...${item?.orderId.slice(-4)}`}</h6>
                                             <FaCopy
@@ -459,15 +462,20 @@ function Page({ className, ...props }: any) {
                                         <td className="">
                                             <Select_ value={item?.orderStatus} onValueChange={async (e) => {
                                                 const ids = [item?.id]
+                                                if (e === "RETURNED") {
+                                                    errorToast("You can't return this order")
+                                                    return
+                                                }
                                                 if (e === "SHIPPED") {
                                                     openDrawer(item?.id, "SHIPPED")
-                                                    return
+
                                                 }
 
                                                 const res = await dispatch(updateReturnOrdersFunc({ id: ids?.length > 0 ? ids : item?.id, data: {}, orderStatus: e, }));
                                                 if (res?.payload?.st === true) {
                                                     successToast(res?.payload?.msg);
                                                     item?.orderStatus === selectedOption ? getReturnOrderSearch(selectedOption) : getReturnOrders()
+                                                    // item?.orderStatus === selectedOption ? "" : getReturnOrders()
                                                 } else {
                                                     errorToast(res?.payload?.msg);
                                                 }
@@ -509,7 +517,7 @@ function Page({ className, ...props }: any) {
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent className="w-56">
-                                                    <Link href={`/admin/orders/order?orderID=${item?.id}`}>
+                                                    <Link href={`/admin/orders/order?returnOrderID=${item?.id}`}>
                                                         <DropdownMenuCheckboxItem>
                                                             View
                                                         </DropdownMenuCheckboxItem>

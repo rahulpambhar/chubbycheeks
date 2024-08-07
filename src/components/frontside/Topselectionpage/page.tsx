@@ -4,11 +4,6 @@ import { useSelector } from 'react-redux';
 import { useAppSelector } from "../../../app/redux/hooks";
 import TopselectionCard from "../TopselectionCard/page";
 
-// Dummy wishlist actions
-const toggleWishlistItem = (item: any) => ({
-  type: 'TOGGLE_WISHLIST_ITEM',
-  payload: item,
-});
 
 export default function Component() {
   const Topselectionitem: any = useSelector((state: any) => state.categories.productsList);
@@ -23,7 +18,7 @@ export default function Component() {
     <>
       <section className="container mx-auto py-12 font-sans mt-[100px]">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex-grow flex justify-center items-center uppercase font-normal text-5xl pt-10 unica-one">
+          <div className="flex-grow flex justify-center items-center uppercase sm:text-3xl md:text-5xl pt-10 unica-one">
             Top selection
           </div>
           <div className="flex justify-end mx-6 md:mx-8 lg:mx-12 items-center pt-5 md:pt-5 z-10 relative">

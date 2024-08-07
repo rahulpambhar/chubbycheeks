@@ -1,32 +1,25 @@
 "use client";
-
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams, } from 'next/navigation'
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { getOrdersFunc, } from '../../../../redux/slices/orderSlices';
 import { useSession } from "next-auth/react";
-
 import { fetchCategories } from "../../../../redux/slices/categorySlice";
 import Image from 'next/image';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Button } from '@/components/ui/button';
 import { addYears, setHours, setMinutes, setSeconds, setMilliseconds, } from "date-fns";
-
 import Cart from '@/components/Cart';
 import { DateRange } from "react-day-picker"
-import {
-    Card as CardComponent,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@/components/ui/card";
+import { Card as CardComponent, CardHeader, CardTitle, CardContent, } from "@/components/ui/card";
 import { StarRating } from "@/components/frontside/TopselectionCard/page";
-import { Card, CardBody, Slider } from "@nextui-org/react";
+import { button, Card, CardBody, Slider } from "@nextui-org/react";
 import Link from 'next/link';
 import { Checkbox } from "@/components/ui/checkbox";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import UpdateOrder from '@/components/frontside/Payment/updateOrder';
+import { getReturnOrdersFunc } from "@/app/redux/slices/returnOrderSlice";
 
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
@@ -43,17 +36,17 @@ export default function Checkout({ params }: { params: { estimation: string } })
     oneMonthAgo.setMonth(today.getMonth() - 1);
     const [date, setDate] = useState<DateRange | undefined>({ from: oneMonthAgo, to: today, })
 
-    const preserveTime = (date: any, referenceDate: any) => {
-        return setMilliseconds(setSeconds(setMinutes(setHours(date, referenceDate.getHours()), referenceDate.getMinutes()), referenceDate.getSeconds()), referenceDate.getMilliseconds());
-    };
-
     const dispatch = useAppDispatch();
 
     const getOrders = async () => await dispatch(getOrdersFunc({ page: 1, limit: 1000, search: "", from: date?.from?.toString(), to: date?.to?.toString(), slug: "getAll", }))
+    const getReturnOrder = async () => await dispatch(getReturnOrdersFunc({ page: 1, limit: 10, search: returnOrderID, from: "", to: "", slug: "getById", }))
+
     const searchParams = useSearchParams()
 
     const router = useRouter()
     const orderID: string | null = searchParams.get('orderID')
+    const returnOrderID: string | null = searchParams.get('returnOrderID')
+
     const id = params?.estimation;
     let productForBuy: any = useAppSelector(
         (state): any => state?.categories?.products?.find((item: any) => item.id === id)
@@ -62,12 +55,25 @@ export default function Checkout({ params }: { params: { estimation: string } })
     productForBuy = [{ ...productForBuy, checked: true }]
 
     const [order_, setOrder]: any = useState([])
-    const order = orderID ? useAppSelector((state) => state?.orderReducer?.orders?.find((order: any) => order.id === orderID)?.OrderItem) : useAppSelector((state) => state?.cartReducer?.cartItem) || [];
+    let order = orderID && useAppSelector((state) => state?.orderReducer?.orders?.find((order: any) => order.id === orderID)?.OrderItem)
+
+    if (returnOrderID) {
+        order = useAppSelector((state: any) => state?.returnOrderReducer?.returnOrderId?.items)
+
+    }
+
     const isLoading = useAppSelector((state) => state?.cartReducer?.loading);
 
+
     useEffect(() => {
-        orderID ? setOrder(order?.map((item: any) => ({ ...item, checked: true }))) : setOrder(order)
-    }, [order])
+        orderID ? setOrder(order?.map((item: any) => ({ ...item, checked: true }))) : null
+    }, [orderID, order])
+
+    useEffect(() => {
+        returnOrderID ? setOrder(order?.map((item: any) => ({ ...item, checked: false }))) : null
+    }, [returnOrderID, order])
+
+
 
     useEffect(() => {
         setSubTotal(
@@ -144,9 +150,10 @@ export default function Checkout({ params }: { params: { estimation: string } })
     }, [order_])
 
     useEffect(() => {
-        !session ? () => { return router.push('/') } : null
-        getOrders()
-    }, [])
+        !session && router.push('/')
+        orderID && getOrders()
+        returnOrderID && getReturnOrder();
+    }, [session, orderID, returnOrderID])
 
     const toggleSelect = (id: any, index: number) => {
         setOrder(order_.map((item: any) => { return item.id === id ? { ...item, checked: !item.checked } : item }))
@@ -161,7 +168,8 @@ export default function Checkout({ params }: { params: { estimation: string } })
 
             <CardComponent className="w-full">
                 <CardHeader>
-                    <CardTitle>Order Summary</CardTitle>
+                    <CardTitle>{returnOrderID ? "Return Order Summary" : "Order Summary"}  </CardTitle>
+                    <h6 className='text-sm'>Id : {orderID ? orderID : returnOrderID}</h6>
                 </CardHeader>
                 <ScrollArea className="h-[500px] w-auto mt-1 rounded-md border">
                     {session && order_?.length > 0 ? (
@@ -187,6 +195,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                 <Checkbox checked={item?.checked} onCheckedChange={(e) => {
 
                                                     orderID && toggleSelect(item.id, i)
+                                                    returnOrderID && toggleSelect(item.id, i)
                                                 }} id="terms" className='absolute right-0 top-0 '
                                                 />
 
@@ -227,38 +236,46 @@ export default function Checkout({ params }: { params: { estimation: string } })
 
                                             <div className="flex justify-between w-full mt-2 ">
                                                 <div className="flex items-center gap-2">
-                                                    <p className='text-sm'> Select size</p>
-                                                    <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
-                                                        const newArray = order_?.map((e: any) => {
-                                                            if (e.id === item.id) {
-                                                                return { ...e, size: value };
-                                                            }
-                                                            return e;
-
-                                                        })
-                                                        setOrder(newArray)
-                                                    }} >
-                                                        {
-                                                            item?.product?.size?.map((item: any) => (
-                                                                <ToggleGroupItem
-                                                                    key={item}
-                                                                    value={item}
-                                                                    className="w-3 h-6 bg-gray-400 text-black  border-black "
-                                                                >
-                                                                    <p className="text-tiny">{item}</p>
-                                                                </ToggleGroupItem>
-                                                            ))
-                                                        }
-                                                    </ToggleGroup>
+                                                    <p className='text-sm'>  size</p>
+                                                    {
+                                                        orderID ?
+                                                            <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
+                                                                const newArray = order_?.map((e: any) => {
+                                                                    if (e.id === item.id) {
+                                                                        return { ...e, size: value };
+                                                                    }
+                                                                    return e;
+                                                                })
+                                                                setOrder(newArray)
+                                                            }} >
+                                                                {
+                                                                    item?.product?.size?.map((item: any) => (
+                                                                        <ToggleGroupItem
+                                                                            key={item}
+                                                                            value={item}
+                                                                            className="w-3 h-6 bg-gray-400 text-black  border-black "
+                                                                        >
+                                                                            <p className="text-tiny">{item}</p>
+                                                                        </ToggleGroupItem>
+                                                                    ))
+                                                                }
+                                                            </ToggleGroup> : <Button className=" bg-white border border-black text-black h-[30px] w-2 rounded-sm hover:bg-green-700" disabled>{item?.size}</Button>
+                                                    }
                                                 </div>
 
                                                 {item.checked && <div className="flex items-center gap-2 ml-2">
                                                     <Button className=" bg-white border border-black text-black h-[30px] w-2 rounded-sm hover:bg-green-700" disabled={isLoading} onClick={() => {
                                                         const updatedItems: any = order_.map((o: any) => {
-                                                            const orderQty = order?.find((val: any) => val.id === item.id)?.qty || 0;
-                                                            if (o.id === item.id) {
+
+                                                            const qty = order?.find((val: any) => val.id === item.id)?.qty
+
+                                                            if (orderID && o.id === item.id) {
                                                                 return { ...o, qty: o.qty + 1 };
                                                             }
+                                                            if (returnOrderID && qty >= o.qty + 1 && o.id === item.id) {
+                                                                return { ...o, qty: o.qty + 1 };
+                                                            }
+
                                                             return o;
                                                         });
                                                         setOrder(updatedItems);
@@ -319,7 +336,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
             <div>
                 <CardComponent className="w-full">
                     <CardHeader>
-                        <CardTitle>Payment</CardTitle>
+                        <CardTitle>{orderID ? "Payment" : "Updated Return"}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid gap-6">
@@ -331,7 +348,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
                             </div>
 
                             <Separator />
-
                             <UpdateOrder order_={order_} />
                         </div>
                     </CardContent>

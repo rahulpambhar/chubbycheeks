@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion, scroll, useScroll } from "framer-motion";
 import Careabout from "../CareAbout/page";
 
 const careAboutItems1 = [
@@ -31,7 +30,7 @@ const careAboutItems1 = [
 const About = () => {
   return (
     <div className="bg-[#eeeeee] pt-4 pb-10 ">
-      <div className="flex justify-center items-center uppercase text-5xl pt-10 font-normal text-unica-one">
+      <div className="flex-grow flex justify-center items-center uppercase sm:text-3xl md:text-5xl pt-10 unica-one">
         Just like you, we care about
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-10 lg:mx-20  ">

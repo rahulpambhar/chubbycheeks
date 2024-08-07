@@ -5,7 +5,6 @@ import { RedirectType, useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import { getOrdersFunc, } from "../../../redux/slices/orderSlices";
 import { useSession } from "next-auth/react";
-import { errorToast, successToast } from "@/components/toster";
 import axios from "axios";
 import { actionTocartFunction_ } from "@/components/Cart";
 import { fetchCategories } from "../../../redux/slices/categorySlice";
@@ -13,56 +12,23 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Button } from '@/components/ui/button';
-import {
-    setHours,
-    setMinutes,
-    setSeconds,
-    setMilliseconds,
-    addDays,
-    format,
-} from "date-fns";
+import { setHours, setMinutes, setSeconds, setMilliseconds, } from "date-fns";
 import Script from "next/script";
-import { fetchCart } from "@/app/redux/slices/cartSclice";
 import Cart from "@/components/Cart";
 import { DateRange } from "react-day-picker";
 import ThankingMsg from "@/components/frontside/ThankingMsg/page";
-import { Textarea } from "@/components/ui/textarea";
-
 import { Card, CardBody, Slider } from "@nextui-org/react";
-import {
-    HeartIcon,
-    PauseCircleIcon,
-    NextIcon,
-    PreviousIcon,
-    RepeatOneIcon,
-    ShuffleIcon,
-} from "@/components";
-
-import {
-    Card as CardComponent,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Card as CardComponent, CardHeader, CardTitle, CardContent, } from "@/components/ui/card";
 import moment from "moment"
-
 import Link from "next/link";
 import { StarRating } from "@/components/frontside/TopselectionCard/page";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import GlobalError from "next/dist/client/components/error-boundary";
 import { checkSizes } from "@/app/utils";
 import Payment from "@/components/frontside/Payment/page";
-import { tree } from "next/dist/build/templates/app-page";
 import { getReturnOrdersFunc } from "@/app/redux/slices/returnOrderSlice";
 
-export default function Checkout({
-    params,
-}: {
-    params: { estimation: string };
-}) {
+export default function Checkout({ params, }: { params: { estimation: string }; }) {
     const { data: session, status }: any = useSession();
     const [subTotal, setSubTotal] = useState(0);
     const [taxableAmtTotal, setTaxableTotal] = useState(0);
@@ -82,19 +48,6 @@ export default function Checkout({
         from: oneMonthAgo,
         to: today,
     });
-
-    const preserveTime = (date: any, referenceDate: any) => {
-        return setMilliseconds(
-            setSeconds(
-                setMinutes(
-                    setHours(date, referenceDate.getHours()),
-                    referenceDate.getMinutes()
-                ),
-                referenceDate.getSeconds()
-            ),
-            referenceDate.getMilliseconds()
-        );
-    };
 
     const dispatch = useAppDispatch();
     const actionTocartFunction = (item: any, action: any) =>

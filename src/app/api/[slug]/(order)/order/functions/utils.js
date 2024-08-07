@@ -36,7 +36,7 @@ export const getOrders = async (id) => {
     return orders;
 }
 
-const orderStatusMap = {
+export const orderStatusMap = {
     PROCESSING: 'PROCESSING',
     ACCEPTED: 'ACCEPTED',
     SHIPPED: 'SHIPPED',
@@ -215,6 +215,10 @@ export const shiproketOrder = async (body) => {
         },
     });
 
+    if (!order) {
+        return { st: false, data: [], msg: "No Orders found", }
+    }
+
     const order_items = order?.OrderItem.map((item) => ({
         "name": item?.product?.name,
         "sku": item?.product?.sku,
@@ -367,7 +371,7 @@ export const cancelOrder = async (body) => {
         await Promise.all(
             id.map(async (item) => {
                 await prisma.order.update({
-                    where: { id: item, isBlocked: false }, data: { orderStatus: orderStatus, updatedBy: session?.user?.id, cancelledAt: new Date() }
+                    where: { id: item, isBlocked: false, orderStatus: ["PROCESSING", "ACCEPTED"] }, data: { orderStatus: orderStatus, updatedBy: session?.user?.id, cancelledAt: new Date() }
                 })
 
             })
@@ -385,7 +389,7 @@ export const cancelOrder = async (body) => {
         await Promise.all(
             id.map(async (item) => {
                 await prisma.order.update({
-                    where: { id: item, isBlocked: false }, data: { orderStatus: orderStatus, updatedBy: session?.user?.id, cancelledAt: new Date() }
+                    where: { id: item, isBlocked: false, orderStatus: ["PROCESSING", "ACCEPTED",] }, data: { orderStatus: orderStatus, updatedBy: session?.user?.id, cancelledAt: new Date() }
                 })
 
             })

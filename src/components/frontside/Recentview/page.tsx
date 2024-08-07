@@ -77,9 +77,9 @@ const Recentviewedcard = ({
       <CardFooter className="flex flex-col items-start p-2 space-y-2">
         <b className="text-sm font-semibold">{item.name}</b>
         <p className="text-tiny text-left text-gray-700 overflow-auto max-h-12">
-          {item?.description.split(' ').slice(0, 15).join(' ')}...
+          {item?.description.split(' ').slice(0, 5).join(' ')}...
           <Link href={`/preview/${item?.id}`} className="text-orange-500">
-            Preview
+            More
           </Link>
         </p>
         <div className="flex flex-col sm:flex-row justify-between items-center w-full space-y-2 sm:space-y-0">
@@ -97,7 +97,7 @@ const Recentviewedcard = ({
         </div>
         <div className="flex flex-col justify-center sm:flex-row gap-2 w-full">
 
-          <Button variant="outline" className="w-full   sm:w-auto border-green-300 text-green-600 hover:bg-green-100">
+          <Button variant="outline" className="w-full   sm:w-auto border-gray-600 text-green-600 hover:bg-green-100">
             <Link href={`/buy/${item.id}`} >
               Buy Now
             </Link>
@@ -105,7 +105,7 @@ const Recentviewedcard = ({
           {session && cart?.find((cartItem: any) => cartItem?.productId === item?.id) ? (
             <Button
               variant="outline"
-              className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
+              className="w-full sm:w-auto border-gray-600 text-blue-600 hover:bg-blue-50"
               onClick={() => {
                 session ? dispatch(setOpenCart(!openCart)) : "";
               }}
@@ -115,7 +115,7 @@ const Recentviewedcard = ({
           ) : (
             <Button
               variant="outline"
-              className="w-full sm:w-auto border-blue-300 text-blue-600 hover:bg-blue-50"
+              className="w-full sm:w-auto border-gray-600 text-blue-600 hover:bg-blue-50"
               onClick={() => {
                 session ? addToCartFunction(item?.id, productSize) : dispatch(isLoginModel(true));
               }}

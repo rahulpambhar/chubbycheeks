@@ -8,7 +8,7 @@ import paypal from 'paypal-rest-sdk';
 import authOptions from "@/app/api/auth/[...nextauth]/auth";
 import prisma from "../../../../../../prisma/prismaClient";
 import { json } from "stream/consumers";
-import { getReturnOrders, getReturnOrdersById, getReturnOrdersByPage, shiproketReturnOrder } from "./functions/utils";
+import { getReturnOrders, getReturnOrdersById, getReturnOrdersByPage, shiproketReturnOrder, } from "./functions/utils";
 import { getProduct, getCart, getNextInvoice, activityLog, calculateExpectedDeliveryDate } from "../../utils";
 // import { getOrdersByPage, getOrders, getOrdersById, cancelOrder } from './functions/utils.js'
 import { shiproketLogin, } from '../order/functions/utils'
@@ -259,9 +259,42 @@ export async function PUT(request: Request) {
         let body = await request.json();
         body.session = session
 
-        if (isAdmin) {
+        if (!isAdmin) {
 
             const { id, orderStatus, data } = body
+
+            if (orderStatus === "PROCESSING") {
+
+                if (id?.length === 0) {
+                    return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Please select at least one Return Order", });
+                }
+
+
+                for (const item of id) {
+                    const returnOrder = await prisma.returnOrder.findUnique({
+                        where: { id: item, isBlocked: false, orderStatus: "ACCEPTED" },
+                        select: { orderStatus: true },
+                    });
+
+
+                    if (!returnOrder) {
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Return order not found", });
+                    }
+
+                    await prisma.returnOrder.update({
+                        where: { id: item, isBlocked: false },
+                        data: {
+                            orderStatus: orderStatus,
+                            updatedBy: session?.user?.id,
+                            updatedAt: new Date(),
+                            acceptedAt: new Date(),
+                        },
+                    });
+                }
+
+                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Return order updated successfully!", });
+
+            }
 
             if (orderStatus === "ACCEPTED") {
 
@@ -272,18 +305,13 @@ export async function PUT(request: Request) {
 
                 for (const item of id) {
                     const returnOrder = await prisma.returnOrder.findUnique({
-                        where: { id: item, isBlocked: false },
+                        where: { id: item, isBlocked: false, orderStatus: "PROCESSING" },
                         select: { orderStatus: true },
                     });
 
 
-                    if (returnOrder && ['SHIPPED', 'CANCELLED', 'COMPLETE'].includes(returnOrder.orderStatus)) {
-                        return NextResponse.json({
-                            st: false,
-                            statusCode: StatusCodes.BAD_REQUEST,
-                            data: [],
-                            msg: 'Return Order already processed',
-                        });
+                    if (!returnOrder) {
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Return order not found", });
                     }
 
                     await prisma.returnOrder.update({
@@ -326,6 +354,10 @@ export async function PUT(request: Request) {
                         }
 
                         const setShiproketOrder = await shiproketReturnOrder(body)
+
+                        if (!setShiproketOrder?.st) {
+                            return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: setShiproketOrder?.msg, });
+                        }
 
                         await prisma.shiprockeOrders.create({
 
@@ -388,13 +420,41 @@ export async function PUT(request: Request) {
 
             if (orderStatus === "CANCELLED") {
 
-                // const getCancelOrder = await cancelOrder(body)
 
-                // if (getCancelOrder?.st) {
-                //     return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
-                // } else {
-                //     return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "something goes wrong!! contact to customer support", });
-                // }
+                if (id?.length === 0) {
+                    return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Please select at least one Return Order", });
+                }
+
+
+                for (const item of id) {
+                    const returnOrder = await prisma.returnOrder.findUnique({
+                        where: {
+                            id: item, isBlocked: false, OR: [
+                                { orderStatus: "PROCESSING" },
+                                { orderStatus: "ACCEPTED" }
+                            ]
+                        },
+                        select: { orderStatus: true },
+                    });
+
+
+                    if (!returnOrder) {
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Return order not found", });
+                    }
+
+                    await prisma.returnOrder.update({
+                        where: { id: item, isBlocked: false },
+                        data: {
+                            orderStatus: orderStatus,
+                            updatedBy: session?.user?.id,
+                            updatedAt: new Date(),
+                            acceptedAt: new Date(),
+                        },
+                    });
+                }
+
+                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Return order updated successfully!", });
+
             }
 
             if (orderStatus === "COMPLETE") {
@@ -404,20 +464,16 @@ export async function PUT(request: Request) {
 
 
                 for (const item of id) {
-                    const order = await prisma.order.findUnique({
-                        where: { id: item, isBlocked: false },
+                    const order = await prisma.returnOrder.findUnique({
+                        where: { id: item, isBlocked: false, orderStatus: "SHIPPED" },
                         select: { orderStatus: true },
                     });
 
-                    if (order && ['CANCELLED', 'COMPLETE'].includes(order.orderStatus)) {
-                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: 'Order already processed', });
-                    }
-
                     if (!order) {
-                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Order not found", });
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Return Order not found", });
                     }
 
-                    await prisma.order.update({
+                    await prisma.returnOrder.update({
                         where: { id: item, isBlocked: false },
                         data: {
                             orderStatus: orderStatus,
@@ -426,32 +482,33 @@ export async function PUT(request: Request) {
                         },
                     });
                 }
-                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
+                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Return order updated successfully!", });
 
             }
 
         } else {
             const { id, data, orderStatus, } = body
-            const { name, mobile, country_code, address, city, state, country, pincode, } = data?.data || {}
+            const { name, mobile, country_code, address, city, state, country, pincode, selectedItems } = data?.data || {}
+
+            if (selectedItems?.length === 0) {
+                return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Does not have any  selected item", });
+            }
 
 
             if (orderStatus === "UPDATE") {
 
-
-                for (let item of data?.selectedItems) {
-                    if (item?.size === "NONE" || item?.size === "") {
-                        return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: `Please select size for ${item?.productId}`, });
-                    }
-                }
-
                 const isOrderString = OrderStatus.includes(orderStatus);
-                const isOrder = await prisma.order.findUnique({
+                const isOrder = await prisma.returnOrder.findUnique({
                     where:
                     {
                         id, isBlocked: false,
-                        userId: session?.user?.id
+                        userId: session?.user?.id,
+                        OR: [
+                            { orderStatus: "PROCESSING" },
+                            { orderStatus: "ACCEPTED" }
+                        ]
                     },
-                    include: { OrderItem: true }
+                    include: { items: true }
 
                 });
 
@@ -513,15 +570,6 @@ export async function PUT(request: Request) {
                 netAmount = taxableAmount + GST
 
                 const data_ = {
-                    name,
-                    country_code,
-                    mobile,
-
-                    address,
-                    city,
-                    state,
-                    pincode,
-                    country,
 
                     invoiceNo: isOrder.invoiceNo,
                     invoiceDate: isOrder.invoiceDate,
@@ -531,7 +579,9 @@ export async function PUT(request: Request) {
                     discountAmount,
                     taxableAmount,
                     gst: GST,
-                    otherCharge: 0,
+                    shippingCharge: isOrder.shippingCharge,
+                    handlingCharge: isOrder.handlingCharge,
+                    CODCharges: isOrder.CODCharges,
                     netAmount: netAmount,
 
                     isPaid: isOrder.isPaid,
@@ -545,10 +595,8 @@ export async function PUT(request: Request) {
                     shippedAt: isOrder.shippedAt,
                     cancelledAt: isOrder.cancelledAt,
                     completedAt: isOrder.completedAt,
-                    expectedDate: isOrder.expectedDate,
                     isBlocked: isOrder.isBlocked,
                     userId: isOrder.userId,
-                    cartId: isOrder.cartId,
                     transportId: isOrder.transportId,
                     transportMode: isOrder.transportMode,
                     createdAt: isOrder.createdAt,
@@ -557,38 +605,37 @@ export async function PUT(request: Request) {
                     updatedBy: session?.user?.id,
                 };
 
-                await prisma.order.update({ where: { id: id, userId: session?.user?.id }, data: data_ })
+                const abc = await prisma.returnOrder.update({ where: { id: id, userId: session?.user?.id }, data: data_ })
 
-                for (let x in isOrder?.OrderItem) {
-                    const item = data?.selectedItems?.find((item: any) => item?.productId === isOrder?.OrderItem[x].productId)
+                for (let x in isOrder?.items) {
+                    const item = data?.selectedItems?.find((item: any) => item?.productId === isOrder?.items[x].productId)
 
                     if (item) {
-                        await prisma.orderItem.update({
+                        const xyz = await prisma.returnOrderItem.update({
                             where: {
-                                id: isOrder?.OrderItem[x].id
+                                id: isOrder?.items[x].id
                             },
                             data: {
                                 qty: item.qty,
                                 size: item.size,
 
-                                price: isOrder?.OrderItem[x].price,
-                                isBlocked: isOrder?.OrderItem[x].isBlocked,
+                                price: isOrder?.items[x].price,
+                                isBlocked: isOrder?.items[x].isBlocked,
 
-                                orderId: isOrder?.id,
+                                returnOrderId: isOrder?.id,
                                 productId: item?.productId,
 
-                                createdAt: isOrder?.OrderItem[x].createdAt,
-                                createdBy: isOrder?.OrderItem[x].createdBy,
+                                createdAt: isOrder?.items[x].createdAt,
+                                createdBy: isOrder?.items[x].createdBy,
 
                                 updatedBy: session?.user?.id,
                                 updatedAt: new Date()
                             }
                         });
                     } else {
-
-                        await prisma.orderItem.update({
+                        const pqr = await prisma.returnOrderItem.update({
                             where: {
-                                id: isOrder?.OrderItem[x].id
+                                id: isOrder?.items[x].id
                             },
                             data: {
                                 isBlocked: true,
@@ -596,19 +643,19 @@ export async function PUT(request: Request) {
                         });
                     }
                 }
-                await activityLog("UPDATE", "order", data, session?.user?.id);
-                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
+                await activityLog("UPDATE", "returnOrder", data, session?.user?.id);
+                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Return order updated successfully!", });
 
             } else if (orderStatus === "CANCELLED") {
 
-                const isOrder = await prisma.order.findUnique({
+                const isOrder = await prisma.returnOrder.findUnique({
                     where: {
                         id: id,
                         userId: session?.user?.id,
                         isBlocked: false
                     },
                     include: {
-                        OrderItem: {
+                        items: {
                             where: {
                                 isBlocked: false
                             },
@@ -631,7 +678,8 @@ export async function PUT(request: Request) {
                 }
 
                 if (isOrder?.orderStatus === "PROCESSING" || isOrder?.orderStatus === "ACCEPTED") {
-                    const abc = await prisma.order.update({
+
+                    const abc = await prisma.returnOrder.update({
                         where:
                             { id: id, userId: session?.user?.id },
                         data: {
@@ -641,27 +689,17 @@ export async function PUT(request: Request) {
                         }
                     })
 
-                    await activityLog("CANCEL", "order", data, session?.user?.id);
-                    return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order cancelled successfully!", });
+                    await activityLog("CANCEL", "returnOrder", data, session?.user?.id);
+                    return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Return order cancelled successfully!", });
                 }
 
-                if (isOrder?.orderStatus === "SHIPPED") {
-                    body.id = [id]
-
-                    // const getCancelOrder = await cancelOrder(body)
-
-                    // if (getCancelOrder?.st) {
-                    //     return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
-                    // } else {
-                    //     return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "something goes wrong!! contact to customer support", });
-                    // }
-                }
             }
         }
 
-        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "OTP removed" });
+        return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "Return order updated successfully!" });
 
     } catch (error) {
+        console.log('error::: ', error);
         return NextResponse.json({ st: false, statusCode: StatusCodes.INTERNAL_SERVER_ERROR, data: [], error, msg: "something went wrong!!" });
     }
 

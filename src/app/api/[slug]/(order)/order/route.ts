@@ -205,6 +205,8 @@ export async function GET(request: Request) {
     }
 }
 
+
+
 export async function PUT(request: Request) {
 
     try {
@@ -224,6 +226,42 @@ export async function PUT(request: Request) {
         if (isAdmin) {
 
             const { id, orderStatus, data } = body
+
+            if (orderStatus === "PROCESSING") {
+
+                if (id?.length === 0) {
+                    return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Please select at least one order", });
+                }
+
+
+                for (const item of id) {
+                    const order = await prisma.order.findUnique({
+                        where: { id: item, isBlocked: false, orderStatus: "ACCEPTED" },
+                        select: { orderStatus: true },
+                    });
+
+
+                    if (!order) {
+                      return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "order not found", });
+                    }
+
+                
+
+                    await prisma.order.update({
+                        where: { id: item, isBlocked: false },
+                        data: {
+                            orderStatus: orderStatus,
+                            updatedBy: session?.user?.id,
+                            updatedAt: new Date(),
+                            acceptedAt: new Date(),
+                        },
+                    });
+                }
+
+                return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
+
+            }
+
 
             if (orderStatus === "ACCEPTED") {
 
@@ -288,6 +326,9 @@ export async function PUT(request: Request) {
                         }
 
                         const setShiproketOrder = await shiproketOrder(body)
+                        if (setShiproketOrder?.st === false) {
+                            return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: setShiproketOrder?.msg, });
+                        }
 
                         await prisma.shiprockeOrders.create({
 
@@ -308,6 +349,9 @@ export async function PUT(request: Request) {
                         return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
                     } else {
                         const setShiproketOrder = await shiproketOrder(body)
+                        if (setShiproketOrder?.st === false) {
+                            return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: setShiproketOrder?.msg, });
+                        }
 
                         await prisma.shiprockeOrders.create({
                             data: {
@@ -360,16 +404,12 @@ export async function PUT(request: Request) {
 
                 for (const item of id) {
                     const order = await prisma.order.findUnique({
-                        where: { id: item, isBlocked: false },
+                        where: { id: item, isBlocked: false, orderStatus: "SHIPPED" },
                         select: { orderStatus: true },
                     });
 
-                    if (order && ['CANCELLED', 'COMPLETE'].includes(order.orderStatus)) {
-                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: 'Order already processed', });
-                    }
-
                     if (!order) {
-                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: "Order not found", });
+                        return NextResponse.json({ st: false, statusCode: StatusCodes.BAD_REQUEST, data: [], msg: 'Order not found', });
                     }
 
                     await prisma.order.update({
@@ -383,6 +423,10 @@ export async function PUT(request: Request) {
                 }
                 return NextResponse.json({ st: true, statusCode: StatusCodes.OK, data: [], msg: "order updated successfully!", });
 
+            }
+
+            if (orderStatus === "RETURNED") {
+                return NextResponse.json({ st: false, statusCode: StatusCodes.OK, data: [], msg: "Request not allowed", });
             }
 
         } else {
