@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
 import Breadcrumb from "@/components/admin/breadcrumb";
 import Image from "next/image";
 import { use, useCallback, useEffect, useState } from "react";
@@ -10,15 +8,12 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import moment from "moment";
 import { successToast, errorToast } from "../../../../components/toster/index";
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchCategories } from '../../app/redux/slices/categorySlice';
+
 
 export default function DashBoardPage() {
-  //   const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState({});
-  console.log(data)
   const [modelToggle, setModelToggle] = useState(false);
   const [input, setInput] = useState({});
   const [image, setImage] = useState(null);
@@ -185,7 +180,7 @@ export default function DashBoardPage() {
                 if (deleteId.length > 0) {
                   setDeleteToggle(true);
                 } else {
-                  errorToast("categorys not selected");
+                  errorToast("categories not selected");
                 }
               }}
             >

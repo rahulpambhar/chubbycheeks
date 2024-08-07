@@ -259,7 +259,7 @@ export async function PUT(request: Request) {
         let body = await request.json();
         body.session = session
 
-        if (!isAdmin) {
+        if (isAdmin) {
 
             const { id, orderStatus, data } = body
 
@@ -681,7 +681,15 @@ export async function PUT(request: Request) {
 
                     const abc = await prisma.returnOrder.update({
                         where:
-                            { id: id, userId: session?.user?.id },
+                        {
+                            id: id,
+                            isBlocked: false,
+                            userId: session?.user?.id,
+                            OR: [
+                                { orderStatus: "PROCESSING" },
+                                { orderStatus: "ACCEPTED" }
+                            ]
+                        },
                         data: {
                             orderStatus: "CANCELLED",
                             cancelledAt: new Date(),

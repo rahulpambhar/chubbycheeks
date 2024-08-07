@@ -14,7 +14,7 @@ import Link from "next/link";
 import { IoIosRemove } from "react-icons/io";
 import { PiDotOutlineFill } from "react-icons/pi";
 
-const sidebarSubMenu = [{ name: "category" }, { name: "subCategory" }, { name: "products" },{ name: "top-selection" }];
+const sidebarSubMenu = [{ name: "category" }, { name: "subCategory" }, { name: "products" },{ name: "top-selection / set New" }];
 
 function SidebarMenu({
   name,
@@ -133,7 +133,7 @@ const Admin_Sidebar = ({ closeSidebar }: any) => {
 
           {/* menu */}
           <div className="flex flex-col  ">
-            <Link href="/">
+            <Link href="/admin">
               {" "}
               <SidebarMenu
                 name=""

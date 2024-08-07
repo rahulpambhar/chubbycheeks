@@ -7,6 +7,7 @@ import { useAppDispatch } from '@/app/redux/hooks'
 import { updateOrdersFunc } from '@/app/redux/slices/orderSlices'
 import { errorToast, successToast } from '@/components/toster'
 import { useSession } from "next-auth/react";
+import { updateReturnOrdersFunc } from '@/app/redux/slices/returnOrderSlice';
 
 const page = ({ item, getOrders }: any) => {
     const { data: session, status }: any = useSession();
@@ -45,9 +46,7 @@ const page = ({ item, getOrders }: any) => {
                 }
                 {item?.orderStatus !== "CANCELLED" && item?.orderStatus !== "COMPLETE" && item?.orderStatus !== "RETURNED" && item?.orderStatus !== "SHIPPED"&&(
                     <DropdownMenuItem className='text-red-500' onClick={async () => {
-                        const res: any = await dispatch(updateReturnOrdersFunc({ id: returnOrderID, data: orderMeta, orderStatus: "UPDATE" }))
-
-                        // const res: any = await dispatch(updateOrdersFunc({ id: [item?.id], data: {}, orderStatus: "CANCELLED" }))
+                        const res: any = await dispatch(updateReturnOrdersFunc({ id: item?.id, data: {}, orderStatus: "CANCELLED" }))
 
                         if (res?.payload?.st === true) {
                             successToast(res?.payload?.msg)
