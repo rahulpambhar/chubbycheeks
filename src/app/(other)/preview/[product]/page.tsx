@@ -42,6 +42,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
     const [isPurchased, setIsPurchased] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 0, text: '', });
     const [productSize, setSize] = useState("NONE");
+    console.log('productSize::: ', productSize);
     const fallbackImage = '/image/offer.jpg';
 
     const { data: session, status }: any = useSession();
@@ -155,9 +156,8 @@ export default function Checkout({ params }: { params: { product: string } }) {
     }, []);
 
     useEffect(() => {
-        session && setSize(cart?.find((cartItem: any) => cartItem?.productId === product?.id)?.size);
-
-    }, [session, cart]);
+        session && cart?.find((cartItem: any) => cartItem?.productId === product?.id) && setSize(cart?.find((cartItem: any) => cartItem?.productId === product?.id)?.size);
+ }, [session, cart]);
 
     return (
         <>
@@ -319,7 +319,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
                     </div>
                 </div>
             </div>
-            
+
             <div className="p-5">
                 <div className="flex justify-center items-center uppercase  text-5xl pt-10 font-normal text- unica-one">
                     <p>Related Products</p>
@@ -392,45 +392,6 @@ export default function Checkout({ params }: { params: { product: string } }) {
             <Cart />
         </>
     )
-}
-
-
-const abc = {
-    "id": "66a6319e4d69abdb33367361",
-    "batchNo": "women-1",
-    "sku": "women-1",
-    "name": "Ethereal Elegance",
-    "size": [
-        "M",
-        "XL",
-        "XXL",
-        "L"
-    ],
-    "qty": 10,
-    "price": 10000,
-    "gst": 10,
-    "hsn": "909090",
-    "discount": 10,
-    "discountType": "PERCENTAGE",
-    "description": "Experience the ethereal elegance of our Floral Lace Maxi Dress. This breathtaking piece combines delicate lace with a flowing silhouette, creating a timeless look that exudes grace and sophistication. Perfect for any occasion, this dress promises to make you feel like a goddess.\"",
-    "image": [
-        "1722167710636_0_ladies-1.jpeg"
-    ],
-    "video": null,
-    "brand": "chubbyCheeks",
-    "isBlocked": false,
-    "avgRating": null,
-    "numReviews": null,
-    "uomId": null,
-    "userId": "6583359361dcddf7afe7e355",
-    "categoryId": "6692113607a56a680307df86",
-    "subCategoryId": "66a61b7ab6b0ae99b8985ce6",
-    "topSelected": false,
-    "isNew": false,
-    "createdAt": "2024-07-28T11:55:10.640Z",
-    "createdBy": null,
-    "updatedAt": "2024-07-28T11:55:10.640Z",
-    "updatedBy": null
 }
 
 

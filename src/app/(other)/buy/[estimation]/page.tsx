@@ -148,7 +148,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:gap-12 max-w-6xl px-4 mx-auto mt-8 mb-8 py-6">
 
-            {!thankingMsg ? <ThankingMsg /> :
+            {thankingMsg ? <ThankingMsg /> :
                 order_.length > 0 ?
                     <>
                         <CardComponent className="w-full">

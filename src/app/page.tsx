@@ -20,7 +20,6 @@ export default function Home() {
       <Unitedfree />
       <Recentviewed />
       <Submitemail />
-      
     </div>
   );
 }

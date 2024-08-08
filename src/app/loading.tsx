@@ -11,7 +11,7 @@ export default function Loading({ minHeight }: Props) {
     return (
         <div className="flex min-h-screen items-center justify-center bg-background">
             <div className="flex flex-col items-center space-y-4">
-                <Image src="/image/chubbyCheeks/logo.png" alt="Logo" width={200} height={200} className="size-12 text-black" />
+                <Image src="/image/chubbyCheeks/logo.png" alt="Logo" width={200} height={200} className="size-12 text-black ml-4" />
                 <div className="flex items-center space-x-2">
                     <div className="h-6 w-6 animate-spin text-primary" />
                     <p className="text-lg font-medium text-muted-foreground">Loading...</p>
