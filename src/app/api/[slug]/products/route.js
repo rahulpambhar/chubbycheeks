@@ -43,7 +43,6 @@ export async function POST(request) {
     const brand = formData.get("brand");
     const qty = formData.get("qty");
     const size = formData.getAll("size");
-    console.log('size::: ', size);
     const avgRating = formData.get("avgRating");
     const numReviews = formData.get("numReviews");
     const type = formData.get("type");

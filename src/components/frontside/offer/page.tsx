@@ -6,17 +6,17 @@ const OfferPage = () => {
   const router = useRouter(); return (
     <div className="relative  lg:bg-none">
       <Image width={2000} height={1000}
-        src="/image/chubbyCheeks/offer-4.jpeg"
+        src="/image/chubbyCheeks/Queen.webp"
         alt="offer"
         className=" bg-[#69C8E5] object-contain object-right lg:bg-none w-full h-[700px]"
       />
       <div className=" bg-[#69C8E5] sm:absolute md:top-4 md:left-10 lg:top-28 lg:left-28  md:bg-transparent py-5  px-5 ">
         <div className="text-2xl lg:text-5xl font-semibold">
           {" "}
-          <p>20% OFF</p> MONSOON SALE
+          <p>Upto 30% OFF</p> MONSOON SALE
         </div>
         <div className=" md:pt-5 lg:pt-10 lg:text-xl font-normal">
-          <p>Enjoy our Monsoon Sale! Get amazing discounts on all garments.</p>{" "}
+          <p>Enjoy our Monsoon Sale! Get amazing discounts on <span className="font-bold text-purple-700">all garments.</span> </p>{" "}
           Shop now and save big!{" "}
         </div>
         <div className="pt-5 lg:pt-10 ">

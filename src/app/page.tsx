@@ -16,9 +16,9 @@ export default function Home() {
       <ImageSlider />
       <Topselectionpart />
       <OfferPage />
-      <About />
       <Unitedfree />
       <Recentviewed />
+      <About />
       <Submitemail />
     </div>
   );

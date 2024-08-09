@@ -107,9 +107,6 @@ export default function BuyHistory() {
             errorToast("Please enter price");
             setIsLoading(false);
             return;
-        } else if (discountedPrice === 0 || discount === 0) {
-            errorToast("enter discount or disounted price")
-            setIsLoading(false);
         } else if (description === "") {
             errorToast("Please enter description");
             setIsLoading(false);
@@ -155,7 +152,6 @@ export default function BuyHistory() {
             formData.append("hsn", hsn);
             formData.append("qty", qty);
             addProductData.size.forEach((size) => {
-                console.log('size::: ', size);
                 formData.append("size", size);
             });
 

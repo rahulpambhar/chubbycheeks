@@ -42,7 +42,6 @@ export default function Checkout({ params }: { params: { product: string } }) {
     const [isPurchased, setIsPurchased] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 0, text: '', });
     const [productSize, setSize] = useState("NONE");
-    console.log('productSize::: ', productSize);
     const fallbackImage = '/image/offer.jpg';
 
     const { data: session, status }: any = useSession();
@@ -225,7 +224,7 @@ export default function Checkout({ params }: { params: { product: string } }) {
                                                     <ToggleGroupItem
                                                         key={item}
                                                         value={item}
-                                                        className="w-8 h-8 bg-black text-gray-200 border border-green-700"
+                                                        className="w-full h-8 bg-black text-gray-200 border border-green-700"
                                                     >
                                                         {item}
                                                     </ToggleGroupItem>
