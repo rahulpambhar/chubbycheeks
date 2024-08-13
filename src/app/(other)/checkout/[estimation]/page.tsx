@@ -189,11 +189,7 @@ export default function Checkout({ params, }: { params: { estimation: string }; 
     }, [order_]);
 
     useEffect(() => {
-        !session
-            ? () => {
-                return router.push("/");
-            }
-            : null;
+        !session && router.push('/')
         getOrders();
     }, []);
 
@@ -349,7 +345,7 @@ export default function Checkout({ params, }: { params: { estimation: string }; 
                                                                             <ToggleGroupItem
                                                                                 key={item}
                                                                                 value={item}
-                                                                                className="w-3 h-6 bg-gray-400 text-black  border-black "
+                                                                                className="w-auto h-6 bg-gray-400 text-black  border-black "
                                                                             >
                                                                                 <p className="text-tiny">{item}</p>
                                                                             </ToggleGroupItem>

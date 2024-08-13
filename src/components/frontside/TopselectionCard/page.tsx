@@ -88,7 +88,7 @@ const TopselectionCard = ({
       <CardFooter className="flex flex-col items-start p-2 space-y-2">
         <b className="text-sm font-semibold">{item.name}</b>
         <p className="text-tiny text-left text-gray-700 overflow-auto max-h-12">
-          {item?.description.split(' ').slice(0, 4).join(' ')}...
+          {item?.description.split(' ').slice(0, 11).join(' ')}...
           <Link href={`/preview/${item?.id}`} className="text-orange-500">
             More
           </Link>

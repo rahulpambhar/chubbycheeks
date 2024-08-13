@@ -249,7 +249,7 @@ export default function Checkout() {
                                                             >
                                                                 {
                                                                     item?.product?.size?.map((item: any) => (
-                                                                        <ToggleGroupItem key={item} value={item} className="w-3 h-6 "
+                                                                        <ToggleGroupItem key={item} value={item} className="w-auto h-6 "
                                                                         >
                                                                             <p className="text-tiny">  {item}</p>
                                                                         </ToggleGroupItem>

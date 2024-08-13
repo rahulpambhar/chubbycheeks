@@ -3,7 +3,6 @@ import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
 import { XMarkIcon } from '@heroicons/react/24/outline';
-// import { XMarkIcon } from '@heroicons/react/outline'
 import { useAppSelector, useAppDispatch } from '../app/redux/hooks';
 import { isLoginModel, setOpenCart } from '../app/redux/slices/utilSlice'
 import { createOrderFunc } from '../app/redux/slices/orderSlices'
@@ -186,14 +185,14 @@ export default function Example() {
                                                                                 <div className="flex justify-between w-full mt-2 ">
                                                                                     <div className="flex items-center gap-1">
                                                                                         <p className='text-tiny'>size</p>
-                                                                                        <ToggleGroup type="single" variant="outline"  
+                                                                                        <ToggleGroup type="single" variant="outline"
                                                                                         >
                                                                                             {
                                                                                                 item?.product?.size?.map((item: any) => (
                                                                                                     <ToggleGroupItem
                                                                                                         key={item}
                                                                                                         value={item}
-                                                                                                        className="w-3 h-6 "
+                                                                                                        className="w-full h-6 "
                                                                                                     >
                                                                                                         <p className="text-tiny">  {item}</p>
                                                                                                     </ToggleGroupItem>
@@ -219,55 +218,6 @@ export default function Example() {
                                                                         </div>
                                                                     </CardBody>
                                                                 </Card>
-                                                                // <li key={item.id} className="flex py-6">
-                                                                //     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-
-                                                                //         <Image
-                                                                //             src={`/products/${item?.product?.image}`} width={200} height={200}
-                                                                //             alt=""
-                                                                //             className="h-full w-full object-cover object-center"
-                                                                //         />
-                                                                //     </div>
-                                                                //     <div className="ml-4 flex flex-1 flex-col">
-                                                                //         <div>
-                                                                //             <div className="flex justify-between text-base font-medium text-gray-900">
-                                                                //                 <h3 className='text-black'>
-                                                                //                     <a href={item.href}>{item?.product?.name}</a>
-                                                                //                 </h3>
-                                                                //                 <p className="ml-2 text-sm">{item?.qty} X {item?.product?.price} = {item?.qty * item?.product?.price} </p>
-                                                                //                 {item?.size !== "NONE" ? <p className="ml-2 text-sm">Size: {item?.size} </p> : <p className="ml-2 text-sm"> </p>
-
-                                                                //                 }
-
-                                                                //             </div>
-                                                                //         </div>
-
-                                                                //         <div className="flex flex-1 items-end justify-between text-sm">
-
-                                                                //             <button className='text-black' disabled={isLoading} onClick={() => {
-                                                                //                 session ? actionTocartFunction(item, "remove") : dispatch(isLoginModel(false));
-                                                                //             }}>-</button>
-
-                                                                //             <p className="text-gray-500">{item?.qty}</p>
-
-                                                                //             <button className='text-black' disabled={isLoading} onClick={() => {
-                                                                //                 session ? actionTocartFunction(item, "add") : dispatch(isLoginModel(false));
-                                                                //             }}>+</button>
-
-                                                                //             <div className="flex">
-                                                                //                 <button disabled={isLoading}
-                                                                //                     onClick={() => {
-                                                                //                         session ? actionTocartFunction(item, "delete") : dispatch(isLoginModel(false));
-                                                                //                     }}
-                                                                //                     type="button"
-                                                                //                     className="font-medium text-indigo-600 hover:text-red-500"
-                                                                //                 >
-                                                                //                     Remove
-                                                                //                 </button>
-                                                                //             </div>
-                                                                //         </div>
-                                                                //     </div>
-                                                                // </li>
                                                             ))}
                                                         </ul>
                                                     </div>
@@ -276,7 +226,7 @@ export default function Example() {
 
                                             <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                                                 <div className="flex justify-between text-base font-medium text-gray-900">
-                                                    <p>Taxable Amount</p>
+                                                    <p>Taxable Amount (<span className='text-tiny text-orange-500'>Tax Not Included</span>)</p>
                                                     <p>₹ {taxableAmount}</p>
                                                 </div>
                                                 <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>

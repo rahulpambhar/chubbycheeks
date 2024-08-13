@@ -13,8 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/react";
 import { StarRating } from "../TopselectionCard/page";
 import { HeartIcon, RedHeartIcon } from '@/components';
+import { useRouter } from "next/navigation";
+
 
 const Recentviewedcard = ({
+
   item,
   wish
 }: {
@@ -26,6 +29,8 @@ const Recentviewedcard = ({
   const cart = useAppSelector((state) => state?.cartReducer?.cart?.CartItem) || [];
   const openCart = useAppSelector((state) => state?.utilReducer?.openCart);
   const [productSize, setSize] = useState("NONE");
+  const router = useRouter()
+
 
   const handleLike = async () => {
     if (session) {
@@ -96,12 +101,16 @@ const Recentviewedcard = ({
           </div>
         </div>
         <div className="flex flex-col justify-center sm:flex-row gap-2 w-full">
-
-          <Button variant="outline" className="w-full   sm:w-auto border-gray-600 text-green-600 hover:bg-green-100">
+          <Button variant="outline" className="w-full   sm:w-auto border-gray-600 text-green-600 hover:bg-green-100" onClick={() => {
+            session ? router.push(`/buy/${item?.id}`) : dispatch(isLoginModel(true));
+          }}>
+            Buy Now
+          </Button>
+          {/* <Button variant="outline" className="w-full   sm:w-auto border-gray-600 text-green-600 hover:bg-green-100">
             <Link href={`/buy/${item.id}`} >
               Buy Now
             </Link>
-          </Button>
+          </Button> */}
           {session && cart?.find((cartItem: any) => cartItem?.productId === item?.id) ? (
             <Button
               variant="outline"
@@ -126,7 +135,7 @@ const Recentviewedcard = ({
         </div>
       </CardFooter>
     </Card>
- 
+
   );
 };
 

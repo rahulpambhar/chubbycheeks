@@ -44,18 +44,18 @@ enum PaymentMethod {
 }
 
 enum Size {
-    AGE_0_AGE_1
-    AGE_1_AGE_2
-    AGE_2_AGE_3
-    AGE_3_AGE_4
-    AGE_4_AGE_5
-    AGE_5_AGE_6
-    AGE_6_AGE_7
-    AGE_7_AGE_8
-    AGE_8_AGE_9
-    AGE_9_AGE_10
-    AGE_10_AGE_11
-    AGE_11_AGE_12
+    Y_0_1
+    Y_1_2
+    Y_2_3
+    Y_3_4
+    Y_4_5
+    Y_5_6
+    Y_6_7
+    Y_7_8
+    Y_8_9
+    Y_9_10
+    Y_10_11
+    Y_11_12
     S
     M
     L

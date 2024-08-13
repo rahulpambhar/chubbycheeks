@@ -2,26 +2,14 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import { RedirectType, useRouter, useSearchParams, } from 'next/navigation'
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
-import { createTempOrderFunc, createOrderFunc, } from '../../../redux/slices/orderSlices';
 import { useSession } from "next-auth/react";
-import { errorToast, successToast } from '@/components/toster';
 import axios from 'axios';
-import { Product } from '../../../../../types/global';
-// import OTPInputGroup from '@/components/frontside/otp/page';
 import Image from 'next/image';
 import Script from 'next/script';
 import ThankingMsg from "@/components/frontside/ThankingMsg/page"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import {
-    Card as CardComponent,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Card as CardComponent, CardHeader, CardTitle, CardContent, } from "@/components/ui/card";
 import { Card, CardBody, Slider } from "@nextui-org/react";
 import Link from 'next/link';
 import { StarRating } from '@/components/frontside/TopselectionCard/page';
@@ -29,8 +17,8 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Button } from '@/components/ui/button';
 import Cart from "@/components/Cart";
 import { checkSizes } from '@/app/utils';
-import { size } from 'lodash';
 import Payment from '@/components/frontside/Payment/pageForBuy';
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Checkout({ params }: { params: { estimation: string } }) {
 
@@ -146,7 +134,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
     }, [session]);
 
     return (
-        <div className="grid gap-6 md:grid-cols-2 lg:gap-12 max-w-6xl px-4 mx-auto mt-8 mb-8 py-6">
+        <div className="grid gap-6 md:grid-cols-2 items-center  justify-center lg:gap-12 max-w-6xl px-4 mx-auto mt-8 mb-8 py-6">
 
             {thankingMsg ? <ThankingMsg /> :
                 order_.length > 0 ?
@@ -185,7 +173,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                                 <p className="text-tiny text-foreground/80">
                                                                     {item?.description.split(' ').slice(0, 10).join(' ')}...
                                                                     <Link href={`/preview/${item?.id}`} className="text-orange-500">
-                                                                        Preview
+                                                                        More
                                                                     </Link>
                                                                 </p>
                                                                 <h1 className=" flex justify-between text-sm font-medium mt-2">
@@ -217,7 +205,6 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                             <div className="flex items-center gap-2">
                                                                 <p className='text-sm'> Select size</p>
                                                                 <ToggleGroup value={productSize} type="single" variant="outline" onValueChange={(value: any) => {
-
                                                                     setProductSize(value)
                                                                 }} >
                                                                     {
@@ -225,7 +212,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                                             <ToggleGroupItem
                                                                                 key={item}
                                                                                 value={item}
-                                                                                className="w-3 h-6 bg-gray-400 text-black  border-black "
+                                                                                className="w-auto h-6 bg-gray-400 text-black  border-black "
                                                                             >
                                                                                 <p className="text-tiny">{item}</p>
                                                                             </ToggleGroupItem>
@@ -292,9 +279,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                 <div>Total Amount</div>
                                 <div> ₹ {Math.floor(totalAmount) || 0}</div>
                             </div>
-
                         </CardComponent>
-
                         <div>
                             <CardComponent className="w-full">
                                 <CardHeader>
@@ -314,11 +299,21 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                 </CardContent>
                             </CardComponent>
                         </div>
-                    </> :
-                    <div className="grid gap-4 md:grid-cols-2">
-                        <div className="border border-gray-200 dark:border-gray-800 rounded-lg">
-                            <div className="border-t border-gray-200 dark:border-gray-800">
-                                Loading
+                    </>
+                    :
+                    <div className='grid w-full grid-cols-2 gap-4'>
+                        <div className="grid  flex-col space-y-3">
+                            <Skeleton className="h-[300px] w-full rounded-xl" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-[250px]" />
+                                <Skeleton className="h-4 w-[200px]" />
+                            </div>
+                        </div>
+                        <div className="grid  flex-col space-y-3">
+                            <Skeleton className="h-[300px] w-full rounded-xl" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-[250px]" />
+                                <Skeleton className="h-4 w-[200px]" />
                             </div>
                         </div>
                     </div>
