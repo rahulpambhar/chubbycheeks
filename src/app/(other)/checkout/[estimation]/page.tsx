@@ -332,8 +332,8 @@ export default function Checkout({ params, }: { params: { estimation: string }; 
                                                                 <p className='text-sm'> Select size</p>
                                                                 <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
                                                                     const newArray = order_?.map((e: any) => {
-                                                                        if (e.id === item.id) {
-                                                                            !returnOrderID && actionTocartFunction({ ...e, size: value }, "size")
+                                                                        if (e.id === item.id && value !== "") {
+                                                                            !orderID && !returnOrderID && actionTocartFunction({ ...e, size: value }, "size")
                                                                             return { ...e, size: value };
                                                                         }
                                                                         return e;

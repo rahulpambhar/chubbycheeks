@@ -604,7 +604,7 @@ export const checkSizes = (selectedItems) => {
 
     for (let item of selectedItems) {
 
-        if (item?.checked === true && item?.size === "NONE") {
+        if (item?.checked === true && item?.size === "NONE" || item?.checked === true && item?.size === "") {
             return { st: false, msg: `Please select size of ${item?.product?.name ? item?.product?.name : ""} Product`, }
         }
     }

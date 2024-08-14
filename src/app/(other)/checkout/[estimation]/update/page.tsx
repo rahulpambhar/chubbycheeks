@@ -241,7 +241,7 @@ export default function Checkout({ params }: { params: { estimation: string } })
                                                         orderID ?
                                                             <ToggleGroup value={item?.size} type="single" variant="outline" onValueChange={(value: any) => {
                                                                 const newArray = order_?.map((e: any) => {
-                                                                    if (e.id === item.id) {
+                                                                    if (e.id === item.id && value !== "") {
                                                                         return { ...e, size: value };
                                                                     }
                                                                     return e;

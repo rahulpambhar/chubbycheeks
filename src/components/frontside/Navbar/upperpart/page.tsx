@@ -109,9 +109,9 @@ export default function Component() {
                   cart.CartItem.length > 0 ? dispatch(setOpenCart(!openCart)) : errorToast("Cart is empty")
                 }} />
                 <span className="sr-only">Cart</span>
-                {cart && cart.CartItem?.length > 0 && (
+                {cart && cart?.CartItem?.length > 0 && (
                   <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                    {cart.CartItem.length}
+                    {cart?.CartItem?.length}
                   </span>
                 )}
               </Button>
